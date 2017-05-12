@@ -42,8 +42,7 @@ namespace WorldEditTests.History
                 new TileChange(Vector.Zero, new Tile {Wall = secondWall}, new Tile {Wall = thirdWall})
             };
 
-            changeSet.Redo(extent);
-
+            Assert.AreEqual(2, changeSet.Redo(extent));
             Assert.AreEqual(thirdWall, extent[0, 0].Wall);
         }
 
@@ -66,8 +65,7 @@ namespace WorldEditTests.History
                 new TileChange(Vector.Zero, new Tile {Wall = secondWall}, new Tile {Wall = thirdWall})
             };
 
-            changeSet.Undo(extent);
-
+            Assert.AreEqual(2, changeSet.Undo(extent));
             Assert.AreEqual(firstWall, extent[0, 0].Wall);
         }
 

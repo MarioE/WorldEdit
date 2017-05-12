@@ -31,6 +31,7 @@ namespace WorldEdit.Extents
         /// <inheritdoc />
         public override Vector UpperBound => _extent.UpperBound;
 
+        /// <inheritdoc />
         public override Tile this[int x, int y]
         {
             get => _extent[x, y];

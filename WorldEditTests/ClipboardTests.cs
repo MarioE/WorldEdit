@@ -70,7 +70,6 @@ namespace WorldEditTests
         [Test]
         public void Ctor_NullTiles_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new Clipboard(null));
         }
 

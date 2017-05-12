@@ -40,14 +40,12 @@ namespace WorldEditTests.Sessions
         {
             var world = new World(new MockTileCollection());
 
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentOutOfRangeException>(() => new Session(world, -1));
         }
 
         [Test]
         public void Ctor_NullWorld_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new Session(null, 0));
         }
 
@@ -108,8 +106,7 @@ namespace WorldEditTests.Sessions
             editSession[0, 0] = new Tile {Wall = 1};
             session.Undo();
 
-            session.Redo();
-
+            Assert.AreEqual(1, session.Redo());
             Assert.AreEqual(1, world[0, 0].Wall);
         }
 
@@ -157,8 +154,7 @@ namespace WorldEditTests.Sessions
             var editSession = session.CreateEditSession(true);
             editSession[0, 0] = new Tile {Wall = 1};
 
-            session.Undo();
-
+            Assert.AreEqual(1, session.Undo());
             Assert.AreNotEqual(1, world[0, 0].Wall);
         }
 

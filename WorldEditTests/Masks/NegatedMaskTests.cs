@@ -12,7 +12,6 @@ namespace WorldEditTests.Masks
         [Test]
         public void Ctor_NullMask_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new NegatedMask(null));
         }
 

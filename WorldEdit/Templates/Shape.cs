@@ -30,13 +30,12 @@ namespace WorldEdit.Templates
         public int Type { get; }
 
         /// <summary>
-        /// Tries to parse the specified string into a shape.
+        /// Parses the specified string into a shape.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <param name="shape">The resulting shape.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <returns>The parsing result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static bool TryParse(string s, out Shape shape)
+        public static ParsingResult<Shape> Parse(string s)
         {
             if (s == null)
             {
@@ -45,14 +44,11 @@ namespace WorldEdit.Templates
 
             var field = typeof(Shape).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field != null)
+            if (field == null)
             {
-                shape = (Shape)field.GetValue(null);
-                return true;
+                return ParsingResult<Shape>.Error($"Invalid shape '{s}'.");
             }
-
-            shape = null;
-            return false;
+            return (Shape)field.GetValue(null);
         }
 
         /// <inheritdoc />

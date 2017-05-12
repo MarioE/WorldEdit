@@ -289,13 +289,12 @@ namespace WorldEdit.Templates
         public int Type { get; }
 
         /// <summary>
-        /// Tries to parse the specified string into a block.
+        /// Parses the specified string into a block.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <param name="block">The resulting block.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <returns>The parsing result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static bool TryParse(string s, out Block block)
+        public static ParsingResult<Block> Parse(string s)
         {
             if (s == null)
             {
@@ -304,14 +303,11 @@ namespace WorldEdit.Templates
 
             var field = typeof(Block).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field != null)
+            if (field == null)
             {
-                block = (Block)field.GetValue(null);
-                return true;
+                return ParsingResult<Block>.Error($"Invalid block '{s}'.");
             }
-
-            block = null;
-            return false;
+            return (Block)field.GetValue(null);
         }
 
         /// <inheritdoc />

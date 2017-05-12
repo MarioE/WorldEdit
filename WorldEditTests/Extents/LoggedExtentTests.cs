@@ -15,14 +15,12 @@ namespace WorldEditTests.Extents
         [Test]
         public void Ctor_NullChangeSet_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new LoggedExtent(null, new ChangeSet()));
         }
 
         [Test]
         public void Ctor_NullExtent_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new LoggedExtent(new MockExtent(), null));
         }
 

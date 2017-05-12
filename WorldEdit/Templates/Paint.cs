@@ -93,13 +93,12 @@ namespace WorldEdit.Templates
         public byte Type { get; }
 
         /// <summary>
-        /// Tries to parse the specified string into a paint.
+        /// Parses the specified string into a paint.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <param name="paint">The resulting paint.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <returns>The parsing result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static bool TryParse(string s, out Paint paint)
+        public static ParsingResult<Paint> Parse(string s)
         {
             if (s == null)
             {
@@ -108,14 +107,11 @@ namespace WorldEdit.Templates
 
             var field = typeof(Paint).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field != null)
+            if (field == null)
             {
-                paint = (Paint)field.GetValue(null);
-                return true;
+                return ParsingResult<Paint>.Error($"Invalid paint '{s}'.");
             }
-
-            paint = null;
-            return false;
+            return (Paint)field.GetValue(null);
         }
 
         /// <inheritdoc />

@@ -13,7 +13,6 @@ namespace WorldEditTests.Extents
         [Test]
         public void Ctor_NullExtent_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new LimitedExtent(null, -1));
         }
 

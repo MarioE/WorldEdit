@@ -13,7 +13,6 @@ namespace WorldEditTests.Sessions
         [Test]
         public void Ctor_NullSessionCreator_ThrowsArgumentNullException()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             Assert.Throws<ArgumentNullException>(() => new SessionManager(null, TimeSpan.Zero));
         }
 

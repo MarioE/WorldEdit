@@ -41,13 +41,12 @@ namespace WorldEdit.Templates
         public int Type { get; }
 
         /// <summary>
-        /// Tries to parse the specified string into a wire.
+        /// Parses the specified string into a wire.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <param name="wire">The resulting wire.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <returns>The parsing result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static bool TryParse(string s, out Wire wire)
+        public static ParsingResult<Wire> Parse(string s)
         {
             if (s == null)
             {
@@ -56,14 +55,11 @@ namespace WorldEdit.Templates
 
             var field = typeof(Wire).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field != null)
+            if (field == null)
             {
-                wire = (Wire)field.GetValue(null);
-                return true;
+                return ParsingResult<Wire>.Error($"Invalid wire '{s}'.");
             }
-
-            wire = null;
-            return false;
+            return (Wire)field.GetValue(null);
         }
 
         /// <inheritdoc />

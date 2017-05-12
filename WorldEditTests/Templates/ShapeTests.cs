@@ -47,20 +47,29 @@ namespace WorldEditTests.Templates
             Assert.AreEqual(expected, shape.Matches(tile));
         }
 
-        [TestCase("", false, null)]
-        [TestCase("ston", false, null)]
-        [TestCase("half", true, -1)]
-        [TestCase("NORMAL", true, 0)]
-        public void TryParse(string s, bool expected, int? expectedType)
+        [TestCase("half", -1)]
+        [TestCase("NORMAL", 0)]
+        public void Parse(string s, int expectedType)
         {
-            Assert.AreEqual(expected, Shape.TryParse(s, out var shape));
-            Assert.AreEqual(expectedType, shape?.Type);
+            var result = Shape.Parse(s);
+
+            Assert.IsTrue(result.WasSuccessful);
+            Assert.AreEqual(expectedType, result.Value.Type);
+        }
+
+        [TestCase("")]
+        [TestCase("ston")]
+        public void Parse_InvalidShape_ThrowsFormatException(string s)
+        {
+            var result = Shape.Parse(s);
+
+            Assert.IsFalse(result.WasSuccessful);
         }
 
         [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
+        public void Parse_NullS_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => Shape.TryParse(null, out var _));
+            Assert.Throws<ArgumentNullException>(() => Shape.Parse(null));
         }
     }
 }

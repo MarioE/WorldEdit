@@ -73,6 +73,8 @@
     <Compile Include="Modules\Module.cs" />
     <Compile Include="Modules\RegionModule.cs" />
     <Compile Include="Modules\SelectionModule.cs" />
+    <Compile Include="Modules\UtilityModule.cs" />
+    <Compile Include="ParsingResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regions\NullRegion.cs" />
     <Compile Include="Regions\RectangularRegion.cs" />
@@ -85,6 +87,8 @@
     <Compile Include="Templates\Block.cs" />
     <Compile Include="Templates\ITemplate.cs" />
     <Compile Include="Templates\Paint.cs" />
+    <Compile Include="Templates\Pattern.cs" />
+    <Compile Include="Templates\PatternEntry.cs" />
     <Compile Include="Templates\Shape.cs" />
     <Compile Include="Templates\Wall.cs" />
     <Compile Include="Templates\Wire.cs" />

@@ -56,7 +56,7 @@ namespace WorldEdit.Sessions
         /// <summary>
         /// Gets or sets the limit on the number of tiles that can be set.
         /// </summary>
-        public int Limit { get; set; }
+        public int Limit { get; set; } = -1;
 
         /// <summary>
         /// Gets or sets the mask.
@@ -104,7 +104,7 @@ namespace WorldEdit.Sessions
         /// <returns>The edit session.</returns>
         public EditSession CreateEditSession(bool remember = false)
         {
-            var editSession = new EditSession(_world, _mask, -1);
+            var editSession = new EditSession(_world, _mask, Limit);
             if (remember)
             {
                 _history = _history.GetRange(0, _historyIndex++);

@@ -37,20 +37,29 @@ namespace WorldEditTests.Templates
             Assert.AreEqual(expected, wall.Matches(tile));
         }
 
-        [TestCase("", false, null)]
-        [TestCase("ston", false, null)]
-        [TestCase("AIR", true, 0)]
-        [TestCase("stone", true, 1)]
-        public void TryParse(string s, bool expected, byte? expectedType)
+        [TestCase("AIR", 0)]
+        [TestCase("stone", 1)]
+        public void Parse(string s, byte expectedType)
         {
-            Assert.AreEqual(expected, Wall.TryParse(s, out var wall));
-            Assert.AreEqual(expectedType, wall?.Type);
+            var result = Wall.Parse(s);
+
+            Assert.IsTrue(result.WasSuccessful);
+            Assert.AreEqual(expectedType, result.Value.Type);
+        }
+
+        [TestCase("")]
+        [TestCase("ston")]
+        public void Parse_InvalidWall_ThrowsFormatException(string s)
+        {
+            var result = Wall.Parse(s);
+
+            Assert.IsFalse(result.WasSuccessful);
         }
 
         [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
+        public void Parse_NullS_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => Wall.TryParse(null, out var _));
+            Assert.Throws<ArgumentNullException>(() => Wall.Parse(null));
         }
     }
 }

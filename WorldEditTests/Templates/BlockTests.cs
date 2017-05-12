@@ -168,22 +168,31 @@ namespace WorldEditTests.Templates
             Assert.AreEqual(expected, Block.Water.Matches(tile));
         }
 
-        [TestCase("", false, null, null, null)]
-        [TestCase("ston", false, null, null, null)]
-        [TestCase("STONE", true, 1, -1, -1)]
-        [TestCase("spooky platform", true, 19, -1, 288)]
-        public void TryParse(string s, bool expected, int? expectedType, short? expectedFrameX, short? expectedFrameY)
+        [TestCase("STONE", 1, -1, -1)]
+        [TestCase("spooky platform", 19, -1, 288)]
+        public void Parse(string s, int expectedType, short expectedFrameX, short expectedFrameY)
         {
-            Assert.AreEqual(expected, Block.TryParse(s, out var block));
-            Assert.AreEqual(expectedType, block?.Type);
-            Assert.AreEqual(expectedFrameX, block?.FrameX);
-            Assert.AreEqual(expectedFrameY, block?.FrameY);
+            var result = Block.Parse(s);
+
+            Assert.IsTrue(result.WasSuccessful);
+            Assert.AreEqual(expectedType, result.Value.Type);
+            Assert.AreEqual(expectedFrameX, result.Value.FrameX);
+            Assert.AreEqual(expectedFrameY, result.Value.FrameY);
+        }
+
+        [TestCase("")]
+        [TestCase("ston")]
+        public void Parse_InvalidBlock(string s)
+        {
+            var result = Block.Parse(s);
+
+            Assert.IsFalse(result.WasSuccessful);
         }
 
         [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
+        public void Parse_NullS_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => Block.TryParse(null, out var _));
+            Assert.Throws<ArgumentNullException>(() => Block.Parse(null));
         }
     }
 }

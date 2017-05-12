@@ -86,19 +86,30 @@ namespace WorldEditTests.Templates
             Assert.AreEqual(expected, wire.Matches(tile));
         }
 
-        [TestCase("", false, null, null)]
-        [TestCase("ston", false, null, null)]
-        public void TryParse(string s, bool expected, int? expectedType, bool? expectedShape)
+        [TestCase("red on", 1, true)]
+        [TestCase("red off", 1, false)]
+        public void Parse(string s, int expectedType, bool expectedState)
         {
-            Assert.IsFalse(Wire.TryParse(s, out var wire));
-            Assert.AreEqual(expectedType, wire?.Type);
-            Assert.AreEqual(expectedShape, wire?.State);
+            var result = Wire.Parse(s);
+
+            Assert.IsTrue(result.WasSuccessful);
+            Assert.AreEqual(expectedType, result.Value.Type);
+            Assert.AreEqual(expectedState, result.Value.State);
+        }
+
+        [TestCase("")]
+        [TestCase("ston")]
+        public void Parse_InvalidWire_ThrowsFormatException(string s)
+        {
+            var result = Wire.Parse(s);
+
+            Assert.IsFalse(result.WasSuccessful);
         }
 
         [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
+        public void Parse_NullS_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => Wire.TryParse(null, out var _));
+            Assert.Throws<ArgumentNullException>(() => Wire.Parse(null));
         }
     }
 }

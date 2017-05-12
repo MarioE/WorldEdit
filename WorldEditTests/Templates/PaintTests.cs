@@ -56,20 +56,29 @@ namespace WorldEditTests.Templates
             Assert.AreEqual(expected, paint.Matches(tile));
         }
 
-        [TestCase("", false, null)]
-        [TestCase("ston", false, null)]
-        [TestCase("blank", true, 0)]
-        [TestCase("red", true, 1)]
-        public void TryParse(string s, bool expected, int? expectedType)
+        [TestCase("blank", 0)]
+        [TestCase("red", 1)]
+        public void Parse(string s, int expectedType)
         {
-            Assert.AreEqual(expected, Paint.TryParse(s, out var paint));
-            Assert.AreEqual(expectedType, paint?.Type);
+            var result = Paint.Parse(s);
+
+            Assert.IsTrue(result.WasSuccessful);
+            Assert.AreEqual(expectedType, result.Value.Type);
+        }
+
+        [TestCase("")]
+        [TestCase("ston")]
+        public void Parse_InvalidPaint_ThrowsFormatException(string s)
+        {
+            var result = Paint.Parse(s);
+
+            Assert.IsFalse(result.WasSuccessful);
         }
 
         [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
+        public void Parse_NullS_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => Paint.TryParse(null, out var _));
+            Assert.Throws<ArgumentNullException>(() => Paint.Parse(null));
         }
     }
 }

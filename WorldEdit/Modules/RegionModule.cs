@@ -33,34 +33,27 @@ namespace WorldEdit.Modules
             Plugin.RegisterCommand("/setwire", Set<Wire>, "worldedit.region.setwire");
         }
 
-        private static bool TryParseTemplate<T>(string s, out T t) where T : ITemplate
+        private void Set<T>(CommandArgs args) where T : class, ITemplate
         {
-            var parameters = new object[] {s, null};
-            var result = (bool)typeof(T).GetMethod("TryParse").Invoke(null, parameters);
-            t = (T)parameters[1];
-            return result;
-        }
-
-        private void Set<T>(CommandArgs args) where T : ITemplate
-        {
-            var templateType = typeof(T).Name.ToLowerInvariant();
+            var typeName = typeof(T).Name.ToLowerInvariant();
             var player = args.Player;
             if (args.Parameters.Count != 1)
             {
-                player.SendErrorMessage($"Syntax: //set{templateType} <{templateType}>.");
+                player.SendErrorMessage($"Syntax: //set{typeName} <pattern>.");
                 return;
             }
 
-            var templateName = args.Parameters[0];
-            if (!TryParseTemplate<T>(templateName, out var t))
+            var inputPattern = args.Parameters[1];
+            var result = Pattern<T>.Parse(inputPattern);
+            if (!result.WasSuccessful)
             {
-                player.SendErrorMessage($"Invalid {templateType} '{templateName}'.");
+                player.SendErrorMessage(result.ErrorMessage);
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
-            var count = editSession.SetTiles(session.Selection, t);
+            var count = editSession.SetTiles(session.Selection, result.Value);
             Netplay.ResetSections();
             player.SendSuccessMessage($"Set {count} tiles.");
         }

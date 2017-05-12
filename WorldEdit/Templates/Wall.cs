@@ -172,13 +172,12 @@ namespace WorldEdit.Templates
         public byte Type { get; }
 
         /// <summary>
-        /// Tries to parse the specified string into a wall.
+        /// Parses the specified string into a wall.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <param name="wall">The resulting wall.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <returns>The parsing result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static bool TryParse(string s, out Wall wall)
+        public static ParsingResult<Wall> Parse(string s)
         {
             if (s == null)
             {
@@ -187,14 +186,11 @@ namespace WorldEdit.Templates
 
             var field = typeof(Wall).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field != null)
+            if (field == null)
             {
-                wall = (Wall)field.GetValue(null);
-                return true;
+                return ParsingResult<Wall>.Error($"Invalid wall '{s}'.");
             }
-
-            wall = null;
-            return false;
+            return (Wall)field.GetValue(null);
         }
 
         /// <inheritdoc />
