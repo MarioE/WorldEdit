@@ -90,17 +90,17 @@ namespace WorldEdit.Regions
         private static List<Vector> GenerateBoundaryPositions(Vector center, Vector radius)
         {
             // See http://stackoverflow.com/questions/15474122/is-there-a-midpoint-ellipse-algorithm
-            // This algorithm works better when x < y. Thus, we flip the exchange them if necessary.
+            // This algorithm works better when x < y. Thus, we exchange them if necessary.
             var boundaryPositions = new List<Vector>();
-            var flipped = radius.X > radius.Y;
-            var xSquared = flipped ? radius.Y * radius.Y : radius.X * radius.X;
-            var ySquared = flipped ? radius.X * radius.X : radius.Y * radius.Y;
+            var isFlipped = radius.X > radius.Y;
+            var xSquared = isFlipped ? radius.Y * radius.Y : radius.X * radius.X;
+            var ySquared = isFlipped ? radius.X * radius.X : radius.Y * radius.Y;
             var x = 0;
-            var y = flipped ? radius.X : radius.Y;
+            var y = isFlipped ? radius.X : radius.Y;
 
             void AddBoundaryPosition(int dx, int dy)
             {
-                if (flipped)
+                if (isFlipped)
                 {
                     boundaryPositions.Add(center + new Vector(dy, dx));
                     boundaryPositions.Add(center + new Vector(-dy, dx));

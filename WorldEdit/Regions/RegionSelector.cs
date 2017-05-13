@@ -8,12 +8,12 @@
         /// <summary>
         /// Gets the primary position or <c>null</c> if it is not selected.
         /// </summary>
-        public Vector? PrimaryPosition { get; protected set; }
+        public Vector? PrimaryPosition { get; private set; }
 
         /// <summary>
         /// Gets the secondary position or <c>null</c> if it is not selected.
         /// </summary>
-        public Vector? SecondaryPosition { get; protected set; }
+        public Vector? SecondaryPosition { get; private set; }
 
         /// <summary>
         /// Clears the selected positions.

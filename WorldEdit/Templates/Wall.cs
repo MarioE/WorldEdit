@@ -184,13 +184,16 @@ namespace WorldEdit.Templates
                 throw new ArgumentNullException(nameof(s));
             }
 
+            if (byte.TryParse(s, out var type))
+            {
+                return ParsingResult.From(new Wall(type));
+            }
+
             var field = typeof(Wall).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field == null)
-            {
-                return ParsingResult.FromError<Wall>($"Invalid wall '{s}'.");
-            }
-            return ParsingResult.From((Wall)field.GetValue(null));
+            return field != null
+                ? ParsingResult.From((Wall)field.GetValue(null))
+                : ParsingResult.FromError<Wall>($"Invalid wall '{s}'.");
         }
 
         /// <inheritdoc />

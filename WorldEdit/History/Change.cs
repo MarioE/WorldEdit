@@ -27,15 +27,17 @@ namespace WorldEdit.History
             UndoImpl(extent ?? throw new ArgumentNullException(nameof(extent)));
 
         /// <summary>
-        /// Redoes the change onto the specified extent. This method will -not- check for null.
+        /// Redoes the change onto the specified extent. This method will -not- check for <c>null</c>.
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
+        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
         protected abstract bool RedoImpl(Extent extent);
 
         /// <summary>
-        /// Undoes the change onto the specified extent. This method will -not- check for null.
+        /// Undoes the change onto the specified extent. This method will -not- check for <c>null</c>.
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
+        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
         protected abstract bool UndoImpl(Extent extent);
     }
 }

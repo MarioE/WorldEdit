@@ -9,7 +9,8 @@ namespace WorldEdit.Masks
     public abstract class Mask
     {
         /// <summary>
-        /// Tests the specified extent at a position. If the position is out of the bounds of the extent, then the test fails.
+        /// Tests the specified extent at a position. If the position is out of the bounds of the extent, then the test fails
+        /// immediately.
         /// </summary>
         /// <param name="extent">The extent to test.</param>
         /// <param name="position">The position.</param>
@@ -26,7 +27,7 @@ namespace WorldEdit.Masks
         }
 
         /// <summary>
-        /// Tests the specified extent at a position. This method will -not- check for null or bounds.
+        /// Tests the specified extent at a position. This method will -not- check for <c>null</c> or bounds.
         /// </summary>
         /// <param name="extent">The extent to test.</param>
         /// <param name="position">The position.</param>

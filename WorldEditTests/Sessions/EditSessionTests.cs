@@ -26,7 +26,7 @@ namespace WorldEditTests.Sessions
                     world.SetTile(x3, y3, new Tile {Wall = (byte)(x3 * y3 % 4)});
                 }
             }
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
 
             editSession.ClearTiles(region);
@@ -41,7 +41,7 @@ namespace WorldEditTests.Sessions
         public void ClearTiles_NullRegion_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.Throws<ArgumentNullException>(() => editSession.ClearTiles(null));
         }
@@ -51,13 +51,13 @@ namespace WorldEditTests.Sessions
         {
             var world = new World(new MockTileCollection());
 
-            Assert.Throws<ArgumentNullException>(() => new EditSession(world, null, -1));
+            Assert.Throws<ArgumentNullException>(() => new EditSession(world, -1, null));
         }
 
         [Test]
         public void Ctor_NullWorld_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new EditSession(null, new NullMask(), -1));
+            Assert.Throws<ArgumentNullException>(() => new EditSession(null, -1, new NullMask()));
         }
 
         [TestCase(0, 0)]
@@ -66,7 +66,7 @@ namespace WorldEditTests.Sessions
             var tiles = new ITile[20, 10];
             tiles[x, y] = new TTile {type = 1};
             var world = new World(new MockTileCollection {Tiles = tiles});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.AreEqual(1, editSession.GetTile(x, y).Type);
         }
@@ -76,7 +76,7 @@ namespace WorldEditTests.Sessions
         {
             var extent = new MockTileCollection {Tiles = new ITile[width, height]};
             var world = new World(extent);
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.AreEqual(Vector.Zero, editSession.LowerBound);
         }
@@ -86,7 +86,7 @@ namespace WorldEditTests.Sessions
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             world.SetTile(0, 0, new Tile {Wall = oldWall});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
             editSession.SetTile(0, 0, new Tile {Wall = newWall});
             editSession.Undo();
 
@@ -109,7 +109,7 @@ namespace WorldEditTests.Sessions
                     usedToMatch[new Vector(x3, y3)] = fromTemplate.Matches(world.GetTile(x3, y3));
                 }
             }
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
 
             editSession.ReplaceTiles(region, fromTemplate, toTemplate);
@@ -128,7 +128,7 @@ namespace WorldEditTests.Sessions
         public void ReplaceTiles_NullFromTemplate_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), null, new Block(2)));
         }
@@ -137,7 +137,7 @@ namespace WorldEditTests.Sessions
         public void ReplaceTiles_NullRegion_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(null, new Block(1), new Block(2)));
         }
@@ -146,7 +146,7 @@ namespace WorldEditTests.Sessions
         public void ReplaceTiles_NullToTemplate_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), new Block(1), null));
         }
@@ -155,7 +155,7 @@ namespace WorldEditTests.Sessions
         public void SetTileIntInt(int x, int y)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.IsTrue(world.SetTile(x, y, new Tile {Wall = 1}));
             Assert.AreEqual(1, editSession.GetTile(x, y).Wall);
@@ -165,7 +165,7 @@ namespace WorldEditTests.Sessions
         public void SetTileIntInt_LimitObeyed(int limit, int x, int y)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), limit);
+            var editSession = new EditSession(world, limit, new NullMask());
             for (var i = 0; i < limit; ++i)
             {
                 editSession.SetTile(x, y, new Tile());
@@ -179,7 +179,7 @@ namespace WorldEditTests.Sessions
         public void SetTileIntInt_MaskObeyed(int x, int y)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new TemplateMask(new Wall(1)), -1);
+            var editSession = new EditSession(world, -1, new TemplateMask(new Wall(1)));
 
             Assert.IsFalse(editSession.SetTile(x, y, new Tile {Wall = 1}));
             Assert.AreNotEqual(1, editSession.GetTile(x, y).Wall);
@@ -189,7 +189,7 @@ namespace WorldEditTests.Sessions
         public void SetTiles(int x, int y, int x2, int y2)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
             var template = new Block(1);
 
@@ -205,7 +205,7 @@ namespace WorldEditTests.Sessions
         public void SetTiles_NullRegion_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(null, new Block(1)));
         }
@@ -214,7 +214,7 @@ namespace WorldEditTests.Sessions
         public void SetTiles_NullTemplate_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(new NullRegion(), null));
         }
@@ -224,7 +224,7 @@ namespace WorldEditTests.Sessions
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             world.SetTile(0, 0, new Tile {Wall = oldWall});
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
             editSession.SetTile(0, 0, new Tile {Wall = newWall});
 
             Assert.AreEqual(1, editSession.Undo());
@@ -236,7 +236,7 @@ namespace WorldEditTests.Sessions
         {
             var extent = new MockTileCollection {Tiles = new ITile[width, height]};
             var world = new World(extent);
-            var editSession = new EditSession(world, new NullMask(), -1);
+            var editSession = new EditSession(world, -1, new NullMask());
 
             Assert.AreEqual(new Vector(width, height), editSession.UpperBound);
         }

@@ -104,7 +104,7 @@ namespace WorldEdit.Sessions
         /// <returns>The edit session.</returns>
         public EditSession CreateEditSession(bool remember = false)
         {
-            var editSession = new EditSession(_world, _mask, Limit);
+            var editSession = new EditSession(_world, Limit, _mask);
             if (remember)
             {
                 _history = _history.GetRange(0, _historyIndex++);

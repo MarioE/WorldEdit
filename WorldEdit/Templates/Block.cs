@@ -301,13 +301,23 @@ namespace WorldEdit.Templates
                 throw new ArgumentNullException(nameof(s));
             }
 
+            if (ushort.TryParse(s, out var type))
+            {
+                return ParsingResult.From(new Block(type));
+            }
+
+            var split = s.Split(':');
+            if (split.Length == 3 && ushort.TryParse(split[0], out type) &&
+                short.TryParse(split[1], out var frameX) && short.TryParse(split[2], out var frameY))
+            {
+                return ParsingResult.From(new Block(type, frameX, frameY));
+            }
+
             var field = typeof(Block).GetField(s.Replace(" ", ""),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field == null)
-            {
-                return ParsingResult.FromError<Block>($"Invalid block '{s}'.");
-            }
-            return ParsingResult.From((Block)field.GetValue(null));
+            return field != null
+                ? ParsingResult.From((Block)field.GetValue(null))
+                : ParsingResult.FromError<Block>($"Invalid block '{s}'.");
         }
 
         /// <inheritdoc />

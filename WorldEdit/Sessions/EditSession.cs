@@ -18,15 +18,15 @@ namespace WorldEdit.Sessions
         private readonly World _world;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EditSession" /> class with the specified world, mask, and limit.
+        /// Initializes a new instance of the <see cref="EditSession" /> class with the specified world, limit, and mask.
         /// </summary>
         /// <param name="world">The world.</param>
-        /// <param name="mask">The mask.</param>
         /// <param name="limit">The limit on the number of tiles that can be set.</param>
+        /// <param name="mask">The mask.</param>
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="world" /> or <paramref name="mask" /> is <c>null</c>.
         /// </exception>
-        public EditSession(World world, Mask mask, int limit)
+        public EditSession(World world, int limit, Mask mask)
         {
             _world = world ?? throw new ArgumentNullException(nameof(world));
             _extent = new LoggedExtent(_world, _changeSet);
