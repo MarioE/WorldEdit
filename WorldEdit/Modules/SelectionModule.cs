@@ -142,7 +142,7 @@ namespace WorldEdit.Modules
             var player = args.Player;
             if (args.Parameters.Count != 1)
             {
-                player.SendErrorMessage("Syntax: //select <rectangular>.");
+                player.SendErrorMessage("Syntax: //select <selector>");
                 return;
             }
 

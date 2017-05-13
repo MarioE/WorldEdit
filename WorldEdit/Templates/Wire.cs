@@ -57,9 +57,9 @@ namespace WorldEdit.Templates
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
             if (field == null)
             {
-                return ParsingResult<Wire>.Error($"Invalid wire '{s}'.");
+                return ParsingResult.FromError<Wire>($"Invalid wire '{s}'.");
             }
-            return (Wire)field.GetValue(null);
+            return ParsingResult.From((Wire)field.GetValue(null));
         }
 
         /// <inheritdoc />

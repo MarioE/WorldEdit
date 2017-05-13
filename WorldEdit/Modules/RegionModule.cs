@@ -26,24 +26,24 @@ namespace WorldEdit.Modules
         public override void Register()
         {
             // TODO: provide more detailed HelpDesc
-            Plugin.RegisterCommand("/setblock", Set<Block>, "worldedit.region.setblock");
-            Plugin.RegisterCommand("/setpaint", Set<Paint>, "worldedit.region.setpaint");
-            Plugin.RegisterCommand("/setshape", Set<Shape>, "worldedit.region.setshape");
+            Plugin.RegisterCommand("/color", Set<Color>, "worldedit.region.color");
+            Plugin.RegisterCommand("/colorwall", Set<WallColor>, "worldedit.region.colorwall");
+            Plugin.RegisterCommand("/set", Set<Block>, "worldedit.region.set");
             Plugin.RegisterCommand("/setwall", Set<Wall>, "worldedit.region.setwall");
-            Plugin.RegisterCommand("/setwire", Set<Wire>, "worldedit.region.setwire");
+            Plugin.RegisterCommand("/shape", Set<Shape>, "worldedit.region.shape");
         }
 
         private void Set<T>(CommandArgs args) where T : class, ITemplate
         {
-            var typeName = typeof(T).Name.ToLowerInvariant();
             var player = args.Player;
             if (args.Parameters.Count != 1)
             {
-                player.SendErrorMessage($"Syntax: //set{typeName} <pattern>.");
+                var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
+                player.SendErrorMessage($"Syntax: //{command} <pattern>");
                 return;
             }
 
-            var inputPattern = args.Parameters[1];
+            var inputPattern = args.Parameters[0];
             var result = Pattern<T>.Parse(inputPattern);
             if (!result.WasSuccessful)
             {
@@ -53,9 +53,9 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
-            var count = editSession.SetTiles(session.Selection, result.Value);
+            var count = editSession.ApplyTemplate(result.Value, session.Selection);
             Netplay.ResetSections();
-            player.SendSuccessMessage($"Set {count} tiles.");
+            player.SendSuccessMessage($"Modified {count} tiles.");
         }
     }
 }

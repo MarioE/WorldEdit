@@ -188,9 +188,9 @@ namespace WorldEdit.Templates
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
             if (field == null)
             {
-                return ParsingResult<Wall>.Error($"Invalid wall '{s}'.");
+                return ParsingResult.FromError<Wall>($"Invalid wall '{s}'.");
             }
-            return (Wall)field.GetValue(null);
+            return ParsingResult.From((Wall)field.GetValue(null));
         }
 
         /// <inheritdoc />

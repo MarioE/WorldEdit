@@ -54,7 +54,7 @@ namespace WorldEdit.Templates
                     var inputWeight = s2.Substring(0, index);
                     if (!int.TryParse(inputWeight, out weight) || weight <= 0)
                     {
-                        return ParsingResult<Pattern<T>>.Error($"Invalid weight '{inputWeight}'.");
+                        return ParsingResult.FromError<Pattern<T>>($"Invalid weight '{inputWeight}'.");
                     }
                     s3 = s2.Substring(index + 1);
                 }
@@ -62,11 +62,11 @@ namespace WorldEdit.Templates
                 var result = (ParsingResult<T>)typeof(T).GetMethod("Parse").Invoke(null, new object[] {s3});
                 if (!result.WasSuccessful)
                 {
-                    return ParsingResult<Pattern<T>>.Error(result.ErrorMessage);
+                    return ParsingResult.FromError<Pattern<T>>(result.ErrorMessage);
                 }
                 entries.Add(new PatternEntry<T>(result.Value, weight));
             }
-            return new Pattern<T>(entries);
+            return ParsingResult.From(new Pattern<T>(entries));
         }
 
         /// <inheritdoc />

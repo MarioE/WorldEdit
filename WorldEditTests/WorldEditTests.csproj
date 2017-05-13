@@ -64,6 +64,7 @@
     <Compile Include="History\TileChangeTests.cs" />
     <Compile Include="Masks\MaskTests.cs" />
     <Compile Include="Masks\MockMask.cs" />
+    <Compile Include="ParsingResultTests.cs" />
     <Compile Include="Regions\MockRegion.cs" />
     <Compile Include="Regions\MockRegionSelector.cs" />
     <Compile Include="Regions\RegionSelectorTests.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Sessions\EditSessionTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />
     <Compile Include="Sessions\SessionTests.cs" />
+    <Compile Include="Templates\WallColorTests.cs" />
     <Compile Include="Templates\PatternEntryTests.cs" />
     <Compile Include="Templates\PatternTests.cs" />
     <Compile Include="WorldTests.cs" />
@@ -85,7 +87,7 @@
     <Compile Include="Regions\RectangularRegionSelectorTests.cs" />
     <Compile Include="Regions\RectangularRegionTests.cs" />
     <Compile Include="Templates\BlockTests.cs" />
-    <Compile Include="Templates\PaintTests.cs" />
+    <Compile Include="Templates\ColorTests.cs" />
     <Compile Include="Templates\WallTests.cs" />
     <Compile Include="Templates\ShapeTests.cs" />
     <Compile Include="Templates\WireTests.cs" />

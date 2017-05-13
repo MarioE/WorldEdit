@@ -48,29 +48,20 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Redoes the edit session.
+        /// Applies the specified template to the tiles in the region.
         /// </summary>
-        /// <returns>The number of redone changes.</returns>
-        public int Redo()
-        {
-            return _changeSet.Redo(_world);
-        }
-
-        /// <summary>
-        /// Sets the tiles in the specified region with the template.
-        /// </summary>
-        /// <param name="region">The region to modify.</param>
         /// <param name="template">The template to use.</param>
+        /// <param name="region">The region to modify.</param>
         /// <returns>The number of modified tiles.</returns>
-        public int SetTiles(Region region, ITemplate template)
+        public int ApplyTemplate(ITemplate template, Region region)
         {
-            if (region == null)
-            {
-                throw new ArgumentNullException(nameof(region));
-            }
             if (template == null)
             {
                 throw new ArgumentNullException(nameof(template));
+            }
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
             }
 
             var count = 0;
@@ -80,6 +71,15 @@ namespace WorldEdit.Sessions
                 ++count;
             }
             return count;
+        }
+
+        /// <summary>
+        /// Redoes the edit session.
+        /// </summary>
+        /// <returns>The number of redone changes.</returns>
+        public int Redo()
+        {
+            return _changeSet.Redo(_world);
         }
 
         /// <summary>

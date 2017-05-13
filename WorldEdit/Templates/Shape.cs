@@ -46,9 +46,9 @@ namespace WorldEdit.Templates
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
             if (field == null)
             {
-                return ParsingResult<Shape>.Error($"Invalid shape '{s}'.");
+                return ParsingResult.FromError<Shape>($"Invalid shape '{s}'.");
             }
-            return (Shape)field.GetValue(null);
+            return ParsingResult.From((Shape)field.GetValue(null));
         }
 
         /// <inheritdoc />

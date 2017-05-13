@@ -305,9 +305,9 @@ namespace WorldEdit.Templates
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
             if (field == null)
             {
-                return ParsingResult<Block>.Error($"Invalid block '{s}'.");
+                return ParsingResult.FromError<Block>($"Invalid block '{s}'.");
             }
-            return (Block)field.GetValue(null);
+            return ParsingResult.From((Block)field.GetValue(null));
         }
 
         /// <inheritdoc />

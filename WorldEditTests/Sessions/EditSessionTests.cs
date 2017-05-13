@@ -14,6 +14,22 @@ namespace WorldEditTests.Sessions
     [TestFixture]
     public class EditSessionTests
     {
+        [TestCase(0, 0, 10, 10)]
+        public void ApplyTemplate(int x, int y, int x2, int y2)
+        {
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            var editSession = new EditSession(world, new NullMask(), -1);
+            var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
+            var template = new Block(1);
+
+            editSession.ApplyTemplate(template, region);
+
+            foreach (var position in region.Where(editSession.IsInBounds))
+            {
+                Assert.IsTrue(template.Matches(editSession[position]));
+            }
+        }
+
         [Test]
         public void Ctor_NullMask_ThrowsArgumentNullException()
         {
@@ -99,29 +115,13 @@ namespace WorldEditTests.Sessions
             Assert.AreNotEqual(1, editSession[x, y].Wall);
         }
 
-        [TestCase(0, 0, 10, 10)]
-        public void SetTiles(int x, int y, int x2, int y2)
-        {
-            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, new NullMask(), -1);
-            var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
-            var template = new Block(1);
-
-            editSession.SetTiles(region, template);
-
-            foreach (var position in region.Where(editSession.IsInBounds))
-            {
-                Assert.IsTrue(template.Matches(editSession[position]));
-            }
-        }
-
         [Test]
         public void SetTiles_NullRegion_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, new NullMask(), -1);
 
-            Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(null, new Block(1)));
+            Assert.Throws<ArgumentNullException>(() => editSession.ApplyTemplate(new Block(1), null));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, new NullMask(), -1);
 
-            Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(new NullRegion(), null));
+            Assert.Throws<ArgumentNullException>(() => editSession.ApplyTemplate(null, new NullRegion()));
         }
 
         [TestCase(1, 2)]
