@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OTAPI.Tile;
 using WorldEdit;
 using WorldEdit.History;

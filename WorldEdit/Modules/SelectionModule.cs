@@ -23,6 +23,7 @@ namespace WorldEdit.Modules
         private readonly Dictionary<string, Func<RegionSelector>> _selectors =
             new Dictionary<string, Func<RegionSelector>>(StringComparer.OrdinalIgnoreCase)
             {
+                ["elliptic"] = () => new EllipticRegionSelector(),
                 ["rectangular"] = () => new RectangularRegionSelector()
             };
 
@@ -83,7 +84,8 @@ namespace WorldEdit.Modules
                 "Syntax: //select <selector>",
                 "",
                 "Changes your selector. Valid selectors are:",
-                "- rectangular: Select two opposite points of a rectangle."
+                "- elliptic: Select the center and radius of an ellipse.",
+                "- rectangular: Select the two opposite points of a rectangle."
             };
 
             var shift = Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");

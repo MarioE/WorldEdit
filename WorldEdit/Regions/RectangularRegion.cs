@@ -71,25 +71,25 @@ namespace WorldEdit.Regions
 
         private Region Change(Vector delta, bool isExpansion)
         {
+            delta = isExpansion ? delta : -delta;
             var position1 = Position1;
             var position2 = Position2;
-            var multiplier = isExpansion ? 1 : -1;
-            if ((position1.X < position2.X) ^ (delta.X >= 0))
+            if ((position1.X < position2.X) ^ (delta.X >= 0) ^ !isExpansion)
             {
-                position1 += multiplier * new Vector(delta.X, 0);
+                position1 += new Vector(delta.X, 0);
             }
             else
             {
-                position2 += multiplier * new Vector(delta.X, 0);
+                position2 += new Vector(delta.X, 0);
             }
 
-            if ((position1.Y < position2.Y) ^ (delta.Y >= 0))
+            if ((position1.Y < position2.Y) ^ (delta.Y >= 0) ^ !isExpansion)
             {
-                position1 += multiplier * new Vector(0, delta.Y);
+                position1 += new Vector(0, delta.Y);
             }
             else
             {
-                position2 += multiplier * new Vector(0, delta.Y);
+                position2 += new Vector(0, delta.Y);
             }
             return new RectangularRegion(position1, position2);
         }

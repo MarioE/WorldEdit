@@ -30,7 +30,7 @@ namespace WorldEditTests.Extents
         [TestCase(20, 10, 5, 7, true)]
         public void IsInBoundsVector(int width, int height, int x, int y, bool expected)
         {
-            var extent = new MockExtent { Tiles = new ITile[width, height] };
+            var extent = new MockExtent {Tiles = new ITile[width, height]};
 
             Assert.AreEqual(expected, extent.IsInBounds(new Vector(x, y)));
         }

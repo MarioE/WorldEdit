@@ -1,9 +1,9 @@
 ﻿namespace WorldEdit.Regions
 {
     /// <summary>
-    /// Represents a rectangular region selector.
+    /// Represents an elliptic region selector.
     /// </summary>
-    public class RectangularRegionSelector : RegionSelector
+    public class EllipticRegionSelector : RegionSelector
     {
         /// <inheritdoc />
         protected override Region GetRegion()
@@ -13,7 +13,7 @@
                 return new NullRegion();
             }
 
-            return new RectangularRegion(PrimaryPosition.Value, SecondaryPosition.Value);
+            return new EllipticRegion(PrimaryPosition.Value, (SecondaryPosition - PrimaryPosition).Value);
         }
     }
 }

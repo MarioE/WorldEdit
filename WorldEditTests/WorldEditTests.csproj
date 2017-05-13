@@ -67,8 +67,10 @@
     <Compile Include="Masks\MaskTests.cs" />
     <Compile Include="Masks\MockMask.cs" />
     <Compile Include="ParsingResultTests.cs" />
+    <Compile Include="Regions\EllipticRegionTests.cs" />
     <Compile Include="Regions\MockRegion.cs" />
     <Compile Include="Regions\MockRegionSelector.cs" />
+    <Compile Include="Regions\EllipticRegionSelectorTests.cs" />
     <Compile Include="Regions\RegionSelectorTests.cs" />
     <Compile Include="Regions\RegionTests.cs" />
     <Compile Include="Sessions\EditSessionTests.cs" />
