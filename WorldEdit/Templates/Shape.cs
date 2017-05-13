@@ -8,12 +8,12 @@ namespace WorldEdit.Templates
     /// </summary>
     public class Shape : ITemplate
     {
-        public static readonly Shape BottomLeftSlope = new Shape(4);
-        public static readonly Shape BottomRightSlope = new Shape(3);
+        public static readonly Shape BottomLeft = new Shape(4);
+        public static readonly Shape BottomRight = new Shape(3);
         public static readonly Shape Half = new Shape(-1);
         public static readonly Shape Normal = new Shape(0);
-        public static readonly Shape TopLeftSlope = new Shape(2);
-        public static readonly Shape TopRightSlope = new Shape(1);
+        public static readonly Shape TopLeft = new Shape(2);
+        public static readonly Shape TopRight = new Shape(1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Shape" /> class with the specified type.

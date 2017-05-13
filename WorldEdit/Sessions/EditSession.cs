@@ -29,9 +29,9 @@ namespace WorldEdit.Sessions
         public EditSession(World world, Mask mask, int limit)
         {
             _world = world ?? throw new ArgumentNullException(nameof(world));
-            var loggedExtent = new LoggedExtent(_world, _changeSet);
-            var limitedExtent = new LimitedExtent(loggedExtent, limit);
-            _extent = new MaskedExtent(limitedExtent, mask ?? throw new ArgumentNullException(nameof(mask)));
+            _extent = new LoggedExtent(_world, _changeSet);
+            _extent = new LimitedExtent(_extent, limit);
+            _extent = new MaskedExtent(_extent, mask ?? throw new ArgumentNullException(nameof(mask)));
         }
 
         /// <inheritdoc />
@@ -41,17 +41,13 @@ namespace WorldEdit.Sessions
         public override Vector UpperBound => _extent.UpperBound;
 
         /// <summary>
-        /// Applies the specified template to the tiles in the region.
+        /// Clears the tiles in the specified region.
         /// </summary>
-        /// <param name="template">The template to use.</param>
         /// <param name="region">The region to modify.</param>
         /// <returns>The number of modified tiles.</returns>
-        public int ApplyTemplate(ITemplate template, Region region)
+        /// <exception cref="ArgumentNullException"><paramref name="region" /> is <c>null</c>.</exception>
+        public int ClearTiles(Region region)
         {
-            if (template == null)
-            {
-                throw new ArgumentNullException(nameof(template));
-            }
             if (region == null)
             {
                 throw new ArgumentNullException(nameof(region));
@@ -60,7 +56,7 @@ namespace WorldEdit.Sessions
             var count = 0;
             foreach (var position in region.Where(IsInBounds))
             {
-                if (SetTile(position, template.Apply(GetTile(position))))
+                if (SetTile(position, new Tile()))
                 {
                     ++count;
                 }
@@ -77,8 +73,73 @@ namespace WorldEdit.Sessions
         /// <returns>The number of redone changes.</returns>
         public int Redo() => _changeSet.Redo(_world);
 
+        /// <summary>
+        /// Replaces the tiles in the specified region using the templates.
+        /// </summary>
+        /// <param name="region">The region to modify.</param>
+        /// <param name="fromTemplate">The template to match with.</param>
+        /// <param name="toTemplate">The template to apply.</param>
+        /// <returns>The number of modified tiles.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Either <paramref name="region" />, <paramref name="fromTemplate" />, or <paramref name="toTemplate" /> is <c>null</c>.
+        /// </exception>
+        public int ReplaceTiles(Region region, ITemplate fromTemplate, ITemplate toTemplate)
+        {
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+            if (fromTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(fromTemplate));
+            }
+            if (toTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(toTemplate));
+            }
+
+            var count = 0;
+            foreach (var position in region.Where(IsInBounds))
+            {
+                var tile = GetTile(position);
+                if (fromTemplate.Matches(tile) && SetTile(position, toTemplate.Apply(tile)))
+                {
+                    ++count;
+                }
+            }
+            return count;
+        }
+
         /// <inheritdoc />
         public override bool SetTile(int x, int y, Tile tile) => _extent.SetTile(x, y, tile);
+
+        /// <summary>
+        /// Sets the tiles in the specified region using the template.
+        /// </summary>
+        /// <param name="region">The region to modify.</param>
+        /// <param name="template">The template to apply.</param>
+        /// <returns>The number of modified tiles.</returns>
+        public int SetTiles(Region region, ITemplate template)
+        {
+            if (region == null)
+            {
+                throw new ArgumentNullException(nameof(region));
+            }
+            if (template == null)
+            {
+                throw new ArgumentNullException(nameof(template));
+            }
+
+            var count = 0;
+            foreach (var position in region.Where(IsInBounds))
+            {
+                if (SetTile(position, template.Apply(GetTile(position))))
+                {
+                    ++count;
+                }
+            }
+            return count;
+        }
 
         /// <summary>
         /// Undoes the edit session.

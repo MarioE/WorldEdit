@@ -24,10 +24,39 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            // TODO: provide more detailed HelpDesc
-            Plugin.RegisterCommand("clearclipboard", ClearClipboard, "worldedit.clipboard.clearclipboard");
-            Plugin.RegisterCommand("/copy", Copy, "worldedit.clipboard.copy");
-            Plugin.RegisterCommand("/paste", Paste, "worldedit.clipboard.paste");
+            var clearClipboard = Plugin.RegisterCommand("clearclipboard",
+                ClearClipboard,
+                "worldedit.clipboard.clearclipboard");
+            clearClipboard.HelpDesc = new[]
+            {
+                "Syntax: /clearclipboard",
+                "",
+                "Clears your clipboard."
+            };
+
+            var copy = Plugin.RegisterCommand("/copy", Copy, "worldedit.clipboard.copy");
+            copy.HelpDesc = new[]
+            {
+                "Syntax: //copy",
+                "",
+                "Copies your selection to your clipboard."
+            };
+
+            var cut = Plugin.RegisterCommand("/cut", Cut, "worldedit.clipboard.cut");
+            cut.HelpDesc = new[]
+            {
+                "Syntax: //cut",
+                "",
+                "Cuts your selection to your clipboard."
+            };
+
+            var paste = Plugin.RegisterCommand("/paste", Paste, "worldedit.clipboard.paste");
+            paste.HelpDesc = new[]
+            {
+                "Syntax: //paste",
+                "",
+                "Pastes your clipboard to your primary position."
+            };
         }
 
         private void ClearClipboard(CommandArgs args)
@@ -45,6 +74,17 @@ namespace WorldEdit.Modules
             var editSession = session.CreateEditSession();
             session.Clipboard = Clipboard.CopyFrom(editSession, session.Selection);
             player.SendSuccessMessage("Copied clipboard from selection.");
+        }
+
+        private void Cut(CommandArgs args)
+        {
+            var player = args.Player;
+            var session = Plugin.GetOrCreateSession(player);
+            var editSession = session.CreateEditSession(true);
+            session.Clipboard = Clipboard.CopyFrom(editSession, session.Selection);
+            editSession.ClearTiles(session.Selection);
+            Netplay.ResetSections();
+            player.SendSuccessMessage("Cut clipboard from selection.");
         }
 
         private void Paste(CommandArgs args)

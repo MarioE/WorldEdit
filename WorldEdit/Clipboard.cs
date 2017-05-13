@@ -82,7 +82,7 @@ namespace WorldEdit
                         var offsetPosition = new Vector(x, y) + position;
                         if (extent.IsInBounds(offsetPosition))
                         {
-                            extent.SetTile(x, y, _tiles[x, y].Value);
+                            extent.SetTile(offsetPosition, _tiles[x, y].Value);
                         }
                     }
                 }

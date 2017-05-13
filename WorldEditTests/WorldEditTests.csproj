@@ -61,6 +61,8 @@
     <Compile Include="Extents\LoggedExtentTests.cs" />
     <Compile Include="Extents\MaskedExtentTests.cs" />
     <Compile Include="History\ChangeSetTests.cs" />
+    <Compile Include="History\ChangeTests.cs" />
+    <Compile Include="History\MockChange.cs" />
     <Compile Include="History\TileChangeTests.cs" />
     <Compile Include="Masks\MaskTests.cs" />
     <Compile Include="Masks\MockMask.cs" />

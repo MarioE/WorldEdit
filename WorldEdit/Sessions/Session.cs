@@ -129,6 +129,7 @@ namespace WorldEdit.Sessions
             {
                 throw new InvalidOperationException("Cannot redo an edit session.");
             }
+
             return _history[_historyIndex++].Redo();
         }
 
@@ -143,6 +144,7 @@ namespace WorldEdit.Sessions
             {
                 throw new InvalidOperationException("Cannot undo an edit session.");
             }
+
             return _history[--_historyIndex].Undo();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OTAPI.Tile;
@@ -15,19 +16,34 @@ namespace WorldEditTests.Sessions
     public class EditSessionTests
     {
         [TestCase(0, 0, 10, 10)]
-        public void ApplyTemplate(int x, int y, int x2, int y2)
+        public void ClearTiles(int x, int y, int x2, int y2)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            for (var x3 = 0; x3 < 20; ++x3)
+            {
+                for (var y3 = 0; y3 < 10; ++y3)
+                {
+                    world.SetTile(x3, y3, new Tile {Wall = (byte)(x3 * y3 % 4)});
+                }
+            }
             var editSession = new EditSession(world, new NullMask(), -1);
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
-            var template = new Block(1);
 
-            editSession.ApplyTemplate(template, region);
+            editSession.ClearTiles(region);
 
             foreach (var position in region.Where(editSession.IsInBounds))
             {
-                Assert.IsTrue(template.Matches(editSession.GetTile(position)));
+                Assert.AreEqual(new Tile(), editSession.GetTile(position));
             }
+        }
+
+        [Test]
+        public void ClearTiles_NullRegion_ThrowsArgumentNullException()
+        {
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            var editSession = new EditSession(world, new NullMask(), -1);
+
+            Assert.Throws<ArgumentNullException>(() => editSession.ClearTiles(null));
         }
 
         [Test]
@@ -78,6 +94,63 @@ namespace WorldEditTests.Sessions
             Assert.AreEqual(newWall, editSession.GetTile(0, 0).Wall);
         }
 
+        [TestCase(0, 0, 10, 10)]
+        public void ReplaceTiles(int x, int y, int x2, int y2)
+        {
+            var fromTemplate = new Wall(1);
+            var toTemplate = new Wall(2);
+            var usedToMatch = new Dictionary<Vector, bool>();
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            for (var x3 = 0; x3 < 20; ++x3)
+            {
+                for (var y3 = 0; y3 < 10; ++y3)
+                {
+                    world.SetTile(x3, y3, new Tile {Wall = (byte)(x3 * y3 % 4)});
+                    usedToMatch[new Vector(x3, y3)] = fromTemplate.Matches(world.GetTile(x3, y3));
+                }
+            }
+            var editSession = new EditSession(world, new NullMask(), -1);
+            var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
+
+            editSession.ReplaceTiles(region, fromTemplate, toTemplate);
+
+            foreach (var position in region.Where(editSession.IsInBounds))
+            {
+                Assert.IsFalse(fromTemplate.Matches(editSession.GetTile(position)));
+                if (usedToMatch[position])
+                {
+                    Assert.IsTrue(toTemplate.Matches(editSession.GetTile(position)));
+                }
+            }
+        }
+
+        [Test]
+        public void ReplaceTiles_NullFromTemplate_ThrowsArgumentNullException()
+        {
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            var editSession = new EditSession(world, new NullMask(), -1);
+
+            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), null, new Block(2)));
+        }
+
+        [Test]
+        public void ReplaceTiles_NullRegion_ThrowsArgumentNullException()
+        {
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            var editSession = new EditSession(world, new NullMask(), -1);
+
+            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(null, new Block(1), new Block(2)));
+        }
+
+        [Test]
+        public void ReplaceTiles_NullToTemplate_ThrowsArgumentNullException()
+        {
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            var editSession = new EditSession(world, new NullMask(), -1);
+
+            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), new Block(1), null));
+        }
+
         [TestCase(0, 0)]
         public void SetTileIntInt(int x, int y)
         {
@@ -112,13 +185,29 @@ namespace WorldEditTests.Sessions
             Assert.AreNotEqual(1, editSession.GetTile(x, y).Wall);
         }
 
+        [TestCase(0, 0, 10, 10)]
+        public void SetTiles(int x, int y, int x2, int y2)
+        {
+            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
+            var editSession = new EditSession(world, new NullMask(), -1);
+            var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
+            var template = new Block(1);
+
+            editSession.SetTiles(region, template);
+
+            foreach (var position in region.Where(editSession.IsInBounds))
+            {
+                Assert.IsTrue(template.Matches(editSession.GetTile(position)));
+            }
+        }
+
         [Test]
         public void SetTiles_NullRegion_ThrowsArgumentNullException()
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, new NullMask(), -1);
 
-            Assert.Throws<ArgumentNullException>(() => editSession.ApplyTemplate(new Block(1), null));
+            Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(null, new Block(1)));
         }
 
         [Test]
@@ -127,7 +216,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, new NullMask(), -1);
 
-            Assert.Throws<ArgumentNullException>(() => editSession.ApplyTemplate(null, new NullRegion()));
+            Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(new NullRegion(), null));
         }
 
         [TestCase(1, 2)]

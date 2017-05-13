@@ -25,10 +25,29 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            // TODO: provide more detailed HelpDesc
-            Plugin.RegisterCommand("clearhistory", ClearHistory, "worldedit.history.clearhistory");
-            Plugin.RegisterCommand("/redo", RedoUndo, "worldedit.history.redo");
-            Plugin.RegisterCommand("/undo", RedoUndo, "worldedit.history.undo");
+            var clearHistory = Plugin.RegisterCommand("clearhistory", ClearHistory, "worldedit.history.clearhistory");
+            clearHistory.HelpDesc = new[]
+            {
+                "Syntax: /clearhistory",
+                "",
+                "Clears your history."
+            };
+
+            var redo = Plugin.RegisterCommand("/redo", RedoUndo, "worldedit.history.redo");
+            redo.HelpDesc = new[]
+            {
+                "Syntax: //redo",
+                "",
+                "Redoes your most recent action."
+            };
+
+            var undo = Plugin.RegisterCommand("/undo", RedoUndo, "worldedit.history.undo");
+            undo.HelpDesc = new[]
+            {
+                "Syntax: //undo",
+                "",
+                "Undoes your most recent action."
+            };
         }
 
         private void ClearHistory(CommandArgs args)

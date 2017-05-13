@@ -45,35 +45,84 @@ namespace WorldEdit.Modules
         {
             GetDataHandlers.TileEdit += OnTileEdit;
 
-            // TODO: provide detailed HelpDesc
-            Plugin.RegisterCommand("/contract", ContractExpandShift, "worldedit.selection.contract");
-            Plugin.RegisterCommand("/expand", ContractExpandShift, "worldedit.selection.expand");
-            Plugin.RegisterCommand("/inset", InsetOutset, "worldedit.selection.inset");
-            Plugin.RegisterCommand("/outset", InsetOutset, "worldedit.selection.outset");
-            Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
-            Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");
+            var contract = Plugin.RegisterCommand("/contract", ContractExpandShift, "worldedit.selection.contract");
+            contract.HelpDesc = new[]
+            {
+                "Syntax: //contract <direction> <distance>",
+                "",
+                "Contracts your selection."
+            };
+
+            var expand = Plugin.RegisterCommand("/expand", ContractExpandShift, "worldedit.selection.expand");
+            expand.HelpDesc = new[]
+            {
+                "Syntax: //expand <direction> <distance>",
+                "",
+                "Expands your selection."
+            };
+
+            var inset = Plugin.RegisterCommand("/inset", InsetOutset, "worldedit.selection.inset");
+            inset.HelpDesc = new[]
+            {
+                "Syntax: //inset <distance>",
+                "",
+                "Insets your selection. This is equivalent to contracting on all sides."
+            };
+
+            var outset = Plugin.RegisterCommand("/outset", InsetOutset, "worldedit.selection.outset");
+            outset.HelpDesc = new[]
+            {
+                "Syntax: //outset <distance>",
+                "",
+                "Outsets your selection. This is equivalent to expanding on all sides."
+            };
+
+            var select = Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
+            select.HelpDesc = new[]
+            {
+                "Syntax: //select <selector>",
+                "",
+                "Changes your selector. Valid selectors are:",
+                "- rectangular: Select two opposite points of a rectangle."
+            };
+
+            var shift = Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");
+            shift.HelpDesc = new[]
+            {
+                "Syntax: //shift <direction> <distance>",
+                "",
+                "Shifts your selection."
+            };
+
             var wand = Plugin.RegisterCommand("/wand", Wand, "worldedit.selection.wand");
             wand.AllowServer = false;
+            wand.HelpDesc = new[]
+            {
+                "Syntax: //wand",
+                "",
+                "Toggles wand mode. This allows you to use wrenches to select positions."
+            };
         }
 
         private void ContractExpandShift(CommandArgs args)
         {
             var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 2)
+            if (parameters.Count != 2)
             {
                 player.SendErrorMessage($"Syntax: //{command} <direction> <distance>");
                 return;
             }
 
-            var inputDirection = args.Parameters[0];
+            var inputDirection = parameters[0];
             if (!_directions.TryGetValue(inputDirection, out var direction))
             {
                 player.SendErrorMessage($"Invalid direction '{inputDirection}'.");
                 return;
             }
 
-            var inputDistance = args.Parameters[1];
+            var inputDistance = parameters[1];
             if (!int.TryParse(inputDistance, out var distance) || distance <= 0)
             {
                 player.SendErrorMessage($"Invalid distance '{inputDistance}'.");
@@ -90,14 +139,15 @@ namespace WorldEdit.Modules
         private void InsetOutset(CommandArgs args)
         {
             var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 1)
+            if (parameters.Count != 1)
             {
                 player.SendErrorMessage($"Syntax: //{command} <distance>");
                 return;
             }
 
-            var inputDistance = args.Parameters[0];
+            var inputDistance = parameters[0];
             if (!int.TryParse(inputDistance, out var distance) || distance <= 0)
             {
                 player.SendErrorMessage($"Invalid distance '{inputDistance}'.");
@@ -119,34 +169,38 @@ namespace WorldEdit.Modules
                 return;
             }
 
-            var position = new Vector(args.X, args.Y);
+            var action = args.Action;
+            var x = args.X;
+            var y = args.Y;
+            var position = new Vector(x, y);
             var regionSelector = session.RegionSelector;
-            if (args.Action == GetDataHandlers.EditAction.PlaceWire)
+            if (action == GetDataHandlers.EditAction.PlaceWire)
             {
                 session.Selection = regionSelector.SelectPrimary(position);
                 player.SendSuccessMessage($"Set primary position at {position}.");
                 args.Handled = true;
-                player.SendTileSquare(args.X, args.Y, 1);
+                player.SendTileSquare(x, y, 1);
             }
-            else if (args.Action == GetDataHandlers.EditAction.PlaceWire2)
+            else if (action == GetDataHandlers.EditAction.PlaceWire2)
             {
                 session.Selection = regionSelector.SelectSecondary(position);
                 player.SendSuccessMessage($"Set secondary position at {position}.");
                 args.Handled = true;
-                player.SendTileSquare(args.X, args.Y, 1);
+                player.SendTileSquare(x, y, 1);
             }
         }
 
         private void Select(CommandArgs args)
         {
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 1)
+            if (parameters.Count != 1)
             {
                 player.SendErrorMessage("Syntax: //select <selector>");
                 return;
             }
 
-            var inputSelector = args.Parameters[0];
+            var inputSelector = parameters[0];
             if (!_selectors.TryGetValue(inputSelector, out var selector))
             {
                 player.SendErrorMessage($"Invalid selector '{inputSelector}'.");

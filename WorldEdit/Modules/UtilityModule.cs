@@ -37,23 +37,41 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            // TODO: provide more detailed HelpDesc
-            Plugin.RegisterCommand("/limit", Limit, "worldedit.utility.limit");
-            Plugin.RegisterCommand("/mask", Mask, "worldedit.utility.mask");
+            var limit = Plugin.RegisterCommand("/limit", Limit, "worldedit.utility.limit");
+            limit.HelpDesc = new[]
+            {
+                "Syntax: //limit <limit>",
+                "",
+                "Limits the number of tiles that you can modify in a single operation.",
+                "A negative limit is treated as no limit."
+            };
+
+            var mask = Plugin.RegisterCommand("/mask", Mask, "worldedit.utility.mask");
+            mask.HelpDesc = new[]
+            {
+                "Syntax: //mask <mask>",
+                "",
+                "Sets your mask. Masks are used to restrict what tiles will be affected. Valid masks are:",
+                "- #none - No restrictions.",
+                "- #selection - Restricts to your current selection.",
+                "- <type> <==|!=> <pattern> - Restricts to tiles with certain properties.",
+                "  type can be block, color, shape, wall, and wallcolor."
+            };
         }
 
         private void Limit(CommandArgs args)
         {
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 1)
+            if (parameters.Count != 1)
             {
                 player.SendErrorMessage("Syntax: //limit <limit>");
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            var inputLimit = args.Parameters[0].ToLowerInvariant();
-            if (!int.TryParse(inputLimit, out int limit))
+            var inputLimit = parameters[0].ToLowerInvariant();
+            if (!int.TryParse(inputLimit, out var limit))
             {
                 player.SendErrorMessage($"Invalid limit '{inputLimit}'.");
                 return;
@@ -65,8 +83,9 @@ namespace WorldEdit.Modules
 
         private void Mask(CommandArgs args)
         {
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 1 && args.Parameters.Count != 3)
+            if (parameters.Count != 1 && parameters.Count != 3)
             {
                 player.SendErrorMessage("Syntax: //mask <mask>");
                 return;
@@ -74,9 +93,9 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             Mask mask;
-            if (args.Parameters.Count == 1)
+            if (parameters.Count == 1)
             {
-                var inputMask = args.Parameters[0];
+                var inputMask = parameters[0];
                 if (inputMask.Equals("#none", StringComparison.OrdinalIgnoreCase))
                 {
                     mask = new NullMask();
@@ -93,8 +112,14 @@ namespace WorldEdit.Modules
             }
             else
             {
-                var inputPattern = args.Parameters[2];
-                var inputComparison = args.Parameters[1];
+                var inputType = parameters[0];
+                if (!_maskParsers.TryGetValue(inputType, out var parser))
+                {
+                    player.SendErrorMessage($"Invalid mask type '{inputType}'.");
+                    return;
+                }
+
+                var inputComparison = parameters[1];
                 var negated = false;
                 if (inputComparison.Equals("!=", StringComparison.OrdinalIgnoreCase))
                 {
@@ -106,14 +131,7 @@ namespace WorldEdit.Modules
                     return;
                 }
 
-                var inputType = args.Parameters[0];
-                if (!_maskParsers.TryGetValue(inputType, out var parser))
-                {
-                    player.SendErrorMessage($"Invalid mask type '{inputType}'.");
-                    return;
-                }
-
-                var result = parser(inputPattern);
+                var result = parser(parameters[2]);
                 if (!result.WasSuccessful)
                 {
                     player.SendErrorMessage(result.ErrorMessage);
