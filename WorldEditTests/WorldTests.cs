@@ -22,7 +22,7 @@ namespace WorldEditTests
             tiles[x, y] = new TTile {type = 1};
             var world = new World(new MockTileCollection {Tiles = tiles});
 
-            Assert.AreEqual(1, world[x, y].Type);
+            Assert.AreEqual(1, world.GetTile(x, y).Type);
         }
 
         [TestCase(20, 10)]
@@ -39,9 +39,8 @@ namespace WorldEditTests
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
 
-            world[x, y] = new Tile {Wall = 1};
-
-            Assert.AreEqual(1, world[x, y].Wall);
+            Assert.IsTrue(world.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreEqual(1, world.GetTile(x, y).Wall);
         }
 
         [TestCase(20, 10)]

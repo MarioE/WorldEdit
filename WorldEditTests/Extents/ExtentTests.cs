@@ -12,7 +12,7 @@ namespace WorldEditTests.Extents
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            Assert.AreEqual(extent[x, y], extent[new Vector(x, y)]);
+            Assert.AreEqual(extent.GetTile(x, y), extent.GetTile(new Vector(x, y)));
         }
 
         [TestCase(20, 10, -1, 1, false)]
@@ -30,9 +30,8 @@ namespace WorldEditTests.Extents
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            extent[new Vector(x, y)] = new Tile {Wall = 1};
-
-            Assert.AreEqual(1, extent[x, y].Wall);
+            Assert.IsTrue(extent.SetTile(new Vector(x, y), new Tile {Wall = 1}));
+            Assert.AreEqual(1, extent.GetTile(x, y).Wall);
         }
     }
 }

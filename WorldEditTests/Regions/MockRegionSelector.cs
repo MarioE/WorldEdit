@@ -4,9 +4,6 @@ namespace WorldEditTests.Regions
 {
     public class MockRegionSelector : RegionSelector
     {
-        protected override Region GetRegion()
-        {
-            return new NullRegion();
-        }
+        protected override Region GetRegion() => new NullRegion();
     }
 }

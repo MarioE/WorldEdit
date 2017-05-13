@@ -38,23 +38,14 @@ namespace WorldEdit.Regions
         public override Vector UpperBound { get; }
 
         /// <inheritdoc />
-        public override bool Contains(Vector position)
-        {
-            return LowerBound.X <= position.X && position.X < UpperBound.X &&
-                   LowerBound.Y <= position.Y && position.Y < UpperBound.Y;
-        }
+        public override bool Contains(Vector position) => LowerBound.X <= position.X && position.X < UpperBound.X &&
+                                                          LowerBound.Y <= position.Y && position.Y < UpperBound.Y;
 
         /// <inheritdoc />
-        public override Region Contract(Vector delta)
-        {
-            return Change(delta, false);
-        }
+        public override Region Contract(Vector delta) => Change(delta, false);
 
         /// <inheritdoc />
-        public override Region Expand(Vector delta)
-        {
-            return Change(delta, true);
-        }
+        public override Region Expand(Vector delta) => Change(delta, true);
 
         /// <inheritdoc />
         public override IEnumerator<Vector> GetEnumerator()
@@ -69,22 +60,14 @@ namespace WorldEdit.Regions
         }
 
         /// <inheritdoc />
-        public override Region Inset(int delta)
-        {
-            return Contract(delta * Vector.One).Contract(-delta * Vector.One);
-        }
+        public override Region Inset(int delta) => Contract(delta * Vector.One).Contract(-delta * Vector.One);
 
         /// <inheritdoc />
-        public override Region Outset(int delta)
-        {
-            return Expand(delta * Vector.One).Expand(-delta * Vector.One);
-        }
+        public override Region Outset(int delta) => Expand(delta * Vector.One).Expand(-delta * Vector.One);
 
         /// <inheritdoc />
-        public override Region Shift(Vector displacement)
-        {
-            return new RectangularRegion(Position1 + displacement, Position2 + displacement);
-        }
+        public override Region Shift(Vector displacement) =>
+            new RectangularRegion(Position1 + displacement, Position2 + displacement);
 
         private Region Change(Vector delta, bool isExpansion)
         {

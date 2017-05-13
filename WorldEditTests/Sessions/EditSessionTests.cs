@@ -26,7 +26,7 @@ namespace WorldEditTests.Sessions
 
             foreach (var position in region.Where(editSession.IsInBounds))
             {
-                Assert.IsTrue(template.Matches(editSession[position]));
+                Assert.IsTrue(template.Matches(editSession.GetTile(position)));
             }
         }
 
@@ -52,7 +52,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = tiles});
             var editSession = new EditSession(world, new NullMask(), -1);
 
-            Assert.AreEqual(1, editSession[x, y].Type);
+            Assert.AreEqual(1, editSession.GetTile(x, y).Type);
         }
 
         [TestCase(20, 10)]
@@ -69,13 +69,13 @@ namespace WorldEditTests.Sessions
         public void Redo(byte oldWall, byte newWall)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            world[0, 0] = new Tile {Wall = oldWall};
+            world.SetTile(0, 0, new Tile {Wall = oldWall});
             var editSession = new EditSession(world, new NullMask(), -1);
-            editSession[0, 0] = new Tile {Wall = newWall};
+            editSession.SetTile(0, 0, new Tile {Wall = newWall});
             editSession.Undo();
 
             Assert.AreEqual(1, editSession.Redo());
-            Assert.AreEqual(newWall, editSession[0, 0].Wall);
+            Assert.AreEqual(newWall, editSession.GetTile(0, 0).Wall);
         }
 
         [TestCase(0, 0)]
@@ -84,9 +84,8 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, new NullMask(), -1);
 
-            world[x, y] = new Tile {Wall = 1};
-
-            Assert.AreEqual(1, editSession[x, y].Wall);
+            Assert.IsTrue(world.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreEqual(1, editSession.GetTile(x, y).Wall);
         }
 
         [TestCase(1, 0, 0)]
@@ -96,12 +95,11 @@ namespace WorldEditTests.Sessions
             var editSession = new EditSession(world, new NullMask(), limit);
             for (var i = 0; i < limit; ++i)
             {
-                editSession[x, y] = new Tile();
+                editSession.SetTile(x, y, new Tile());
             }
 
-            editSession[x, y] = new Tile {Wall = 1};
-
-            Assert.AreNotEqual(1, editSession[x, y].Wall);
+            Assert.IsFalse(editSession.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreNotEqual(1, editSession.GetTile(x, y).Wall);
         }
 
         [TestCase(0, 0)]
@@ -110,9 +108,8 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, new TemplateMask(new Wall(1)), -1);
 
-            editSession[x, y] = new Tile {Wall = 1};
-
-            Assert.AreNotEqual(1, editSession[x, y].Wall);
+            Assert.IsFalse(editSession.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreNotEqual(1, editSession.GetTile(x, y).Wall);
         }
 
         [Test]
@@ -137,12 +134,12 @@ namespace WorldEditTests.Sessions
         public void Undo(byte oldWall, byte newWall)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            world[0, 0] = new Tile {Wall = oldWall};
+            world.SetTile(0, 0, new Tile {Wall = oldWall});
             var editSession = new EditSession(world, new NullMask(), -1);
-            editSession[0, 0] = new Tile {Wall = newWall};
+            editSession.SetTile(0, 0, new Tile {Wall = newWall});
 
             Assert.AreEqual(1, editSession.Undo());
-            Assert.AreEqual(oldWall, editSession[0, 0].Wall);
+            Assert.AreEqual(oldWall, editSession.GetTile(0, 0).Wall);
         }
 
         [TestCase(20, 10)]

@@ -327,8 +327,6 @@ namespace WorldEdit.Templates
             tile.Active = Type >= 0;
             tile.FrameX = FrameX;
             tile.FrameY = FrameY;
-            tile.HalfBlock = false;
-            tile.Slope = 0;
             tile.Type = (ushort)Math.Max(0, Type);
             return tile;
         }

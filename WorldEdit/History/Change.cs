@@ -12,32 +12,30 @@ namespace WorldEdit.History
         /// Redoes the change onto the specified extent.
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
+        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="extent" /> is <c>null</c>.</exception>
-        public void Redo(Extent extent)
-        {
+        public bool Redo(Extent extent) =>
             RedoImpl(extent ?? throw new ArgumentNullException(nameof(extent)));
-        }
 
         /// <summary>
         /// Undoes the change onto the specified extent.
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
+        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="extent" /> is <c>null</c>.</exception>
-        public void Undo(Extent extent)
-        {
+        public bool Undo(Extent extent) =>
             UndoImpl(extent ?? throw new ArgumentNullException(nameof(extent)));
-        }
 
         /// <summary>
-        /// Redoes the change onto the specified extent.
+        /// Redoes the change onto the specified extent. This method will -not- check for null.
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
-        protected abstract void RedoImpl(Extent extent);
+        protected abstract bool RedoImpl(Extent extent);
 
         /// <summary>
-        /// Undoes the change onto the specified extent.
+        /// Undoes the change onto the specified extent. This method will -not- check for null.
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
-        protected abstract void UndoImpl(Extent extent);
+        protected abstract bool UndoImpl(Extent extent);
     }
 }

@@ -40,13 +40,6 @@ namespace WorldEdit.Sessions
         /// <inheritdoc />
         public override Vector UpperBound => _extent.UpperBound;
 
-        /// <inheritdoc />
-        public override Tile this[int x, int y]
-        {
-            get => _extent[x, y];
-            set => _extent[x, y] = value;
-        }
-
         /// <summary>
         /// Applies the specified template to the tiles in the region.
         /// </summary>
@@ -67,28 +60,30 @@ namespace WorldEdit.Sessions
             var count = 0;
             foreach (var position in region.Where(IsInBounds))
             {
-                this[position] = template.Apply(this[position]);
-                ++count;
+                if (SetTile(position, template.Apply(GetTile(position))))
+                {
+                    ++count;
+                }
             }
             return count;
         }
+
+        /// <inheritdoc />
+        public override Tile GetTile(int x, int y) => _extent.GetTile(x, y);
 
         /// <summary>
         /// Redoes the edit session.
         /// </summary>
         /// <returns>The number of redone changes.</returns>
-        public int Redo()
-        {
-            return _changeSet.Redo(_world);
-        }
+        public int Redo() => _changeSet.Redo(_world);
+
+        /// <inheritdoc />
+        public override bool SetTile(int x, int y, Tile tile) => _extent.SetTile(x, y, tile);
 
         /// <summary>
         /// Undoes the edit session.
         /// </summary>
         /// <returns>The number of undone changes.</returns>
-        public int Undo()
-        {
-            return _changeSet.Undo(_world);
-        }
+        public int Undo() => _changeSet.Undo(_world);
     }
 }

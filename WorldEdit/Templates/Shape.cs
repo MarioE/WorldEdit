@@ -60,9 +60,6 @@ namespace WorldEdit.Templates
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile)
-        {
-            return Type < 0 ? tile.HalfBlock : Type == tile.Slope;
-        }
+        public bool Matches(Tile tile) => Type < 0 ? tile.HalfBlock : Type == tile.Slope;
     }
 }

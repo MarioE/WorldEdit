@@ -18,7 +18,7 @@ namespace WorldEditTests.History
 
             change.Redo(extent);
 
-            Assert.AreEqual(newWall, extent[x, y].Wall);
+            Assert.AreEqual(newWall, extent.GetTile(x, y).Wall);
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace WorldEditTests.History
 
             change.Undo(extent);
 
-            Assert.AreEqual(oldWall, extent[x, y].Wall);
+            Assert.AreEqual(oldWall, extent.GetTile(x, y).Wall);
         }
 
         [Test]

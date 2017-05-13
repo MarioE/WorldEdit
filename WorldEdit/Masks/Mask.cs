@@ -26,7 +26,7 @@ namespace WorldEdit.Masks
         }
 
         /// <summary>
-        /// Tests the specified extent at a position.
+        /// Tests the specified extent at a position. This method will -not- check for null or bounds.
         /// </summary>
         /// <param name="extent">The extent to test.</param>
         /// <param name="position">The position.</param>

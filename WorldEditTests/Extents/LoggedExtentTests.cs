@@ -31,7 +31,7 @@ namespace WorldEditTests.Extents
             tiles[x, y] = new TTile {type = 1};
             var loggedExtent = new LoggedExtent(new MockExtent {Tiles = tiles}, new ChangeSet());
 
-            Assert.AreEqual(1, loggedExtent[x, y].Type);
+            Assert.AreEqual(1, loggedExtent.GetTile(x, y).Type);
         }
 
         [TestCase(20, 10)]
@@ -49,8 +49,7 @@ namespace WorldEditTests.Extents
             var changeSet = new ChangeSet();
             var loggedExtent = new LoggedExtent(new MockExtent {Tiles = new ITile[20, 10]}, changeSet);
 
-            loggedExtent[x, y] = new Tile {Wall = 1};
-
+            Assert.IsTrue(loggedExtent.SetTile(x, y, new Tile {Wall = 1}));
             var changes = changeSet.ToList();
             Assert.AreEqual(1, changes.Count);
             var change = (TileChange)changes[0];

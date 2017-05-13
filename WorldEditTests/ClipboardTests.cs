@@ -17,7 +17,7 @@ namespace WorldEditTests
             {
                 for (var y = 0; y < 10; ++y)
                 {
-                    extent[x, y] = new Tile {Wall = (byte)(x * y)};
+                    extent.SetTile(x, y, new Tile {Wall = (byte)(x * y)});
                 }
             }
             var region = new RectangularRegion(Vector.Zero, new Vector(10, 5));
@@ -30,7 +30,7 @@ namespace WorldEditTests
             {
                 for (var y = 0; y < 5; ++y)
                 {
-                    Assert.AreEqual(x * y, clipboard[x, y].Wall);
+                    Assert.AreEqual(x * y, clipboard.GetTile(x, y).Wall);
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace WorldEditTests
             {
                 for (var y = 0; y < 10; ++y)
                 {
-                    extent[x, y] = new Tile {Wall = (byte)(x * y)};
+                    extent.SetTile(x, y, new Tile {Wall = (byte)(x * y)});
                 }
             }
             var region = new RectangularRegion(new Vector(19, 9), new Vector(29, 14));
@@ -64,7 +64,7 @@ namespace WorldEditTests
 
             Assert.AreEqual(Vector.Zero, clipboard.LowerBound);
             Assert.AreEqual(new Vector(11, 6), clipboard.UpperBound);
-            Assert.AreEqual(19 * 9, clipboard[0, 0].Wall);
+            Assert.AreEqual(19 * 9, clipboard.GetTile(0, 0).Wall);
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace WorldEditTests
             tiles[x, y] = new Tile {Type = 1};
             var clipboard = new Clipboard(tiles);
 
-            Assert.AreEqual(1, clipboard[x, y].Type);
+            Assert.AreEqual(1, clipboard.GetTile(x, y).Type);
         }
 
         [TestCase(20, 10)]
@@ -99,7 +99,7 @@ namespace WorldEditTests
             {
                 for (var y = 0; y < 5; ++y)
                 {
-                    clipboard[x, y] = new Tile {Wall = (byte)(x * y)};
+                    clipboard.SetTile(x, y, new Tile {Wall = (byte)(x * y)});
                 }
             }
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
@@ -110,7 +110,7 @@ namespace WorldEditTests
             {
                 for (var y = 0; y < 5; ++y)
                 {
-                    Assert.AreEqual(x * y, extent[x, y].Wall);
+                    Assert.AreEqual(x * y, extent.GetTile(x, y).Wall);
                 }
             }
         }
@@ -131,14 +131,14 @@ namespace WorldEditTests
             {
                 for (var y = 0; y < 5; ++y)
                 {
-                    clipboard[x, y] = new Tile {Wall = (byte)(x * y)};
+                    clipboard.SetTile(x, y, new Tile {Wall = (byte)(x * y)});
                 }
             }
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
             clipboard.PasteTo(extent, new Vector(19, 9));
 
-            Assert.AreEqual(0, extent[19, 9].Wall);
+            Assert.AreEqual(0, extent.GetTile(19, 9).Wall);
         }
 
         [TestCase(0, 0)]
@@ -146,9 +146,8 @@ namespace WorldEditTests
         {
             var clipboard = new Clipboard(new Tile?[20, 10]);
 
-            clipboard[x, y] = new Tile {Wall = 1};
-
-            Assert.AreEqual(1, clipboard[x, y].Wall);
+            Assert.IsTrue(clipboard.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreEqual(1, clipboard.GetTile(x, y).Wall);
         }
 
         [TestCase(20, 10)]

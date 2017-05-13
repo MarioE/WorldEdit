@@ -201,9 +201,6 @@ namespace WorldEdit.Templates
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile)
-        {
-            return tile.Wall == Type;
-        }
+        public bool Matches(Tile tile) => tile.Wall == Type;
     }
 }

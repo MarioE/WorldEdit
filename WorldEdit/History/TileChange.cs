@@ -36,21 +36,11 @@ namespace WorldEdit.History
         public Vector Position { get; }
 
         /// <inheritdoc />
-        protected override void RedoImpl(Extent extent)
-        {
-            if (extent.IsInBounds(Position))
-            {
-                extent[Position] = NewTile;
-            }
-        }
+        protected override bool RedoImpl(Extent extent) =>
+            extent.IsInBounds(Position) && extent.SetTile(Position, NewTile);
 
         /// <inheritdoc />
-        protected override void UndoImpl(Extent extent)
-        {
-            if (extent.IsInBounds(Position))
-            {
-                extent[Position] = OldTile;
-            }
-        }
+        protected override bool UndoImpl(Extent extent) =>
+            extent.IsInBounds(Position) && extent.SetTile(Position, OldTile);
     }
 }

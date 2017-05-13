@@ -103,11 +103,11 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var session = new Session(world, 1);
             var editSession = session.CreateEditSession(true);
-            editSession[0, 0] = new Tile {Wall = 1};
+            editSession.SetTile(0, 0, new Tile {Wall = 1});
             session.Undo();
 
             Assert.AreEqual(1, session.Redo());
-            Assert.AreEqual(1, world[0, 0].Wall);
+            Assert.AreEqual(1, world.GetTile(0, 0).Wall);
         }
 
         [Test]
@@ -152,10 +152,10 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var session = new Session(world, 1);
             var editSession = session.CreateEditSession(true);
-            editSession[0, 0] = new Tile {Wall = 1};
+            editSession.SetTile(0, 0, new Tile {Wall = 1});
 
             Assert.AreEqual(1, session.Undo());
-            Assert.AreNotEqual(1, world[0, 0].Wall);
+            Assert.AreNotEqual(1, world.GetTile(0, 0).Wall);
         }
 
         [Test]

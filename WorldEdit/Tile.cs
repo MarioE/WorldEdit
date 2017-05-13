@@ -199,18 +199,15 @@ namespace WorldEdit
         /// Converts the tile to the equivalent <see cref="ITile" /> instance.
         /// </summary>
         /// <returns>The <see cref="ITile" /> instance.</returns>
-        public ITile ToITile()
+        public ITile ToITile() => new Terraria.Tile
         {
-            return new Terraria.Tile
-            {
-                bTileHeader = BTileHeader,
-                frameX = FrameX,
-                frameY = FrameY,
-                liquid = Liquid,
-                sTileHeader = STileHeader,
-                type = Type,
-                wall = Wall
-            };
-        }
+            bTileHeader = BTileHeader,
+            frameX = FrameX,
+            frameY = FrameY,
+            liquid = Liquid,
+            sTileHeader = STileHeader,
+            type = Type,
+            wall = Wall
+        };
     }
 }

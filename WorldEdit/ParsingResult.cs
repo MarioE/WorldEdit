@@ -48,10 +48,7 @@ namespace WorldEdit
         /// <typeparam name="T">The type of value.</typeparam>
         /// <param name="value">The value.</param>
         /// <returns>The parsing result.</returns>
-        public static ParsingResult<T> From<T>(T value)
-        {
-            return new ParsingResult<T>(value);
-        }
+        public static ParsingResult<T> From<T>(T value) => new ParsingResult<T>(value);
 
         /// <summary>
         /// Creates a parsing result from the specified error message.
@@ -60,9 +57,7 @@ namespace WorldEdit
         /// <param name="errorMessage">The error message.</param>
         /// <returns>The parsing result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="errorMessage" /> is <c>null</c>.</exception>
-        public static ParsingResult<T> FromError<T>(string errorMessage)
-        {
-            return new ParsingResult<T>(errorMessage ?? throw new ArgumentNullException(nameof(errorMessage)));
-        }
+        public static ParsingResult<T> FromError<T>(string errorMessage) =>
+            new ParsingResult<T>(errorMessage ?? throw new ArgumentNullException(nameof(errorMessage)));
     }
 }

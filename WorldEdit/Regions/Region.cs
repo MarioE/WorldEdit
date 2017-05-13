@@ -71,9 +71,6 @@ namespace WorldEdit.Regions
         /// <returns>The resulting region.</returns>
         public abstract Region Shift(Vector displacement);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

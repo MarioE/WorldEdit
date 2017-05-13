@@ -26,10 +26,7 @@ namespace WorldEdit.History
         /// Returns an enumerator iterating through the changes.
         /// </summary>
         /// <returns>An enumerator for the change set.</returns>
-        public IEnumerator<Change> GetEnumerator()
-        {
-            return _changes.GetEnumerator();
-        }
+        public IEnumerator<Change> GetEnumerator() => _changes.GetEnumerator();
 
         /// <summary>
         /// Redoes the changes onto the specified extent. The changes will be redone in forwards order.
@@ -44,11 +41,15 @@ namespace WorldEdit.History
                 throw new ArgumentNullException(nameof(extent));
             }
 
+            var count = 0;
             foreach (var change in _changes)
             {
-                change.Redo(extent);
+                if (change.Redo(extent))
+                {
+                    ++count;
+                }
             }
-            return _changes.Count;
+            return count;
         }
 
         /// <summary>
@@ -64,16 +65,17 @@ namespace WorldEdit.History
                 throw new ArgumentNullException(nameof(extent));
             }
 
+            var count = 0;
             for (var i = _changes.Count - 1; i >= 0; --i)
             {
-                _changes[i].Undo(extent);
+                if (_changes[i].Undo(extent))
+                {
+                    ++count;
+                }
             }
-            return _changes.Count;
+            return count;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

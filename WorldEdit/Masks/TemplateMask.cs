@@ -22,9 +22,7 @@ namespace WorldEdit.Masks
         }
 
         /// <inheritdoc />
-        protected override bool TestImpl(Extent extent, Vector position)
-        {
-            return _template.Matches(extent[position]);
-        }
+        protected override bool TestImpl(Extent extent, Vector position) =>
+            _template.Matches(extent.GetTile(position));
     }
 }

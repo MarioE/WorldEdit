@@ -89,20 +89,11 @@ namespace WorldEdit.Templates
         /// Gets an enumerator iterating through the pattern entries.
         /// </summary>
         /// <returns>An enumerator for the pattern.</returns>
-        public IEnumerator<PatternEntry<T>> GetEnumerator()
-        {
-            return _entries.GetEnumerator();
-        }
+        public IEnumerator<PatternEntry<T>> GetEnumerator() => _entries.GetEnumerator();
 
         /// <inheritdoc />
-        public bool Matches(Tile tile)
-        {
-            return _entries.Any(e => e.Template.Matches(tile));
-        }
+        public bool Matches(Tile tile) => _entries.Any(e => e.Template.Matches(tile));
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

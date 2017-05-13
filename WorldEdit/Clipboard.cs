@@ -29,13 +29,6 @@ namespace WorldEdit
         /// <inheritdoc />
         public override Vector UpperBound => new Vector(_tiles.GetLength(0), _tiles.GetLength(1));
 
-        /// <inheritdoc />
-        public override Tile this[int x, int y]
-        {
-            get => _tiles[x, y] ?? new Tile();
-            set => _tiles[x, y] = value;
-        }
-
         /// <summary>
         /// Copies a clipboard from the specified extent and region. The region bounds will be used when copying.
         /// </summary>
@@ -60,10 +53,13 @@ namespace WorldEdit
             foreach (var position in region.Where(extent.IsInBounds))
             {
                 var offsetPosition = position - region.LowerBound;
-                clipboard[offsetPosition] = extent[position];
+                clipboard.SetTile(offsetPosition, extent.GetTile(position));
             }
             return clipboard;
         }
+
+        /// <inheritdoc />
+        public override Tile GetTile(int x, int y) => _tiles[x, y] ?? new Tile();
 
         /// <summary>
         /// Pastes the clipboard to the specified extent and position. Tiles that are <c>null</c> will be ignored.
@@ -86,11 +82,18 @@ namespace WorldEdit
                         var offsetPosition = new Vector(x, y) + position;
                         if (extent.IsInBounds(offsetPosition))
                         {
-                            extent[offsetPosition] = this[x, y];
+                            extent.SetTile(x, y, _tiles[x, y].Value);
                         }
                     }
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public override bool SetTile(int x, int y, Tile tile)
+        {
+            _tiles[x, y] = tile;
+            return true;
         }
     }
 }

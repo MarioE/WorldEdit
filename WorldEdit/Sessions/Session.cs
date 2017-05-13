@@ -122,14 +122,13 @@ namespace WorldEdit.Sessions
         /// Redoes an edit session.
         /// </summary>
         /// <returns>The number of redone changes.</returns>
-        /// <exception cref="InvalidOperationException"><see cref="CanRedo" /> is <c>false</c>.</exception>
+        /// <exception cref="InvalidOperationException">No edit session can be redone.</exception>
         public int Redo()
         {
             if (!CanRedo)
             {
                 throw new InvalidOperationException("Cannot redo an edit session.");
             }
-
             return _history[_historyIndex++].Redo();
         }
 
@@ -137,14 +136,13 @@ namespace WorldEdit.Sessions
         /// Undoes an edit session.
         /// </summary>
         /// <returns>The number of undone changes.</returns>
-        /// <exception cref="InvalidOperationException"><see cref="CanUndo" /> is <c>false</c>.</exception>
+        /// <exception cref="InvalidOperationException">No edit session can be undone.</exception>
         public int Undo()
         {
             if (!CanUndo)
             {
                 throw new InvalidOperationException("Cannot undo an edit session.");
             }
-
             return _history[--_historyIndex].Undo();
         }
     }

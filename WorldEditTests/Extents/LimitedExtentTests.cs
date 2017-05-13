@@ -23,7 +23,7 @@ namespace WorldEditTests.Extents
             tiles[x, y] = new TTile {type = 1};
             var limitedExtent = new LimitedExtent(new MockExtent {Tiles = tiles}, -1);
 
-            Assert.AreEqual(1, limitedExtent[x, y].Type);
+            Assert.AreEqual(1, limitedExtent.GetTile(x, y).Type);
         }
 
         [TestCase(20, 10)]
@@ -40,9 +40,8 @@ namespace WorldEditTests.Extents
         {
             var limitedExtent = new LimitedExtent(new MockExtent {Tiles = new ITile[20, 10]}, -1);
 
-            limitedExtent[x, y] = new Tile {Wall = 1};
-
-            Assert.AreEqual(1, limitedExtent[x, y].Wall);
+            Assert.IsTrue(limitedExtent.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreEqual(1, limitedExtent.GetTile(x, y).Wall);
         }
 
         [TestCase(1, 0, 0)]
@@ -51,12 +50,11 @@ namespace WorldEditTests.Extents
             var limitedExtent = new LimitedExtent(new MockExtent {Tiles = new ITile[20, 10]}, 1);
             for (var i = 0; i < limit; ++i)
             {
-                limitedExtent[0, 0] = new Tile();
+                limitedExtent.SetTile(0, 0, new Tile());
             }
 
-            limitedExtent[x, y] = new Tile {Wall = 1};
-
-            Assert.AreNotEqual(1, limitedExtent[x, y].Wall);
+            Assert.IsFalse(limitedExtent.SetTile(x, y, new Tile {Wall = 1}));
+            Assert.AreNotEqual(1, limitedExtent.GetTile(x, y).Wall);
         }
 
         [TestCase(20, 10)]

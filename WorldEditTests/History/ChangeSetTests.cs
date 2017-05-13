@@ -43,7 +43,7 @@ namespace WorldEditTests.History
             };
 
             Assert.AreEqual(2, changeSet.Redo(extent));
-            Assert.AreEqual(thirdWall, extent[0, 0].Wall);
+            Assert.AreEqual(thirdWall, extent.GetTile(0, 0).Wall);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace WorldEditTests.History
             };
 
             Assert.AreEqual(2, changeSet.Undo(extent));
-            Assert.AreEqual(firstWall, extent[0, 0].Wall);
+            Assert.AreEqual(firstWall, extent.GetTile(0, 0).Wall);
         }
 
         [Test]

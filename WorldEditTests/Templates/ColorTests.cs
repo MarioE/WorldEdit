@@ -18,7 +18,7 @@ namespace WorldEditTests.Templates
 
             Assert.AreEqual(type, tile.Color);
         }
-        
+
         [TestCase(1)]
         public void GetType(byte type)
         {

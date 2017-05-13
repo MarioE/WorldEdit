@@ -6,9 +6,6 @@ namespace WorldEditTests.Masks
 {
     public class MockMask : Mask
     {
-        protected override bool TestImpl(Extent extent, Vector position)
-        {
-            return true;
-        }
+        protected override bool TestImpl(Extent extent, Vector position) => true;
     }
 }

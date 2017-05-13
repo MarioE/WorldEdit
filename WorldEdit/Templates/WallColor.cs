@@ -48,7 +48,7 @@ namespace WorldEdit.Templates
         {
             Type = type;
         }
-        
+
         /// <summary>
         /// Gets the type.
         /// </summary>
@@ -84,9 +84,6 @@ namespace WorldEdit.Templates
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile)
-        {
-            return tile.WallColor == Type;
-        }
+        public bool Matches(Tile tile) => tile.WallColor == Type;
     }
 }

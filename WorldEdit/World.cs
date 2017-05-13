@@ -28,10 +28,13 @@ namespace WorldEdit
         public override Vector UpperBound => new Vector(_tiles.Width, _tiles.Height);
 
         /// <inheritdoc />
-        public override Tile this[int x, int y]
+        public override Tile GetTile(int x, int y) => new Tile(_tiles[x, y]);
+
+        /// <inheritdoc />
+        public override bool SetTile(int x, int y, Tile tile)
         {
-            get => new Tile(_tiles[x, y]);
-            set => _tiles[x, y] = value.ToITile();
+            _tiles[x, y] = tile.ToITile();
+            return true;
         }
     }
 }

@@ -32,7 +32,7 @@ namespace WorldEditTests.Masks
             var extent = new MockExtent {Tiles = new ITile[extentWidth, extentHeight]};
             var template = new Block(1);
             var mask = new TemplateMask(template);
-            extent[x, y] = template.Apply(extent[x, y]);
+            extent.SetTile(x, y, template.Apply(extent.GetTile(x, y)));
 
             Assert.IsTrue(mask.Test(extent, new Vector(x, y)));
         }

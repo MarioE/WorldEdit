@@ -31,7 +31,7 @@ namespace WorldEditTests.Extents
             tiles[x, y] = new TTile {type = 1};
             var maskedExtent = new MaskedExtent(new MockExtent {Tiles = tiles}, new NullMask());
 
-            Assert.AreEqual(1, maskedExtent[x, y].Type);
+            Assert.AreEqual(1, maskedExtent.GetTile(x, y).Type);
         }
 
         [TestCase(20, 10)]
@@ -44,24 +44,25 @@ namespace WorldEditTests.Extents
         }
 
         [TestCase(0, 0)]
-        public void SetTileIntInt(int x, int y)
+        public void SetTileIntInt_MaskObeyed_Fail(int x, int y)
         {
             var maskedExtent = new MaskedExtent(new MockExtent {Tiles = new ITile[20, 10]},
                 new TemplateMask(new Wall(1)));
-            maskedExtent[x, y] = new Tile {Wall = 2};
 
-            Assert.AreNotEqual(2, maskedExtent[x, y].Wall);
+            Assert.IsFalse(maskedExtent.SetTile(x, y, new Tile {Wall = 2}));
+            Assert.AreNotEqual(2, maskedExtent.GetTile(x, y).Wall);
         }
 
         [TestCase(0, 0)]
-        public void SetTileIntInt_MaskObeyed(int x, int y)
+        public void SetTileIntInt_MaskObeyed_Pass(int x, int y)
         {
             var tiles = new ITile[20, 10];
             tiles[x, y] = new TTile {wall = 1};
             var maskedExtent = new MaskedExtent(new MockExtent {Tiles = tiles}, new TemplateMask(new Wall(1)));
-            maskedExtent[x, y] = new Tile {Wall = 2};
 
-            Assert.AreEqual(2, maskedExtent[x, y].Wall);
+
+            Assert.IsTrue(maskedExtent.SetTile(x, y, new Tile {Wall = 2}));
+            Assert.AreEqual(2, maskedExtent.GetTile(x, y).Wall);
         }
 
         [TestCase(20, 10)]

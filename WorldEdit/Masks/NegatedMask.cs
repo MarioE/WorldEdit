@@ -21,9 +21,6 @@ namespace WorldEdit.Masks
         }
 
         /// <inheritdoc />
-        protected override bool TestImpl(Extent extent, Vector position)
-        {
-            return !_mask.Test(extent, position);
-        }
+        protected override bool TestImpl(Extent extent, Vector position) => !_mask.Test(extent, position);
     }
 }

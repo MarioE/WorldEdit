@@ -32,16 +32,10 @@ namespace WorldEdit.Extents
         public override Vector UpperBound => _extent.UpperBound;
 
         /// <inheritdoc />
-        public override Tile this[int x, int y]
-        {
-            get => _extent[x, y];
-            set
-            {
-                if (_mask.Test(_extent, new Vector(x, y)))
-                {
-                    _extent[x, y] = value;
-                }
-            }
-        }
+        public override Tile GetTile(int x, int y) => _extent.GetTile(x, y);
+
+        /// <inheritdoc />
+        public override bool SetTile(int x, int y, Tile tile) =>
+            _mask.Test(_extent, new Vector(x, y)) && _extent.SetTile(x, y, tile);
     }
 }

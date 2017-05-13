@@ -14,22 +14,13 @@ namespace WorldEdit.Regions
         public override Vector UpperBound => Vector.Zero;
 
         /// <inheritdoc />
-        public override bool Contains(Vector position)
-        {
-            return false;
-        }
+        public override bool Contains(Vector position) => false;
 
         /// <inheritdoc />
-        public override Region Contract(Vector delta)
-        {
-            return this;
-        }
+        public override Region Contract(Vector delta) => this;
 
         /// <inheritdoc />
-        public override Region Expand(Vector delta)
-        {
-            return this;
-        }
+        public override Region Expand(Vector delta) => this;
 
         /// <inheritdoc />
         public override IEnumerator<Vector> GetEnumerator()
@@ -38,21 +29,12 @@ namespace WorldEdit.Regions
         }
 
         /// <inheritdoc />
-        public override Region Inset(int delta)
-        {
-            return this;
-        }
+        public override Region Inset(int delta) => this;
 
         /// <inheritdoc />
-        public override Region Outset(int delta)
-        {
-            return this;
-        }
+        public override Region Outset(int delta) => this;
 
         /// <inheritdoc />
-        public override Region Shift(Vector displacement)
-        {
-            return this;
-        }
+        public override Region Shift(Vector displacement) => this;
     }
 }

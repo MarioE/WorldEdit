@@ -11,10 +11,12 @@ namespace WorldEditTests
         public override Vector LowerBound => Vector.Zero;
         public override Vector UpperBound => new Vector(Tiles.GetLength(0), Tiles.GetLength(1));
 
-        public override Tile this[int x, int y]
+        public override Tile GetTile(int x, int y) => new Tile(Tiles[x, y]);
+
+        public override bool SetTile(int x, int y, Tile tile)
         {
-            get => new Tile(Tiles[x, y]);
-            set => Tiles[x, y] = value.ToITile();
+            Tiles[x, y] = tile.ToITile();
+            return true;
         }
     }
 }
