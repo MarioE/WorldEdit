@@ -16,7 +16,7 @@ namespace WorldEditTests.Templates
         [TestCase("")]
         [TestCase("ston")]
         [TestCase("*stone")]
-        [TestCase("6*stone,4")]
+        [TestCase("6*stone,4:")]
         public void Parse_InvalidPattern_ThrowsFormatException(string s)
         {
             var result = Pattern<Block>.Parse(s);

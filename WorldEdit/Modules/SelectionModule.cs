@@ -78,6 +78,22 @@ namespace WorldEdit.Modules
                 "Outsets your selection. This is equivalent to expanding on all sides."
             };
 
+            var pos1 = Plugin.RegisterCommand("/pos1", Pos1Pos2, "worldedit.selection.pos1");
+            pos1.HelpDesc = new[]
+            {
+                "Syntax: //pos1 <x> <y>",
+                "",
+                "Selects your primary position."
+            };
+
+            var pos2 = Plugin.RegisterCommand("/pos2", Pos1Pos2, "worldedit.selection.pos2");
+            pos2.HelpDesc = new[]
+            {
+                "Syntax: //pos2 <x> <y>",
+                "",
+                "Selects your secondary position."
+            };
+
             var select = Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
             select.HelpDesc = new[]
             {
@@ -108,12 +124,12 @@ namespace WorldEdit.Modules
 
         private void ContractExpandShift(CommandArgs args)
         {
-            var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
+            var command = args.GetCommand();
             var parameters = args.Parameters;
             var player = args.Player;
             if (parameters.Count != 2)
             {
-                player.SendErrorMessage($"Syntax: //{command} <direction> <distance>");
+                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <direction> <distance>");
                 return;
             }
 
@@ -132,20 +148,35 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            session.Selection = (Region)typeof(Region).GetMethod(command.ToTitleCase())
-                .Invoke(session.Selection, new object[] {distance * direction});
-            player.SendSuccessMessage(
-                $"{command.ToTitleCase()}ed selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
+            var selection = session.Selection;
+            if (command.Equals("contract", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = selection.Contract(distance * direction);
+                player.SendSuccessMessage(
+                    $"Contracted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
+            }
+            else if (command.Equals("shift", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = selection.Shift(distance * direction);
+                player.SendSuccessMessage(
+                    $"Shifted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
+            }
+            else if (command.Equals("expand", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = selection.Expand(distance * direction);
+                player.SendSuccessMessage(
+                    $"Expanded selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
+            }
         }
 
         private void InsetOutset(CommandArgs args)
         {
-            var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
+            var command = args.GetCommand();
             var parameters = args.Parameters;
             var player = args.Player;
             if (parameters.Count != 1)
             {
-                player.SendErrorMessage($"Syntax: //{command} <distance>");
+                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <distance>");
                 return;
             }
 
@@ -157,9 +188,17 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            session.Selection = (Region)typeof(Region).GetMethod(command.ToTitleCase())
-                .Invoke(session.Selection, new object[] {distance});
-            player.SendSuccessMessage($"{command.ToTitleCase()} selection by {distance} tiles.");
+            var selection = session.Selection;
+            if (command.Equals("inset", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = selection.Inset(distance);
+                player.SendSuccessMessage($"Inset selection by {distance} tiles.");
+            }
+            else if (command.Equals("outset", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = selection.Outset(distance);
+                player.SendSuccessMessage($"Outset selection by {distance} tiles.");
+            }
         }
 
         private void OnTileEdit(object sender, GetDataHandlers.TileEditEventArgs args)
@@ -179,16 +218,56 @@ namespace WorldEdit.Modules
             if (action == GetDataHandlers.EditAction.PlaceWire)
             {
                 session.Selection = regionSelector.SelectPrimary(position);
-                player.SendSuccessMessage($"Set primary position at {position}.");
+                player.SendSuccessMessage($"Set primary position to {position}.");
                 args.Handled = true;
                 player.SendTileSquare(x, y, 1);
             }
             else if (action == GetDataHandlers.EditAction.PlaceWire2)
             {
                 session.Selection = regionSelector.SelectSecondary(position);
-                player.SendSuccessMessage($"Set secondary position at {position}.");
+                player.SendSuccessMessage($"Set secondary position to {position}.");
                 args.Handled = true;
                 player.SendTileSquare(x, y, 1);
+            }
+        }
+
+        private void Pos1Pos2(CommandArgs args)
+        {
+            var command = args.GetCommand();
+            var parameters = args.Parameters;
+            var player = args.Player;
+            if (parameters.Count != 2)
+            {
+                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <x> <y>");
+                return;
+            }
+
+            var inputX = parameters[0];
+            if (!int.TryParse(inputX, out var x))
+            {
+                player.SendErrorMessage($"Invalid X coordinate '{inputX}'.");
+                return;
+            }
+
+            var inputY = parameters[1];
+            if (!int.TryParse(inputY, out var y))
+            {
+                player.SendErrorMessage($"Invalid Y coordinate '{inputY}'.");
+                return;
+            }
+
+            var session = Plugin.GetOrCreateSession(player);
+            var regionSelector = session.RegionSelector;
+            var position = new Vector(x, y);
+            if (command.Equals("pos1", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = regionSelector.SelectPrimary(position);
+                player.SendSuccessMessage($"Set primary position to {position}.");
+            }
+            else if (command.Equals("pos2", StringComparison.OrdinalIgnoreCase))
+            {
+                session.Selection = regionSelector.SelectSecondary(position);
+                player.SendSuccessMessage($"Set secondary position to {position}.");
             }
         }
 

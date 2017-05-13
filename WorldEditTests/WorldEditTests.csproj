@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClipboardTests.cs" />
-    <Compile Include="ExtensionsTests.cs" />
     <Compile Include="Extents\ExtentTests.cs" />
     <Compile Include="Extents\LimitedExtentTests.cs" />
     <Compile Include="Extents\LoggedExtentTests.cs" />

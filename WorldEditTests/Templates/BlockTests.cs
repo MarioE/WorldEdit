@@ -170,6 +170,8 @@ namespace WorldEditTests.Templates
 
         [TestCase("STONE", 1, -1, -1)]
         [TestCase("spooky platform", 19, -1, 288)]
+        [TestCase("67", 67, -1, -1)]
+        [TestCase("67:7:14", 67, 7, 14)]
         public void Parse(string s, int expectedType, short expectedFrameX, short expectedFrameY)
         {
             var result = Block.Parse(s);

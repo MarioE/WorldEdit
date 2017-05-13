@@ -1,6 +1,5 @@
 ﻿using Terraria;
 using TShockAPI;
-using WorldEdit.Sessions;
 
 namespace WorldEdit.Modules
 {
@@ -33,7 +32,7 @@ namespace WorldEdit.Modules
                 "Clears your history."
             };
 
-            var redo = Plugin.RegisterCommand("/redo", RedoUndo, "worldedit.history.redo");
+            var redo = Plugin.RegisterCommand("/redo", Redo, "worldedit.history.redo");
             redo.HelpDesc = new[]
             {
                 "Syntax: //redo",
@@ -41,7 +40,7 @@ namespace WorldEdit.Modules
                 "Redoes your most recent action."
             };
 
-            var undo = Plugin.RegisterCommand("/undo", RedoUndo, "worldedit.history.undo");
+            var undo = Plugin.RegisterCommand("/undo", Undo, "worldedit.history.undo");
             undo.HelpDesc = new[]
             {
                 "Syntax: //undo",
@@ -58,21 +57,34 @@ namespace WorldEdit.Modules
             player.SendSuccessMessage("Cleared history.");
         }
 
-        private void RedoUndo(CommandArgs args)
+        private void Redo(CommandArgs args)
         {
-            var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            // ReSharper disable once PossibleNullReferenceException
-            if (!(bool)typeof(Session).GetProperty($"Can{command.ToTitleCase()}").GetValue(session))
+            if (!session.CanRedo)
             {
-                player.SendErrorMessage($"Cannot {command} anything.");
+                player.SendErrorMessage("Cannot redo anything.");
                 return;
             }
 
-            var count = (int)typeof(Session).GetMethod(command.ToTitleCase()).Invoke(session, new object[0]);
+            var count = session.Redo();
             Netplay.ResetSections();
-            player.SendSuccessMessage($"{command.ToTitleCase()}ne {count} changes.");
+            player.SendSuccessMessage($"Redone {count} changes.");
+        }
+
+        private void Undo(CommandArgs args)
+        {
+            var player = args.Player;
+            var session = Plugin.GetOrCreateSession(player);
+            if (!session.CanUndo)
+            {
+                player.SendErrorMessage("Cannot undo anything.");
+                return;
+            }
+
+            var count = session.Undo();
+            Netplay.ResetSections();
+            player.SendSuccessMessage($"Undone {count} changes.");
         }
     }
 }

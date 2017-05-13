@@ -39,6 +39,7 @@ namespace WorldEditTests.Templates
 
         [TestCase("AIR", 0)]
         [TestCase("stone", 1)]
+        [TestCase("4", 4)]
         public void Parse(string s, byte expectedType)
         {
             var result = Wall.Parse(s);

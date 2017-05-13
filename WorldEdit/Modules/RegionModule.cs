@@ -87,8 +87,8 @@ namespace WorldEdit.Modules
             var player = args.Player;
             if (args.Parameters.Count != 2)
             {
-                var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
-                player.SendErrorMessage($"Syntax: //{command} <from-pattern> <to-pattern>");
+                var command = args.GetCommand();
+                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <from-pattern> <to-pattern>");
                 return;
             }
 
@@ -118,8 +118,8 @@ namespace WorldEdit.Modules
             var player = args.Player;
             if (args.Parameters.Count != 1)
             {
-                var command = args.Message.Split(' ')[0].Substring(1).ToLowerInvariant();
-                player.SendErrorMessage($"Syntax: //{command} <pattern>");
+                var command = args.GetCommand();
+                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <pattern>");
                 return;
             }
 
