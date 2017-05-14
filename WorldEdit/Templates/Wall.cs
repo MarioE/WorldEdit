@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace WorldEdit.Templates
 {
@@ -189,8 +188,7 @@ namespace WorldEdit.Templates
                 return ParsingResult.From(new Wall(type));
             }
 
-            var field = typeof(Wall).GetField(s.Replace(" ", ""),
-                BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
+            var field = typeof(Wall).GetField(s.ToPascalCase());
             return field != null
                 ? ParsingResult.From((Wall)field.GetValue(null))
                 : ParsingResult.FromError<Wall>($"Invalid wall '{s}'.");

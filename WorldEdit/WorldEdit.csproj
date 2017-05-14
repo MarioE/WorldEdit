@@ -93,9 +93,9 @@
     <Compile Include="Templates\Pattern.cs" />
     <Compile Include="Templates\PatternEntry.cs" />
     <Compile Include="Templates\Shape.cs" />
+    <Compile Include="Templates\State.cs" />
     <Compile Include="Templates\Wall.cs" />
     <Compile Include="Templates\WallColor.cs" />
-    <Compile Include="Templates\Wire.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="World.cs" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace WorldEdit.Templates
 {
@@ -313,8 +312,7 @@ namespace WorldEdit.Templates
                 return ParsingResult.From(new Block(type, frameX, frameY));
             }
 
-            var field = typeof(Block).GetField(s.Replace(" ", ""),
-                BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
+            var field = typeof(Block).GetField(s.ToPascalCase());
             return field != null
                 ? ParsingResult.From((Block)field.GetValue(null))
                 : ParsingResult.FromError<Block>($"Invalid block '{s}'.");

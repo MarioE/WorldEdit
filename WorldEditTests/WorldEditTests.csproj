@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClipboardTests.cs" />
+    <Compile Include="ExtensionsTests.cs" />
     <Compile Include="Extents\ExtentTests.cs" />
     <Compile Include="Extents\LimitedExtentTests.cs" />
     <Compile Include="Extents\LoggedExtentTests.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="Templates\ColorTests.cs" />
     <Compile Include="Templates\WallTests.cs" />
     <Compile Include="Templates\ShapeTests.cs" />
-    <Compile Include="Templates\WireTests.cs" />
+    <Compile Include="Templates\StateTests.cs" />
     <Compile Include="TileTests.cs" />
     <Compile Include="VectorTests.cs" />
   </ItemGroup>

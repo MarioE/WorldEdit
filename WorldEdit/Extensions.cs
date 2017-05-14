@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using TShockAPI;
 
 namespace WorldEdit
@@ -44,6 +45,38 @@ namespace WorldEdit
             {
                 player.GiveItem(type, "", tplayer.width, tplayer.height, stack, prefix);
             }
+        }
+
+        /// <summary>
+        /// Removes the whitespace from the string.
+        /// </summary>
+        /// <param name="s">The string to convert.</param>
+        /// <returns>The resulting string.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
+        public static string RemoveWhitespace(this string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+
+            return string.Join("", s.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        /// <summary>
+        /// Converts a string to pascal case.
+        /// </summary>
+        /// <param name="s">The string to convert.</param>
+        /// <returns>The resulting string.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
+        public static string ToPascalCase(this string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+
+            return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLowerInvariant()).RemoveWhitespace();
         }
     }
 }

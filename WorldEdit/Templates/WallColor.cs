@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace WorldEdit.Templates
 {
@@ -67,8 +66,7 @@ namespace WorldEdit.Templates
                 throw new ArgumentNullException(nameof(s));
             }
 
-            var field = typeof(WallColor).GetField(s.Replace(" ", ""),
-                BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
+            var field = typeof(WallColor).GetField(s.ToPascalCase());
             if (field == null)
             {
                 return ParsingResult.FromError<WallColor>($"Invalid wall color '{s}'.");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TShockAPI;
 using WorldEdit.Masks;
 using WorldEdit.Templates;
@@ -54,8 +55,10 @@ namespace WorldEdit.Modules
                 "Sets your mask. Masks are used to restrict what tiles will be affected. Valid masks are:",
                 "- #none - No restrictions.",
                 "- #selection - Restricts to your current selection.",
-                "- <type> <==|!=> <pattern> - Restricts to tiles with certain properties.",
-                "  type can be block, color, shape, wall, and wallcolor."
+                "- <state> - Restricts to tiles with certain states.",
+                "- <property> == <pattern> - Restricts to tiles with certain properties.",
+                "- <property> != <pattern> - Restricts to tiles without certain properties.",
+                "  property can be block, color, shape, wall, and wallcolor."
             };
         }
 
@@ -85,7 +88,7 @@ namespace WorldEdit.Modules
         {
             var parameters = args.Parameters;
             var player = args.Player;
-            if (parameters.Count != 1 && parameters.Count != 3)
+            if (parameters.Count == 0 || parameters.Count == 2)
             {
                 player.SendErrorMessage("Syntax: //mask <mask>");
                 return;
@@ -106,8 +109,14 @@ namespace WorldEdit.Modules
                 }
                 else
                 {
-                    player.SendErrorMessage($"Invalid mask '{inputMask}'.");
-                    return;
+                    var result = State.Parse(inputMask);
+                    if (!result.WasSuccessful)
+                    {
+                        player.SendErrorMessage(result.ErrorMessage);
+                        return;
+                    }
+
+                    mask = new TemplateMask(result.Value);
                 }
             }
             else
@@ -131,7 +140,7 @@ namespace WorldEdit.Modules
                     return;
                 }
 
-                var result = parser(parameters[2]);
+                var result = parser(string.Join(" ", parameters.Skip(2)));
                 if (!result.WasSuccessful)
                 {
                     player.SendErrorMessage(result.ErrorMessage);

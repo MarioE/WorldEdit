@@ -44,7 +44,7 @@ namespace WorldEdit.Modules
             var replace = Plugin.RegisterCommand("/replace", Replace<Block>, "worldedit.region.replace");
             replace.HelpDesc = new[]
             {
-                "Syntax: //replace <from-pattern> <to-pattern>",
+                "Syntax: //replace <from-pattern>|<to-pattern>",
                 "",
                 "Replaces blocks in your selection that match the from pattern."
             };
@@ -52,7 +52,7 @@ namespace WorldEdit.Modules
             var replaceWall = Plugin.RegisterCommand("/replacewall", Replace<Wall>, "worldedit.region.replacewall");
             replaceWall.HelpDesc = new[]
             {
-                "Syntax: //replacewall <from-pattern> <to-pattern>",
+                "Syntax: //replacewall <from-pattern>|<to-pattern>",
                 "",
                 "Replaces walls in your selection that match the from pattern."
             };
@@ -63,6 +63,14 @@ namespace WorldEdit.Modules
                 "Syntax: //set <pattern>",
                 "",
                 "Sets the blocks in your selection."
+            };
+
+            var setState = Plugin.RegisterCommand("/setstate", Set<State>, "worldedit.region.setstate");
+            setState.HelpDesc = new[]
+            {
+                "Syntax: //setstate <pattern>",
+                "",
+                "Sets the tile states in your selection."
             };
 
             var setWall = Plugin.RegisterCommand("/setwall", Set<Wall>, "worldedit.region.setwall");
@@ -84,22 +92,24 @@ namespace WorldEdit.Modules
 
         private void Replace<T>(CommandArgs args) where T : class, ITemplate
         {
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 2)
+            var input = string.Join("", parameters).Split('|');
+            if (parameters.Count < 1 || input.Length != 2)
             {
                 var command = args.GetCommand();
-                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <from-pattern> <to-pattern>");
+                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <from-pattern>|<to-pattern>");
                 return;
             }
 
-            var fromResult = Pattern<T>.Parse(args.Parameters[0]);
+            var fromResult = Pattern<T>.Parse(input[0]);
             if (!fromResult.WasSuccessful)
             {
                 player.SendErrorMessage(fromResult.ErrorMessage);
                 return;
             }
 
-            var toResult = Pattern<T>.Parse(args.Parameters[1]);
+            var toResult = Pattern<T>.Parse(input[1]);
             if (!toResult.WasSuccessful)
             {
                 player.SendErrorMessage(toResult.ErrorMessage);
@@ -115,15 +125,16 @@ namespace WorldEdit.Modules
 
         private void Set<T>(CommandArgs args) where T : class, ITemplate
         {
+            var parameters = args.Parameters;
             var player = args.Player;
-            if (args.Parameters.Count != 1)
+            if (parameters.Count < 1)
             {
                 var command = args.GetCommand();
                 player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <pattern>");
                 return;
             }
 
-            var result = Pattern<T>.Parse(args.Parameters[0]);
+            var result = Pattern<T>.Parse(string.Join(" ", parameters));
             if (!result.WasSuccessful)
             {
                 player.SendErrorMessage(result.ErrorMessage);
