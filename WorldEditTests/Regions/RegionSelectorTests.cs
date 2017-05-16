@@ -22,14 +22,14 @@ namespace WorldEditTests.Regions
         }
 
         [Test]
-        public void GetSetSelectorFunction()
+        public void GetSetRegionType()
         {
             var selector = new RegionSelector();
-            Func<Vector, Vector, Region> selectorFunction = (v1, v2) => new NullRegion();
+            var regionType = typeof(RectangularRegion);
 
-            selector.SelectorFunction = selectorFunction;
+            selector.RegionType = regionType;
 
-            Assert.AreEqual(selectorFunction, selector.SelectorFunction);
+            Assert.AreEqual(regionType, selector.RegionType);
         }
 
         [TestCase(1, 5)]
@@ -77,11 +77,19 @@ namespace WorldEditTests.Regions
         }
 
         [Test]
-        public void SetSelectorFunction_NullValue_ThrowsArgumentNullException()
+        public void SetRegionType_NullValue_ThrowsArgumentNullException()
         {
             var selector = new RegionSelector();
 
-            Assert.Throws<ArgumentNullException>(() => selector.SelectorFunction = null);
+            Assert.Throws<ArgumentNullException>(() => selector.RegionType = null);
+        }
+
+        [Test]
+        public void SetRegionType_ValueDoesNotInheritFromRegion_ThrowsArgumentOutOfRangeException()
+        {
+            var selector = new RegionSelector();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => selector.RegionType = typeof(int));
         }
     }
 }

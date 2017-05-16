@@ -13,7 +13,7 @@ namespace WorldEdit.Schematics
         private const uint Version = 192;
         
         /// <inheritdoc />
-        public override Clipboard Read(Stream stream)
+        public override Result<Clipboard> Read(Stream stream)
         {
             if (stream == null)
             {
@@ -43,9 +43,9 @@ namespace WorldEdit.Schematics
                         {
                             if (++y >= height)
                             {
-                                throw new SchematicFormatException("Stream is malformed.");
+                                return Result.FromError<Clipboard>("RLE was too long.");
                             }
-
+                            
                             tiles[x, y] = tile;
                         }
                     }
@@ -60,14 +60,14 @@ namespace WorldEdit.Schematics
                 var height2 = reader.ReadInt32();
                 if (name != name2 || version != version2 || width != width2 || height != height2)
                 {
-                    throw new SchematicFormatException("Stream is malformed.");
+                    return Result.FromError<Clipboard>("Verification failed.");
                 }
 
-                return new Clipboard(tiles);
+                return Result.From(new Clipboard(tiles));
             }
             catch (Exception e) when (e is EndOfStreamException || e is IOException)
             {
-                throw new SchematicFormatException("Stream is malformed.", e);
+                return Result.FromError<Clipboard>("Stream is malformed.");
             }
             finally
             {

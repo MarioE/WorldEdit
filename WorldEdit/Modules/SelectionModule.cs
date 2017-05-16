@@ -19,13 +19,12 @@ namespace WorldEdit.Modules
                 ["right"] = new Vector(1, 0),
                 ["up"] = new Vector(0, -1)
             };
-
-
-        private readonly Dictionary<string, Func<Vector, Vector, Region>> _selectorFunctions =
-            new Dictionary<string, Func<Vector, Vector, Region>>(StringComparer.OrdinalIgnoreCase)
+        
+        private static readonly Dictionary<string, Type> RegionTypes =
+            new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
             {
-                ["elliptic"] = (v1, v2) => new EllipticRegion(v1, v2 - v1),
-                ["rectangular"] = (v1, v2) => new RectangularRegion(v1, v2)
+                ["elliptic"] = typeof(EllipticRegion),
+                ["rectangular"] = typeof(RectangularRegion)
             };
 
         /// <summary>
@@ -106,9 +105,9 @@ namespace WorldEdit.Modules
             var select = Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
             select.HelpDesc = new[]
             {
-                "Syntax: //select <selector>",
+                "Syntax: //select <region-type>",
                 "",
-                "Changes your selector. Valid selectors are:",
+                "Changes your region type. Valid region types are:",
                 "- elliptic: Select the center and radius of an ellipse.",
                 "- rectangular: Select the two opposite points of a rectangle."
             };
@@ -295,14 +294,14 @@ namespace WorldEdit.Modules
             var player = args.Player;
             if (parameters.Count != 1)
             {
-                player.SendErrorMessage("Syntax: //select <selector>");
+                player.SendErrorMessage("Syntax: //select <region-type>");
                 return;
             }
 
-            var inputSelector = parameters[0];
-            if (!_selectorFunctions.TryGetValue(inputSelector, out var selector))
+            var inputRegionType = parameters[0];
+            if (!RegionTypes.TryGetValue(inputRegionType, out var regionType))
             {
-                player.SendErrorMessage($"Invalid selector '{inputSelector}'.");
+                player.SendErrorMessage($"Invalid region type '{inputRegionType}'.");
                 return;
             }
 
@@ -310,8 +309,8 @@ namespace WorldEdit.Modules
             session.Selection = new NullRegion();
             var regionSelector = session.RegionSelector;
             regionSelector.Clear();
-            regionSelector.SelectorFunction = selector;
-            player.SendSuccessMessage($"Set selector to {inputSelector.ToLowerInvariant()}.");
+            regionSelector.RegionType = regionType;
+            player.SendSuccessMessage($"Set selector to {inputRegionType.ToLowerInvariant()}.");
         }
 
         private void Wand(CommandArgs args)

@@ -7,7 +7,7 @@ namespace WorldEdit.Regions
     /// </summary>
     public class RegionSelector
     {
-        private Func<Vector, Vector, Region> _selectorFunction = (v1, v2) => new RectangularRegion(v1, v2);
+        private Type _regionType = typeof(RectangularRegion);
 
         /// <summary>
         /// Gets the primary position or <c>null</c> if it is not selected.
@@ -15,20 +15,33 @@ namespace WorldEdit.Regions
         public Vector? PrimaryPosition { get; private set; }
 
         /// <summary>
+        /// Gets or sets the region type.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The value does not inherit from <see cref="Region"/>.</exception>
+        public Type RegionType
+        {
+            get => _regionType;
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                if (!value.IsSubclassOf(typeof(Region)))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Type must inherit from region.");
+                }
+
+                _regionType = value;
+            }
+        }
+
+        /// <summary>
         /// Gets the secondary position or <c>null</c> if it is not selected.
         /// </summary>
         public Vector? SecondaryPosition { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the selector function for creating regions.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
-        public Func<Vector, Vector, Region> SelectorFunction
-        {
-            get => _selectorFunction;
-            set => _selectorFunction = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
+        
         /// <summary>
         /// Clears the selected positions.
         /// </summary>
@@ -66,7 +79,7 @@ namespace WorldEdit.Regions
                 return new NullRegion();
             }
 
-            return SelectorFunction(PrimaryPosition.Value, SecondaryPosition.Value);
+            return (Region)Activator.CreateInstance(_regionType, PrimaryPosition.Value, SecondaryPosition.Value);
         }
     }
 }

@@ -12,12 +12,11 @@ namespace WorldEdit.Schematics
         /// Reads a clipboard from the specified stream.
         /// </summary>
         /// <param name="stream">The stream to read from.</param>
-        /// <returns>The resulting clipboard.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">The stream does not support reading.</exception>
-        /// <exception cref="SchematicFormatException">The stream is malformed.</exception>
         /// <exception cref="IOException">An I/O error occurs.</exception>
-        public abstract Clipboard Read(Stream stream);
+        public abstract Result<Clipboard> Read(Stream stream);
 
         /// <summary>
         /// Writes the specified clipboard to the stream.

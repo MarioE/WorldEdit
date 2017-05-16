@@ -263,19 +263,17 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
-            var stream = File.OpenRead(schematicPath);
-            try
+            using (var stream = File.OpenRead(schematicPath))
             {
-                session.Clipboard = schematicFormat.Read(stream);
+                var clipboardResult = schematicFormat.Read(stream);
+                if (!clipboardResult.WasSuccessful)
+                {
+                    player.SendErrorMessage(clipboardResult.ErrorMessage);
+                    return;
+                }
+
+                session.Clipboard = clipboardResult.Value;
                 player.SendSuccessMessage("Loaded schematic.");
-            }
-            catch (SchematicFormatException)
-            {
-                player.SendErrorMessage("Schematic is malformed.");
-            }
-            finally
-            {
-                stream.Close();
             }
         }
 

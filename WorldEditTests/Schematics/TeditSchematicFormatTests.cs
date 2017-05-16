@@ -10,11 +10,12 @@ namespace WorldEditTests.Schematics
     public class TeditSchematicFormatTests
     {
         [Test]
-        public void Read_MalformedStream_ThrowsSchematicFormatException()
+        public void Read_MalformedStream()
         {
             var schematicFormat = new TeditSchematicFormat();
+            var result = schematicFormat.Read(new MemoryStream());
 
-            Assert.Throws<SchematicFormatException>(() => schematicFormat.Read(new MemoryStream()));
+            Assert.IsFalse(result.WasSuccessful);
         }
 
         [Test]
@@ -49,7 +50,9 @@ namespace WorldEditTests.Schematics
             {
                 schematicFormat.Write(clipboard, stream);
                 stream.Position = 0;
-                clipboard2 = schematicFormat.Read(stream);
+                var clipboardResult = schematicFormat.Read(stream);
+                Assert.IsTrue(clipboardResult.WasSuccessful);
+                clipboard2 = clipboardResult.Value;
             }
 
             for (var x = 0; x < 20; ++x)
