@@ -8,31 +8,31 @@ namespace WorldEditTests.Templates
     [TestFixture]
     public class WallTests
     {
-        [TestCase(1)]
-        public void Apply(byte type)
+        private static readonly object[] ApplyTestCases =
+        {
+            new object[] {Wall.AdamantiteBeam, (byte)32}
+        };
+
+        private static readonly object[] MatchesTestCases =
+        {
+            new object[] {Wall.AdamantiteBeam, (byte)32, true},
+            new object[] {Wall.AdamantiteBeam, (byte)31, false}
+        };
+
+        [TestCaseSource(nameof(ApplyTestCases))]
+        public void Apply(Wall wall, byte expectedWall)
         {
             var tile = new Tile();
-            var wall = new Wall(type);
 
             tile = wall.Apply(tile);
 
-            Assert.AreEqual(type, tile.Wall);
+            Assert.AreEqual(expectedWall, tile.Wall);
         }
 
-        [TestCase(1)]
-        public void GetType(byte type)
+        [TestCaseSource(nameof(MatchesTestCases))]
+        public void Matches(Wall wall, byte actualWall, bool expected)
         {
-            var wall = new Wall(type);
-
-            Assert.AreEqual(type, wall.Type);
-        }
-
-        [TestCase(1, 0, false)]
-        [TestCase(1, 1, true)]
-        public void Matches(byte type, byte actualType, bool expected)
-        {
-            var tile = new Tile {Wall = actualType};
-            var wall = new Wall(type);
+            var tile = new Tile {Wall = actualWall};
 
             Assert.AreEqual(expected, wall.Matches(tile));
         }
@@ -40,12 +40,15 @@ namespace WorldEditTests.Templates
         [TestCase("AIR", 0)]
         [TestCase("stone", 1)]
         [TestCase("4", 4)]
-        public void Parse(string s, byte expectedType)
+        public void Parse(string s, byte expectedWall)
         {
+            var tile = new Tile();
+
             var result = Wall.Parse(s);
 
             Assert.IsTrue(result.WasSuccessful);
-            Assert.AreEqual(expectedType, result.Value.Type);
+            tile = result.Value.Apply(tile);
+            Assert.AreEqual(expectedWall, tile.Wall);
         }
 
         [TestCase("")]

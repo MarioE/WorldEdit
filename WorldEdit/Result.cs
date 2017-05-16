@@ -3,25 +3,25 @@
 namespace WorldEdit
 {
     /// <summary>
-    /// Represents the result of parsing a string.
+    /// Represents the result of some operation.
     /// </summary>
-    public class ParsingResult
+    public class Result
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParsingResult" /> class with the specified error message.
+        /// Initializes a new instance of the <see cref="Result" /> class with the specified error message.
         /// </summary>
         /// <param name="errorMessage">The error message.</param>
         /// <exception cref="ArgumentNullException"><paramref name="errorMessage" /> is <c>null</c>.</exception>
-        public ParsingResult(string errorMessage)
+        public Result(string errorMessage)
         {
             ErrorMessage = errorMessage ?? throw new ArgumentNullException(nameof(errorMessage));
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParsingResult" /> class with the specified value.
+        /// Initializes a new instance of the <see cref="Result" /> class with the specified value.
         /// </summary>
         /// <param name="value">The value.</param>
-        public ParsingResult(object value)
+        public Result(object value)
         {
             Value = value;
             WasSuccessful = true;
@@ -38,26 +38,33 @@ namespace WorldEdit
         public object Value { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the parsing was successful.
+        /// Gets a value indicating whether the operation was successful.
         /// </summary>
         public bool WasSuccessful { get; }
 
         /// <summary>
-        /// Creates a parsing result from the specified value.
+        /// Creates a result from the specified value.
         /// </summary>
         /// <typeparam name="T">The type of value.</typeparam>
         /// <param name="value">The value.</param>
-        /// <returns>The parsing result.</returns>
-        public static ParsingResult<T> From<T>(T value) => new ParsingResult<T>(value);
+        /// <returns>The result.</returns>
+        public static Result<T> From<T>(T value) => new Result<T>(value);
 
         /// <summary>
-        /// Creates a parsing result from the specified error message.
+        /// Creates a result from the specified error message.
         /// </summary>
         /// <typeparam name="T">The expected type of value.</typeparam>
         /// <param name="errorMessage">The error message.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="errorMessage" /> is <c>null</c>.</exception>
-        public static ParsingResult<T> FromError<T>(string errorMessage) =>
-            new ParsingResult<T>(errorMessage ?? throw new ArgumentNullException(nameof(errorMessage)));
+        public static Result<T> FromError<T>(string errorMessage)
+        {
+            if (errorMessage == null)
+            {
+                throw new ArgumentNullException(nameof(errorMessage));
+            }
+
+            return new Result<T>(errorMessage);
+        }
     }
 }

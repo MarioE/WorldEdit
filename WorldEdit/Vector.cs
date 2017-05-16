@@ -86,7 +86,7 @@ namespace WorldEdit
         /// <param name="vector">The vector.</param>
         /// <returns>The negated vector.</returns>
         public static Vector operator -(Vector vector) => -1 * vector;
-
+        
         /// <summary>
         /// Determines whether the vector equals the specified object.
         /// </summary>

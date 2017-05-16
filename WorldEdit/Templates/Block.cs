@@ -7,6 +7,7 @@ namespace WorldEdit.Templates
     /// </summary>
     public class Block : ITemplate
     {
+        private const ushort MaxId = 470;
         public static readonly Block ActiveStone = new Block(130);
         public static readonly Block AdamantiteBeam = new Block(150);
         public static readonly Block AdamantiteOre = new Block(111);
@@ -258,73 +259,73 @@ namespace WorldEdit.Templates
         public static readonly Block YellowStucco = new Block(154);
         public static readonly Block YellowTeam = new Block(432);
         public static readonly Block YellowTeamPlatform = new Block(437);
+        private readonly short _frameX;
+        private readonly short _frameY;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Block" /> class with the specified type and frames.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="frameX">The X frame, or -1 for none.</param>
-        /// <param name="frameY">The Y frame, or -1 for none.</param>
-        public Block(int type, short frameX = -1, short frameY = -1)
+        private readonly int _type;
+
+        private Block(int type, short frameX = -1, short frameY = -1)
         {
-            Type = type;
-            FrameX = frameX;
-            FrameY = frameY;
+            _type = type;
+            _frameX = frameX;
+            _frameY = frameY;
         }
-
-        /// <summary>
-        /// Gets the X frame.
-        /// </summary>
-        public short FrameX { get; }
-
-        /// <summary>
-        /// Gets the Y frame.
-        /// </summary>
-        public short FrameY { get; }
-
-        /// <summary>
-        /// Gets the type.
-        /// </summary>
-        public int Type { get; }
 
         /// <summary>
         /// Parses the specified string into a block.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<Block> Parse(string s)
+        public static Result<Block> Parse(string s)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (ushort.TryParse(s, out var type))
+            var split = s.Split(':');
+            if (split.Length == 3)
             {
-                return ParsingResult.From(new Block(type));
+                var blockResult = Parse(split[0]);
+                if (!blockResult.WasSuccessful)
+                {
+                    return blockResult;
+                }
+
+                var inputFrameX = split[1];
+                if (!short.TryParse(inputFrameX, out var frameX))
+                {
+                    return Result.FromError<Block>($"Invalid X frame '{inputFrameX}'.");
+                }
+
+                var inputFrameY = split[2];
+                if (!short.TryParse(inputFrameY, out var frameY))
+                {
+                    return Result.FromError<Block>($"Invalid Y frame '{inputFrameY}'.");
+                }
+
+                return Result.From(new Block(blockResult.Value._type, frameX, frameY));
             }
 
-            var split = s.Split(':');
-            if (split.Length == 3 && ushort.TryParse(split[0], out type) &&
-                short.TryParse(split[1], out var frameX) && short.TryParse(split[2], out var frameY))
+            if (ushort.TryParse(s, out var type) && type < MaxId)
             {
-                return ParsingResult.From(new Block(type, frameX, frameY));
+                return Result.From(new Block(type));
             }
 
             var field = typeof(Block).GetField(s.ToPascalCase());
             return field != null
-                ? ParsingResult.From((Block)field.GetValue(null))
-                : ParsingResult.FromError<Block>($"Invalid block '{s}'.");
+                ? Result.From((Block)field.GetValue(null))
+                : Result.FromError<Block>($"Invalid block '{s}'.");
         }
 
         /// <inheritdoc />
         public Tile Apply(Tile tile)
         {
-            if (-4 <= Type && Type <= -2)
+            if (-4 <= _type && _type <= -2)
             {
                 tile.Liquid = 255;
-                tile.LiquidType = -Type - 2;
+                tile.LiquidType = -_type - 2;
             }
             else
             {
@@ -332,27 +333,27 @@ namespace WorldEdit.Templates
                 tile.LiquidType = 0;
             }
 
-            tile.Active = Type >= 0;
-            tile.FrameX = FrameX;
-            tile.FrameY = FrameY;
-            tile.Type = (ushort)Math.Max(0, Type);
+            tile.IsActive = _type >= 0;
+            tile.FrameX = _frameX;
+            tile.FrameY = _frameY;
+            tile.Type = (ushort)Math.Max(0, _type);
             return tile;
         }
 
         /// <inheritdoc />
         public bool Matches(Tile tile)
         {
-            if (-4 <= Type && Type <= -2)
+            if (-4 <= _type && _type <= -2)
             {
-                return tile.Liquid > 0 && tile.LiquidType == -Type - 2;
+                return tile.Liquid > 0 && tile.LiquidType == -_type - 2;
             }
-            if (Type == -1)
+            if (_type == -1)
             {
-                return !tile.Active;
+                return !tile.IsActive;
             }
 
-            var doFramesMatch = (FrameX == -1 || tile.FrameX == FrameX) && (FrameY == -1 || tile.FrameY == FrameY);
-            return tile.Active && tile.Type == Type && doFramesMatch;
+            var doFramesMatch = (_frameX == -1 || tile.FrameX == _frameX) && (_frameY == -1 || tile.FrameY == _frameY);
+            return tile.IsActive && tile.Type == _type && doFramesMatch;
         }
     }
 }

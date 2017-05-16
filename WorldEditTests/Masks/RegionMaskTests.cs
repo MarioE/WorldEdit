@@ -16,12 +16,12 @@ namespace WorldEditTests.Masks
             Assert.Throws<ArgumentNullException>(() => new RegionMask(null));
         }
 
-        [TestCase(10, 10, 4, 5, 4, 4, 7, 7, true)]
-        [TestCase(10, 10, 4, 5, 5, 5, 7, 7, false)]
-        public void Test(int extentWidth, int extentHeight, int x, int y, int regionX, int regionY, int regionX2,
+        [TestCase(4, 5, 4, 4, 7, 7, true)]
+        [TestCase(4, 5, 5, 5, 7, 7, false)]
+        public void Test(int x, int y, int regionX, int regionY, int regionX2,
             int regionY2, bool expected)
         {
-            var extent = new MockExtent {Tiles = new ITile[extentWidth, extentHeight]};
+            var extent = new MockExtent {Tiles = new ITile[10, 10]};
             var region = new RectangularRegion(new Vector(regionX, regionY), new Vector(regionX2, regionY2));
             var mask = new RegionMask(region);
 

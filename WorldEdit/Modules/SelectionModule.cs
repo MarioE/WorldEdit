@@ -11,7 +11,7 @@ namespace WorldEdit.Modules
     /// </summary>
     public class SelectionModule : Module
     {
-        private readonly Dictionary<string, Vector> _directions =
+        private static readonly Dictionary<string, Vector> Directions =
             new Dictionary<string, Vector>(StringComparer.OrdinalIgnoreCase)
             {
                 ["down"] = new Vector(0, 1),
@@ -20,11 +20,12 @@ namespace WorldEdit.Modules
                 ["up"] = new Vector(0, -1)
             };
 
-        private readonly Dictionary<string, Func<RegionSelector>> _selectors =
-            new Dictionary<string, Func<RegionSelector>>(StringComparer.OrdinalIgnoreCase)
+
+        private readonly Dictionary<string, Func<Vector, Vector, Region>> _selectorFunctions =
+            new Dictionary<string, Func<Vector, Vector, Region>>(StringComparer.OrdinalIgnoreCase)
             {
-                ["elliptic"] = () => new EllipticRegionSelector(),
-                ["rectangular"] = () => new RectangularRegionSelector()
+                ["elliptic"] = (v1, v2) => new EllipticRegion(v1, v2 - v1),
+                ["rectangular"] = (v1, v2) => new RectangularRegion(v1, v2)
             };
 
         /// <summary>
@@ -45,6 +46,14 @@ namespace WorldEdit.Modules
         public override void Register()
         {
             GetDataHandlers.TileEdit += OnTileEdit;
+
+            var clear = Plugin.RegisterCommand("/clear", Clear, "worldedit.selection.clear");
+            clear.HelpDesc = new[]
+            {
+                "Syntax: //clear",
+                "",
+                "Clears your selection."
+            };
 
             var contract = Plugin.RegisterCommand("/contract", ContractExpandShift, "worldedit.selection.contract");
             contract.HelpDesc = new[]
@@ -122,24 +131,33 @@ namespace WorldEdit.Modules
             };
         }
 
+        private void Clear(CommandArgs args)
+        {
+            var player = args.Player;
+            var session = Plugin.GetOrCreateSession(player);
+            session.Selection = new NullRegion();
+            session.RegionSelector.Clear();
+            player.SendSuccessMessage("Cleared selection.");
+        }
+
         private void ContractExpandShift(CommandArgs args)
         {
-            var command = args.GetCommand();
+            var commandName = args.GetCommandName();
             var parameters = args.Parameters;
             var player = args.Player;
             if (parameters.Count != 2)
             {
-                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <direction> <distance>");
+                player.SendErrorMessage($"Syntax: //{commandName.ToLowerInvariant()} <direction> <distance>");
                 return;
             }
 
             var inputDirection = parameters[0];
-            if (!_directions.TryGetValue(inputDirection, out var direction))
+            if (!Directions.TryGetValue(inputDirection, out var direction))
             {
                 player.SendErrorMessage($"Invalid direction '{inputDirection}'.");
                 return;
             }
-
+            
             var inputDistance = parameters[1];
             if (!int.TryParse(inputDistance, out var distance) || distance <= 0)
             {
@@ -149,19 +167,19 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             var selection = session.Selection;
-            if (command.Equals("contract", StringComparison.OrdinalIgnoreCase))
+            if (commandName.Equals("contract", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = selection.Contract(distance * direction);
                 player.SendSuccessMessage(
                     $"Contracted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
             }
-            else if (command.Equals("shift", StringComparison.OrdinalIgnoreCase))
+            else if (commandName.Equals("shift", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = selection.Shift(distance * direction);
                 player.SendSuccessMessage(
                     $"Shifted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
             }
-            else if (command.Equals("expand", StringComparison.OrdinalIgnoreCase))
+            else if (commandName.Equals("expand", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = selection.Expand(distance * direction);
                 player.SendSuccessMessage(
@@ -171,12 +189,12 @@ namespace WorldEdit.Modules
 
         private void InsetOutset(CommandArgs args)
         {
-            var command = args.GetCommand();
+            var commandName = args.GetCommandName();
             var parameters = args.Parameters;
             var player = args.Player;
             if (parameters.Count != 1)
             {
-                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <distance>");
+                player.SendErrorMessage($"Syntax: //{commandName.ToLowerInvariant()} <distance>");
                 return;
             }
 
@@ -189,12 +207,12 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             var selection = session.Selection;
-            if (command.Equals("inset", StringComparison.OrdinalIgnoreCase))
+            if (commandName.Equals("inset", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = selection.Inset(distance);
                 player.SendSuccessMessage($"Inset selection by {distance} tiles.");
             }
-            else if (command.Equals("outset", StringComparison.OrdinalIgnoreCase))
+            else if (commandName.Equals("outset", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = selection.Outset(distance);
                 player.SendSuccessMessage($"Outset selection by {distance} tiles.");
@@ -233,12 +251,12 @@ namespace WorldEdit.Modules
 
         private void Pos1Pos2(CommandArgs args)
         {
-            var command = args.GetCommand();
+            var commandName = args.GetCommandName();
             var parameters = args.Parameters;
             var player = args.Player;
             if (parameters.Count != 2)
             {
-                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <x> <y>");
+                player.SendErrorMessage($"Syntax: //{commandName.ToLowerInvariant()} <x> <y>");
                 return;
             }
 
@@ -259,12 +277,12 @@ namespace WorldEdit.Modules
             var session = Plugin.GetOrCreateSession(player);
             var regionSelector = session.RegionSelector;
             var position = new Vector(x, y);
-            if (command.Equals("pos1", StringComparison.OrdinalIgnoreCase))
+            if (commandName.Equals("pos1", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = regionSelector.SelectPrimary(position);
                 player.SendSuccessMessage($"Set primary position to {position}.");
             }
-            else if (command.Equals("pos2", StringComparison.OrdinalIgnoreCase))
+            else if (commandName.Equals("pos2", StringComparison.OrdinalIgnoreCase))
             {
                 session.Selection = regionSelector.SelectSecondary(position);
                 player.SendSuccessMessage($"Set secondary position to {position}.");
@@ -282,14 +300,17 @@ namespace WorldEdit.Modules
             }
 
             var inputSelector = parameters[0];
-            if (!_selectors.TryGetValue(inputSelector, out var selector))
+            if (!_selectorFunctions.TryGetValue(inputSelector, out var selector))
             {
                 player.SendErrorMessage($"Invalid selector '{inputSelector}'.");
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            session.RegionSelector = selector();
+            session.Selection = new NullRegion();
+            var regionSelector = session.RegionSelector;
+            regionSelector.Clear();
+            regionSelector.SelectorFunction = selector;
             player.SendSuccessMessage($"Set selector to {inputSelector.ToLowerInvariant()}.");
         }
 

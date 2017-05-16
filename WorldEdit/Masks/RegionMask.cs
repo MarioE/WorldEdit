@@ -5,7 +5,7 @@ using WorldEdit.Regions;
 namespace WorldEdit.Masks
 {
     /// <summary>
-    /// Represents a mask that tests for region containment.
+    /// Represents a mask that tests for region membership.
     /// </summary>
     public class RegionMask : Mask
     {
@@ -22,6 +22,6 @@ namespace WorldEdit.Masks
         }
 
         /// <inheritdoc />
-        protected override bool TestImpl(Extent extent, Vector position) => _region.Contains(position);
+        public override bool Test(Extent extent, Vector position) => _region.Contains(position);
     }
 }

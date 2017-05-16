@@ -3,7 +3,7 @@
 namespace WorldEdit.History
 {
     /// <summary>
-    /// Represents a tile change at a position.
+    /// Represents a tile change at a certain position.
     /// </summary>
     public class TileChange : Change
     {
@@ -36,11 +36,9 @@ namespace WorldEdit.History
         public Vector Position { get; }
 
         /// <inheritdoc />
-        protected override bool RedoImpl(Extent extent) =>
-            extent.IsInBounds(Position) && extent.SetTile(Position, NewTile);
+        public override bool Redo(Extent extent) => extent.SetTile(Position, NewTile);
 
         /// <inheritdoc />
-        protected override bool UndoImpl(Extent extent) =>
-            extent.IsInBounds(Position) && extent.SetTile(Position, OldTile);
+        public override bool Undo(Extent extent) => extent.SetTile(Position, OldTile);
     }
 }

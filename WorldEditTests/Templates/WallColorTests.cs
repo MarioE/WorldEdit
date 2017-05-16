@@ -8,44 +8,47 @@ namespace WorldEditTests.Templates
     [TestFixture]
     public class WallColorTests
     {
-        [TestCase(1)]
-        public void Apply(byte type)
+        private static readonly object[] ApplyTestCases =
+        {
+            new object[] {WallColor.Black, (byte)25}
+        };
+
+        private static readonly object[] MatchesTestCases =
+        {
+            new object[] {WallColor.Black, (byte)25, true},
+            new object[] {WallColor.Black, (byte)24, false}
+        };
+
+        [TestCaseSource(nameof(ApplyTestCases))]
+        public void Apply(WallColor wallColor, byte expectedColor)
         {
             var tile = new Tile();
-            var wallColor = new WallColor(type);
 
             tile = wallColor.Apply(tile);
 
-            Assert.AreEqual(type, tile.WallColor);
+            Assert.AreEqual(expectedColor, tile.WallColor);
         }
 
-        [TestCase(1)]
-        public void GetType(byte type)
-        {
-            var wallColor = new WallColor(type);
-
-            Assert.AreEqual(type, wallColor.Type);
-        }
-
-        [TestCase(1, 2, false)]
-        [TestCase(1, 1, true)]
-        public void Matches(byte type, byte actualType, bool expected)
+        [TestCaseSource(nameof(MatchesTestCases))]
+        public void Matches(WallColor wallColor, byte actualColor, bool expected)
         {
             var tile = new Tile();
-            tile.WallColor = actualType;
-            var wallColor = new WallColor(type);
+            tile.WallColor = actualColor;
 
-            Assert.AreEqual(expected, wallColor.Matches(tile));
+            Assert.AreEqual(expected, WallColor.Black.Matches(tile));
         }
 
-        [TestCase("blank", 0)]
-        [TestCase("red", 1)]
-        public void Parse(string s, int expectedType)
+        [TestCase("blank", (byte)0)]
+        [TestCase("red", (byte)1)]
+        public void Parse(string s, byte expectedColor)
         {
+            var tile = new Tile();
+
             var result = WallColor.Parse(s);
 
             Assert.IsTrue(result.WasSuccessful);
-            Assert.AreEqual(expectedType, result.Value.Type);
+            tile = result.Value.Apply(tile);
+            Assert.AreEqual(expectedColor, tile.WallColor);
         }
 
         [TestCase("")]

@@ -10,12 +10,12 @@ namespace WorldEdit
     public static class Extensions
     {
         /// <summary>
-        /// Gets the executed command.
+        /// Gets the executed command name.
         /// </summary>
         /// <param name="args">The command arguments.</param>
-        /// <returns>The executed command.</returns>
+        /// <returns>The executed command name.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="args" /> is <c>null</c>.</exception>
-        public static string GetCommand(this CommandArgs args)
+        public static string GetCommandName(this CommandArgs args)
         {
             if (args == null)
             {

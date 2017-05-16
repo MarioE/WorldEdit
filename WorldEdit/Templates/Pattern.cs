@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace WorldEdit.Templates
@@ -10,7 +8,7 @@ namespace WorldEdit.Templates
     /// Represents a randomized pattern of template entries.
     /// </summary>
     /// <typeparam name="T">The template type.</typeparam>
-    public class Pattern<T> : IEnumerable<PatternEntry<T>>, ITemplate where T : class, ITemplate
+    public class Pattern<T> : ITemplate where T : class, ITemplate
     {
         private readonly List<PatternEntry<T>> _entries;
         private readonly Random _random = new Random();
@@ -22,21 +20,16 @@ namespace WorldEdit.Templates
         /// <exception cref="ArgumentNullException"><paramref name="entries" /> is <c>null</c>.</exception>
         public Pattern(IEnumerable<PatternEntry<T>> entries)
         {
-            _entries = (entries ?? throw new ArgumentNullException(nameof(entries))).ToList();
+            _entries = entries?.ToList() ?? throw new ArgumentNullException(nameof(entries));
         }
-
-        /// <summary>
-        /// Gets a read-only view of the entries.
-        /// </summary>
-        public ReadOnlyCollection<PatternEntry<T>> Entries => _entries.AsReadOnly();
 
         /// <summary>
         /// Parses the specified string into a pattern.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<Pattern<T>> Parse(string s)
+        public static Result<Pattern<T>> Parse(string s)
         {
             if (s == null)
             {
@@ -54,19 +47,21 @@ namespace WorldEdit.Templates
                     var inputWeight = s2.Substring(0, index);
                     if (!int.TryParse(inputWeight, out weight) || weight <= 0)
                     {
-                        return ParsingResult.FromError<Pattern<T>>($"Invalid weight '{inputWeight}'.");
+                        return Result.FromError<Pattern<T>>($"Invalid weight '{inputWeight}'.");
                     }
+
                     s3 = s2.Substring(index + 1);
                 }
 
-                var result = (ParsingResult<T>)typeof(T).GetMethod("Parse").Invoke(null, new object[] {s3});
-                if (!result.WasSuccessful)
+                var templateResult = (Result<T>)typeof(T).GetMethod("Parse").Invoke(null, new object[] {s3});
+                if (!templateResult.WasSuccessful)
                 {
-                    return ParsingResult.FromError<Pattern<T>>(result.ErrorMessage);
+                    return Result.FromError<Pattern<T>>(templateResult.ErrorMessage);
                 }
-                entries.Add(new PatternEntry<T>(result.Value, weight));
+
+                entries.Add(new PatternEntry<T>(templateResult.Value, weight));
             }
-            return ParsingResult.From(new Pattern<T>(entries));
+            return Result.From(new Pattern<T>(entries));
         }
 
         /// <inheritdoc />
@@ -80,20 +75,13 @@ namespace WorldEdit.Templates
                 {
                     return entry.Template.Apply(tile);
                 }
+
                 current += entry.Weight;
             }
             return tile;
         }
 
-        /// <summary>
-        /// Gets an enumerator iterating through the pattern entries.
-        /// </summary>
-        /// <returns>An enumerator for the pattern.</returns>
-        public IEnumerator<PatternEntry<T>> GetEnumerator() => _entries.GetEnumerator();
-
         /// <inheritdoc />
         public bool Matches(Tile tile) => _entries.Any(e => e.Template.Matches(tile));
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -33,7 +33,18 @@ namespace WorldEdit
         /// <inheritdoc />
         public override bool SetTile(int x, int y, Tile tile)
         {
-            _tiles[x, y] = tile.ToITile();
+            if (_tiles[x, y] == null)
+            {
+                _tiles[x, y] = new Terraria.Tile();
+            }
+
+            _tiles[x, y].bTileHeader = tile.BTileHeader;
+            _tiles[x, y].frameX = tile.FrameX;
+            _tiles[x, y].frameY = tile.FrameY;
+            _tiles[x, y].liquid = tile.Liquid;
+            _tiles[x, y].sTileHeader = tile.STileHeader;
+            _tiles[x, y].type = tile.Type;
+            _tiles[x, y].wall = tile.Wall;
             return true;
         }
     }

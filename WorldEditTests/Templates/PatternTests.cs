@@ -13,11 +13,21 @@ namespace WorldEditTests.Templates
             Assert.Throws<ArgumentNullException>(() => new Pattern<Block>(null));
         }
 
+        [TestCase("air")]
+        [TestCase("air,stone")]
+        [TestCase("7*air,2*stone")]
+        public void Parse(string s)
+        {
+            var result = Pattern<Block>.Parse(s);
+
+            Assert.IsTrue(result.WasSuccessful);
+        }
+
         [TestCase("")]
         [TestCase("ston")]
         [TestCase("*stone")]
         [TestCase("6*stone,4:")]
-        public void Parse_InvalidPattern_ThrowsFormatException(string s)
+        public void Parse_InvalidPattern(string s)
         {
             var result = Pattern<Block>.Parse(s);
 
@@ -25,49 +35,9 @@ namespace WorldEditTests.Templates
         }
 
         [Test]
-        public void Parse_MultipleEntries()
-        {
-            var result = Pattern<Block>.Parse("air,stone");
-
-            Assert.IsTrue(result.WasSuccessful);
-            var entries = result.Value.Entries;
-            Assert.AreEqual(2, entries.Count);
-            Assert.AreEqual(-1, entries[0].Template.Type);
-            Assert.AreEqual(1, entries[0].Weight);
-            Assert.AreEqual(1, entries[1].Template.Type);
-            Assert.AreEqual(1, entries[1].Weight);
-        }
-
-        [Test]
-        public void Parse_MultipleEntriesCustomWeights()
-        {
-            var result = Pattern<Block>.Parse("7*air,2*stone");
-
-            Assert.IsTrue(result.WasSuccessful);
-            var entries = result.Value.Entries;
-            Assert.AreEqual(2, entries.Count);
-            Assert.AreEqual(-1, entries[0].Template.Type);
-            Assert.AreEqual(7, entries[0].Weight);
-            Assert.AreEqual(1, entries[1].Template.Type);
-            Assert.AreEqual(2, entries[1].Weight);
-        }
-
-        [Test]
         public void Parse_NullS_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => Pattern<Block>.Parse(null));
-        }
-
-        [Test]
-        public void Parse_OneEntry()
-        {
-            var result = Pattern<Block>.Parse("air");
-
-            Assert.IsTrue(result.WasSuccessful);
-            var entries = result.Value.Entries;
-            Assert.AreEqual(1, entries.Count);
-            Assert.AreEqual(-1, entries[0].Template.Type);
-            Assert.AreEqual(1, entries[0].Weight);
         }
     }
 }

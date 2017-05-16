@@ -15,7 +15,16 @@ namespace WorldEditTests
 
         public override bool SetTile(int x, int y, Tile tile)
         {
-            Tiles[x, y] = tile.ToITile();
+            Tiles[x, y] = new Terraria.Tile
+            {
+                bTileHeader = tile.BTileHeader,
+                frameX = tile.FrameX,
+                frameY = tile.FrameY,
+                liquid = tile.Liquid,
+                sTileHeader = tile.STileHeader,
+                type = tile.Type,
+                wall = tile.Wall
+            };
             return true;
         }
     }

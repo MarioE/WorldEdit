@@ -8,7 +8,6 @@ namespace WorldEdit
     /// <summary>
     /// Represents a clipboard of tiles that can be copied, pasted, and saved.
     /// </summary>
-    [Serializable]
     public class Clipboard : Extent
     {
         private readonly Tile?[,] _tiles;
@@ -34,7 +33,7 @@ namespace WorldEdit
         /// </summary>
         /// <param name="extent">The extent to copy from.</param>
         /// <param name="region">The region to use.</param>
-        /// <returns>The copied clipboard.</returns>
+        /// <returns>The clipboard.</returns>
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="extent" /> or <paramref name="region" /> is <c>null</c>.
         /// </exception>
@@ -49,13 +48,14 @@ namespace WorldEdit
                 throw new ArgumentNullException(nameof(region));
             }
 
-            var clipboard = new Clipboard(new Tile?[region.Dimensions.X, region.Dimensions.Y]);
+            var dimensions = region.Dimensions;
+            var tiles = new Tile?[dimensions.X, dimensions.Y];
             foreach (var position in region.Where(extent.IsInBounds))
             {
                 var offsetPosition = position - region.LowerBound;
-                clipboard.SetTile(offsetPosition, extent.GetTile(position));
+                tiles[offsetPosition.X, offsetPosition.Y] = extent.GetTile(position);
             }
-            return clipboard;
+            return new Clipboard(tiles);
         }
 
         /// <inheritdoc />
@@ -77,12 +77,13 @@ namespace WorldEdit
             {
                 for (var y = LowerBound.Y; y < UpperBound.Y; ++y)
                 {
-                    if (_tiles[x, y] != null)
+                    var tile = _tiles[x, y];
+                    if (tile != null)
                     {
                         var offsetPosition = new Vector(x, y) + position;
                         if (extent.IsInBounds(offsetPosition))
                         {
-                            extent.SetTile(offsetPosition, _tiles[x, y].Value);
+                            extent.SetTile(offsetPosition, tile.Value);
                         }
                     }
                 }

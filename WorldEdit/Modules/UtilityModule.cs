@@ -12,8 +12,8 @@ namespace WorldEdit.Modules
     /// </summary>
     public class UtilityModule : Module
     {
-        private readonly Dictionary<string, Func<string, ParsingResult>> _maskParsers =
-            new Dictionary<string, Func<string, ParsingResult>>(StringComparer.OrdinalIgnoreCase)
+        private readonly Dictionary<string, Func<string, Result>> _maskParsers =
+            new Dictionary<string, Func<string, Result>>(StringComparer.OrdinalIgnoreCase)
             {
                 ["block"] = Pattern<Block>.Parse,
                 ["color"] = Pattern<Color>.Parse,
@@ -55,9 +55,8 @@ namespace WorldEdit.Modules
                 "Sets your mask. Masks are used to restrict what tiles will be affected. Valid masks are:",
                 "- #none - No restrictions.",
                 "- #selection - Restricts to your current selection.",
-                "- <state> - Restricts to tiles with certain states.",
-                "- <property> == <pattern> - Restricts to tiles with certain properties.",
-                "- <property> != <pattern> - Restricts to tiles without certain properties.",
+                "- (!)<state> - Restricts to tiles with or without certain states.",
+                "- <property> (!)= <pattern> - Restricts to tiles with or without certain properties.",
                 "  property can be block, color, shape, wall, and wallcolor."
             };
         }
@@ -109,14 +108,14 @@ namespace WorldEdit.Modules
                 }
                 else
                 {
-                    var result = State.Parse(inputMask);
-                    if (!result.WasSuccessful)
+                    var stateResult = State.Parse(inputMask);
+                    if (!stateResult.WasSuccessful)
                     {
-                        player.SendErrorMessage(result.ErrorMessage);
+                        player.SendErrorMessage(stateResult.ErrorMessage);
                         return;
                     }
 
-                    mask = new TemplateMask(result.Value);
+                    mask = new TemplateMask(stateResult.Value);
                 }
             }
             else
@@ -134,20 +133,20 @@ namespace WorldEdit.Modules
                 {
                     negated = true;
                 }
-                else if (!inputComparison.Equals("==", StringComparison.OrdinalIgnoreCase))
+                else if (!inputComparison.Equals("=", StringComparison.OrdinalIgnoreCase))
                 {
                     player.SendErrorMessage($"Invalid mask comparison '{inputComparison}'.");
                     return;
                 }
 
-                var result = parser(string.Join(" ", parameters.Skip(2)));
-                if (!result.WasSuccessful)
+                var patternResult = parser(string.Join(" ", parameters.Skip(2)));
+                if (!patternResult.WasSuccessful)
                 {
-                    player.SendErrorMessage(result.ErrorMessage);
+                    player.SendErrorMessage(patternResult.ErrorMessage);
                     return;
                 }
 
-                mask = new TemplateMask((ITemplate)result.Value);
+                mask = new TemplateMask((ITemplate)patternResult.Value);
                 if (negated)
                 {
                     mask = new NegatedMask(mask);

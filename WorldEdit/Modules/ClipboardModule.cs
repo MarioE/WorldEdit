@@ -1,13 +1,31 @@
-﻿using Terraria;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using Terraria;
 using TShockAPI;
+using WorldEdit.Schematics;
 
 namespace WorldEdit.Modules
 {
+    using SchematicDictionary = Dictionary<string, SchematicInfo>;
+
     /// <summary>
     /// Represents a module that encapsulates the clipboard functionality.
     /// </summary>
     public class ClipboardModule : Module
     {
+        private const int SchematicsPerPage = 5;
+
+        private static readonly Dictionary<string, SchematicFormat> SchematicFormats =
+            new Dictionary<string, SchematicFormat>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["tedit"] = new TeditSchematicFormat()
+            };
+
+        private SchematicDictionary _schematicInfos = new SchematicDictionary();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClipboardModule" /> class with the specified WorldEdit plugin.
         /// </summary>
@@ -19,11 +37,19 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Deregister()
         {
+            var schematicsPath = Path.Combine("worldedit", "schematics.json");
+            File.WriteAllText(schematicsPath, JsonConvert.SerializeObject(_schematicInfos, Formatting.Indented));
         }
 
         /// <inheritdoc />
         public override void Register()
         {
+            var schematicsPath = Path.Combine("worldedit", "schematics.json");
+            if (File.Exists(schematicsPath))
+            {
+                _schematicInfos = JsonConvert.DeserializeObject<SchematicDictionary>(File.ReadAllText(schematicsPath));
+            }
+
             var clearClipboard = Plugin.RegisterCommand("clearclipboard",
                 ClearClipboard,
                 "worldedit.clipboard.clearclipboard");
@@ -56,6 +82,17 @@ namespace WorldEdit.Modules
                 "Syntax: //paste",
                 "",
                 "Pastes your clipboard to your primary position."
+            };
+
+            var schematic = Plugin.RegisterCommand("/schematic", Schematic, "worldedit.clipboard.schematic");
+            schematic.HelpDesc = new[]
+            {
+                "Syntax: //schematic delete <name>",
+                "Syntax: //schematic list [page]",
+                "Syntax: //schematic load <name>",
+                "Syntax: //schematic save <name> <format>",
+                "",
+                "Manages schematics. Currently, the only valid format is tedit."
             };
         }
 
@@ -103,6 +140,202 @@ namespace WorldEdit.Modules
             clipboard?.PasteTo(editSession, position.Value);
             Netplay.ResetSections();
             player.SendSuccessMessage("Pasted clipboard to primary position.");
+        }
+
+        private void Schematic(CommandArgs args)
+        {
+            var parameters = args.Parameters;
+            var player = args.Player;
+            if (parameters.Count < 1)
+            {
+                player.SendErrorMessage("Syntax: //schematic delete <name>");
+                player.SendErrorMessage("Syntax: //schematic list [page]");
+                player.SendErrorMessage("Syntax: //schematic load <name>");
+                player.SendErrorMessage("Syntax: //schematic save <name> <format> [description]");
+                return;
+            }
+
+            var subcommandName = parameters[0];
+            if (subcommandName.Equals("delete", StringComparison.OrdinalIgnoreCase))
+            {
+                SchematicDelete(args);
+            }
+            else if (subcommandName.Equals("list", StringComparison.OrdinalIgnoreCase))
+            {
+                SchematicList(args);
+            }
+            else if (subcommandName.Equals("load", StringComparison.OrdinalIgnoreCase))
+            {
+                SchematicLoad(args);
+            }
+            else if (subcommandName.Equals("save", StringComparison.OrdinalIgnoreCase))
+            {
+                SchematicSave(args);
+            }
+            else
+            {
+                player.SendErrorMessage("Syntax: //schematic delete <name>");
+                player.SendErrorMessage("Syntax: //schematic list [page]");
+                player.SendErrorMessage("Syntax: //schematic load <name>");
+                player.SendErrorMessage("Syntax: //schematic save <name> <format> [description]");
+            }
+        }
+
+        private void SchematicDelete(CommandArgs args)
+        {
+            var parameters = args.Parameters;
+            var player = args.Player;
+            if (parameters.Count != 2)
+            {
+                player.SendErrorMessage("Syntax: //schematic delete <name>");
+                return;
+            }
+
+            var inputName = parameters[1];
+            if (!_schematicInfos.ContainsKey(inputName))
+            {
+                player.SendErrorMessage($"Invalid schematic '{inputName}'.");
+                return;
+            }
+
+            _schematicInfos.Remove(inputName);
+            var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
+            File.Delete(schematicPath);
+            player.SendSuccessMessage("Deleted schematic.");
+        }
+
+        private void SchematicList(CommandArgs args)
+        {
+            var parameters = args.Parameters;
+            var player = args.Player;
+            if (parameters.Count > 2)
+            {
+                player.SendErrorMessage("Syntax: //schematic list [page]");
+                return;
+            }
+
+            var maxPage = (_schematicInfos.Count - 1) / SchematicsPerPage + 1;
+            var inputPageNumber = parameters.Count == 1 ? "1" : parameters[1];
+            if (!int.TryParse(inputPageNumber, out var pageNumber) || pageNumber <= 0 || pageNumber > maxPage)
+            {
+                player.SendErrorMessage($"Invalid page number '{inputPageNumber}'.");
+                return;
+            }
+
+            if (_schematicInfos.Count == 0)
+            {
+                player.SendErrorMessage("No schematics found.");
+                return;
+            }
+
+            player.SendSuccessMessage($"Schematics (page {pageNumber} out of {maxPage}):");
+            var kvps = _schematicInfos.ToList();
+            var offset = (pageNumber - 1) * SchematicsPerPage;
+            for (var i = 0; i < 5 && i < _schematicInfos.Count - offset; ++i)
+            {
+                var kvp = kvps[i];
+                var schematicInfo = kvp.Value;
+                player.SendInfoMessage($"{kvp.Key}, created by {schematicInfo.Author}: {schematicInfo.Description}");
+            }
+        }
+
+        private void SchematicLoad(CommandArgs args)
+        {
+            var parameters = args.Parameters;
+            var player = args.Player;
+            if (parameters.Count != 2)
+            {
+                player.SendErrorMessage("Syntax: //schematic load <name>");
+                return;
+            }
+
+            var inputName = parameters[1];
+            if (!_schematicInfos.TryGetValue(inputName, out var schematicInfo))
+            {
+                player.SendErrorMessage($"Invalid schematic '{inputName}'.");
+                return;
+            }
+
+            if (!SchematicFormats.TryGetValue(schematicInfo.Format, out var schematicFormat))
+            {
+                player.SendErrorMessage("Schematic is malformed.");
+                return;
+            }
+
+            var session = Plugin.GetOrCreateSession(player);
+            var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
+            var stream = File.OpenRead(schematicPath);
+            try
+            {
+                session.Clipboard = schematicFormat.Read(stream);
+                player.SendSuccessMessage("Loaded schematic.");
+            }
+            catch (SchematicFormatException)
+            {
+                player.SendErrorMessage("Schematic is malformed.");
+            }
+            finally
+            {
+                stream.Close();
+            }
+        }
+
+        private void SchematicSave(CommandArgs args)
+        {
+            var parameters = args.Parameters;
+            var player = args.Player;
+            if (parameters.Count < 3)
+            {
+                player.SendErrorMessage("Syntax: //schematic save <name> <format> [description]");
+                return;
+            }
+
+            var session = Plugin.GetOrCreateSession(player);
+            var clipboard = session.Clipboard;
+            if (clipboard == null)
+            {
+                player.SendErrorMessage("Invalid clipboard.");
+                return;
+            }
+
+            var inputName = parameters[1];
+            if (inputName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+            {
+                player.SendErrorMessage($"Invalid name '{inputName}'.");
+                return;
+            }
+            if (_schematicInfos.ContainsKey(inputName))
+            {
+                player.SendErrorMessage("A schematic with that name already exists.");
+                return;
+            }
+
+            var inputSchematicFormat = parameters[2];
+            if (!SchematicFormats.TryGetValue(inputSchematicFormat, out var schematicFormat))
+            {
+                player.SendErrorMessage($"Invalid schematic format '{inputSchematicFormat}'.");
+                return;
+            }
+            
+            var inputDescription = string.Join(" ", parameters.Skip(3));
+            if (string.IsNullOrWhiteSpace(inputDescription))
+            {
+                inputDescription = "N/A";
+            }
+
+            var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
+            using (var stream = File.OpenWrite(schematicPath))
+            {
+                schematicFormat.Write(clipboard, stream);
+            }
+            _schematicInfos[inputName] = new SchematicInfo
+            {
+                Author = player.Name,
+                Description = inputDescription,
+                Format = inputSchematicFormat.ToLowerInvariant()
+            };
+
+            player.SendSuccessMessage("Saved schematic.");
         }
     }
 }

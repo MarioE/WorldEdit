@@ -16,21 +16,21 @@ namespace WorldEditTests.Masks
             Assert.Throws<ArgumentNullException>(() => new TemplateMask(null));
         }
 
-        [TestCase(10, 10, 4, 5)]
-        public void Test_False(int extentWidth, int extentHeight, int x, int y)
+        [TestCase(4, 5)]
+        public void Test_False(int x, int y)
         {
-            var extent = new MockExtent {Tiles = new ITile[extentWidth, extentHeight]};
-            var template = new Block(1);
+            var extent = new MockExtent {Tiles = new ITile[10, 10]};
+            var template = Block.Water;
             var mask = new TemplateMask(template);
 
             Assert.IsFalse(mask.Test(extent, new Vector(x, y)));
         }
 
-        [TestCase(10, 10, 4, 5)]
-        public void Test_True(int extentWidth, int extentHeight, int x, int y)
+        [TestCase(4, 5)]
+        public void Test_True(int x, int y)
         {
-            var extent = new MockExtent {Tiles = new ITile[extentWidth, extentHeight]};
-            var template = new Block(1);
+            var extent = new MockExtent {Tiles = new ITile[10, 10]};
+            var template = Block.Water;
             var mask = new TemplateMask(template);
             extent.SetTile(x, y, template.Apply(extent.GetTile(x, y)));
 

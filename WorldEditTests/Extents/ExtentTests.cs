@@ -7,6 +7,14 @@ namespace WorldEditTests.Extents
     [TestFixture]
     public class ExtentTests
     {
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var extent = new MockExtent {Tiles = new ITile[width, height]};
+
+            Assert.AreEqual(new Vector(width, height), extent.Dimensions);
+        }
+
         [TestCase(0, 0)]
         public void GetTileVector(int x, int y)
         {

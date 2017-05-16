@@ -94,31 +94,31 @@ namespace WorldEdit.Modules
         {
             var parameters = args.Parameters;
             var player = args.Player;
-            var input = string.Join("", parameters).Split('|');
-            if (parameters.Count < 1 || input.Length != 2)
+            var inputPatterns = string.Join("", parameters).Split('|');
+            if (parameters.Count < 1 || inputPatterns.Length != 2)
             {
-                var command = args.GetCommand();
-                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <from-pattern>|<to-pattern>");
+                var commandName = args.GetCommandName();
+                player.SendErrorMessage($"Syntax: //{commandName.ToLowerInvariant()} <from-pattern>|<to-pattern>");
                 return;
             }
 
-            var fromResult = Pattern<T>.Parse(input[0]);
-            if (!fromResult.WasSuccessful)
+            var fromPatternResult = Pattern<T>.Parse(inputPatterns[0]);
+            if (!fromPatternResult.WasSuccessful)
             {
-                player.SendErrorMessage(fromResult.ErrorMessage);
+                player.SendErrorMessage(fromPatternResult.ErrorMessage);
                 return;
             }
 
-            var toResult = Pattern<T>.Parse(input[1]);
-            if (!toResult.WasSuccessful)
+            var toPatternResult = Pattern<T>.Parse(inputPatterns[1]);
+            if (!toPatternResult.WasSuccessful)
             {
-                player.SendErrorMessage(toResult.ErrorMessage);
+                player.SendErrorMessage(toPatternResult.ErrorMessage);
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
-            var count = editSession.ReplaceTiles(session.Selection, fromResult.Value, toResult.Value);
+            var count = editSession.ReplaceTiles(session.Selection, fromPatternResult.Value, toPatternResult.Value);
             Netplay.ResetSections();
             player.SendSuccessMessage($"Modified {count} tiles.");
         }
@@ -129,21 +129,21 @@ namespace WorldEdit.Modules
             var player = args.Player;
             if (parameters.Count < 1)
             {
-                var command = args.GetCommand();
-                player.SendErrorMessage($"Syntax: //{command.ToLowerInvariant()} <pattern>");
+                var commandName = args.GetCommandName();
+                player.SendErrorMessage($"Syntax: //{commandName.ToLowerInvariant()} <pattern>");
                 return;
             }
 
-            var result = Pattern<T>.Parse(string.Join(" ", parameters));
-            if (!result.WasSuccessful)
+            var patternResult = Pattern<T>.Parse(string.Join(" ", parameters));
+            if (!patternResult.WasSuccessful)
             {
-                player.SendErrorMessage(result.ErrorMessage);
+                player.SendErrorMessage(patternResult.ErrorMessage);
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
-            var count = editSession.SetTiles(session.Selection, result.Value);
+            var count = editSession.SetTiles(session.Selection, patternResult.Value);
             Netplay.ResetSections();
             player.SendSuccessMessage($"Modified {count} tiles.");
         }

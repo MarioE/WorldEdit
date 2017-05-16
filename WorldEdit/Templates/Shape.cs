@@ -15,27 +15,20 @@ namespace WorldEdit.Templates
         public static readonly Shape TopLeft = new Shape(2);
         public static readonly Shape TopRight = new Shape(1);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Shape" /> class with the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        public Shape(int type)
-        {
-            Type = type;
-        }
+        private readonly int _type;
 
-        /// <summary>
-        /// Gets the type.
-        /// </summary>
-        public int Type { get; }
+        private Shape(int type)
+        {
+            _type = type;
+        }
 
         /// <summary>
         /// Parses the specified string into a shape.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<Shape> Parse(string s)
+        public static Result<Shape> Parse(string s)
         {
             if (s == null)
             {
@@ -44,22 +37,20 @@ namespace WorldEdit.Templates
 
             var field = typeof(Shape).GetField(s.RemoveWhitespace(),
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
-            if (field == null)
-            {
-                return ParsingResult.FromError<Shape>($"Invalid shape '{s}'.");
-            }
-            return ParsingResult.From((Shape)field.GetValue(null));
+            return field != null
+                ? Result.From((Shape)field.GetValue(null))
+                : Result.FromError<Shape>($"Invalid shape '{s}'.");
         }
 
         /// <inheritdoc />
         public Tile Apply(Tile tile)
         {
-            tile.HalfBlock = Type < 0;
-            tile.Slope = Math.Max(0, Type);
+            tile.IsHalfBlock = _type < 0;
+            tile.Slope = Math.Max(0, _type);
             return tile;
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile) => Type < 0 ? tile.HalfBlock : Type == tile.Slope;
+        public bool Matches(Tile tile) => _type < 0 ? tile.IsHalfBlock : _type == tile.Slope;
     }
 }

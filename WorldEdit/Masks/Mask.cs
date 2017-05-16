@@ -1,5 +1,4 @@
-﻿using System;
-using WorldEdit.Extents;
+﻿using WorldEdit.Extents;
 
 namespace WorldEdit.Masks
 {
@@ -9,29 +8,11 @@ namespace WorldEdit.Masks
     public abstract class Mask
     {
         /// <summary>
-        /// Tests the specified extent at a position. If the position is out of the bounds of the extent, then the test fails
-        /// immediately.
+        /// Tests the specified extent at a position. For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="extent">The extent to test.</param>
         /// <param name="position">The position.</param>
         /// <returns>The test result.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="extent" /> is <c>null</c>.</exception>
-        public bool Test(Extent extent, Vector position)
-        {
-            if (extent == null)
-            {
-                throw new ArgumentNullException(nameof(extent));
-            }
-
-            return extent.IsInBounds(position) && TestImpl(extent, position);
-        }
-
-        /// <summary>
-        /// Tests the specified extent at a position. This method will -not- check for <c>null</c> or bounds.
-        /// </summary>
-        /// <param name="extent">The extent to test.</param>
-        /// <param name="position">The position.</param>
-        /// <returns>The test result.</returns>
-        protected abstract bool TestImpl(Extent extent, Vector position);
+        public abstract bool Test(Extent extent, Vector position);
     }
 }

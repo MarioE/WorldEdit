@@ -8,19 +8,33 @@ namespace WorldEditTests.Templates
     [TestFixture]
     public class BlockTests
     {
-        [TestCase(1, -1, -1)]
-        [TestCase(19, -1, 18)]
-        public void Apply(int type, short frameX, short frameY)
+        private static readonly object[] ApplyTestCases =
+        {
+            new object[] {Block.Dirt, (ushort)0, (short)-1, (short)-1},
+            new object[] {Block.EbonwoodPlatform, (ushort)19, (short)-1, (short)18}
+        };
+
+        private static readonly object[] MatchesTestCases =
+        {
+            new object[] {Block.Dirt, (ushort)0, (short)-1, (short)-1, true},
+            new object[] {Block.Dirt, (ushort)0, (short)111, (short)-1, true},
+            new object[] {Block.Dirt, (ushort)0, (short)-1, (short)111, true},
+            new object[] {Block.Dirt, (ushort)1, (short)-1, (short)-1, false},
+            new object[] {Block.EbonwoodPlatform, (ushort)19, (short)-1, (short)18, true},
+            new object[] {Block.EbonwoodPlatform, (ushort)19, (short)-1, (short)-1, false}
+        };
+
+        [TestCaseSource(nameof(ApplyTestCases))]
+        public void Apply(Block block, ushort expectedType, short expectedFrameX, short expectedFrameY)
         {
             var tile = new Tile();
-            var block = new Block(type, frameX, frameY);
 
             tile = block.Apply(tile);
 
-            Assert.IsTrue(tile.Active);
-            Assert.AreEqual(type, tile.Type);
-            Assert.AreEqual(frameX, tile.FrameX);
-            Assert.AreEqual(frameY, tile.FrameY);
+            Assert.IsTrue(tile.IsActive);
+            Assert.AreEqual(expectedType, tile.Type);
+            Assert.AreEqual(expectedFrameX, tile.FrameX);
+            Assert.AreEqual(expectedFrameY, tile.FrameY);
         }
 
         [Test]
@@ -30,7 +44,7 @@ namespace WorldEditTests.Templates
 
             tile = Block.Air.Apply(tile);
 
-            Assert.IsFalse(tile.Active);
+            Assert.IsFalse(tile.IsActive);
         }
 
         [Test]
@@ -40,7 +54,7 @@ namespace WorldEditTests.Templates
 
             tile = Block.Honey.Apply(tile);
 
-            Assert.IsFalse(tile.Active);
+            Assert.IsFalse(tile.IsActive);
             Assert.AreEqual(255, tile.Liquid);
             Assert.AreEqual(2, tile.LiquidType);
         }
@@ -52,7 +66,7 @@ namespace WorldEditTests.Templates
 
             tile = Block.Lava.Apply(tile);
 
-            Assert.IsFalse(tile.Active);
+            Assert.IsFalse(tile.IsActive);
             Assert.AreEqual(255, tile.Liquid);
             Assert.AreEqual(1, tile.LiquidType);
         }
@@ -64,52 +78,21 @@ namespace WorldEditTests.Templates
 
             tile = Block.Water.Apply(tile);
 
-            Assert.IsFalse(tile.Active);
+            Assert.IsFalse(tile.IsActive);
             Assert.AreEqual(255, tile.Liquid);
             Assert.AreEqual(0, tile.LiquidType);
         }
 
-        [TestCase(1)]
-        public void GetFrameX(short frameX)
-        {
-            var block = new Block(0, frameX);
-
-            Assert.AreEqual(frameX, block.FrameX);
-        }
-
-        [TestCase(1)]
-        public void GetFrameY(short frameY)
-        {
-            var block = new Block(0, -1, frameY);
-
-            Assert.AreEqual(frameY, block.FrameY);
-        }
-
-        [TestCase(5)]
-        public void GetType(int type)
-        {
-            var block = new Block(type);
-
-            Assert.AreEqual(type, block.Type);
-        }
-
-        [TestCase(1, -1, -1, 0, -1, -1, false)]
-        [TestCase(1, 1, 1, 1, 1, -1, false)]
-        [TestCase(1, -1, -1, 1, -1, -1, true)]
-        [TestCase(1, -1, -1, 1, 16, -1, true)]
-        [TestCase(1, 1, -1, 1, 1, -16, true)]
-        [TestCase(1, 1, 1, 1, 1, 1, true)]
-        public void Matches(int type, short frameX, short frameY, int actualType, short actualFrameX,
-            short actualFrameY, bool expected)
+        [TestCaseSource(nameof(MatchesTestCases))]
+        public void Matches(Block block, ushort actualType, short actualFrameX, short actualFrameY, bool expected)
         {
             var tile = new Tile
             {
-                Type = (ushort)actualType,
+                Type = actualType,
                 FrameX = actualFrameX,
                 FrameY = actualFrameY,
-                Active = true
+                IsActive = true
             };
-            var block = new Block(type, frameX, frameY);
 
             Assert.AreEqual(expected, block.Matches(tile));
         }
@@ -118,7 +101,7 @@ namespace WorldEditTests.Templates
         [TestCase(false, true)]
         public void Matches_Air(bool active, bool expected)
         {
-            var tile = new Tile {Active = active};
+            var tile = new Tile {IsActive = active};
 
             Assert.AreEqual(expected, Block.Air.Matches(tile));
         }
@@ -172,14 +155,18 @@ namespace WorldEditTests.Templates
         [TestCase("spooky platform", 19, -1, 288)]
         [TestCase("67", 67, -1, -1)]
         [TestCase("67:7:14", 67, 7, 14)]
+        [TestCase("wood platform:-1:18", 19, -1, 18)]
         public void Parse(string s, int expectedType, short expectedFrameX, short expectedFrameY)
         {
+            var tile = new Tile();
+
             var result = Block.Parse(s);
 
             Assert.IsTrue(result.WasSuccessful);
-            Assert.AreEqual(expectedType, result.Value.Type);
-            Assert.AreEqual(expectedFrameX, result.Value.FrameX);
-            Assert.AreEqual(expectedFrameY, result.Value.FrameY);
+            tile = result.Value.Apply(tile);
+            Assert.AreEqual(expectedType, tile.Type);
+            Assert.AreEqual(expectedFrameX, tile.FrameX);
+            Assert.AreEqual(expectedFrameY, tile.FrameY);
         }
 
         [TestCase("")]

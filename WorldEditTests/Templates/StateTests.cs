@@ -8,105 +8,96 @@ namespace WorldEditTests.Templates
     [TestFixture]
     public class StateTests
     {
-        private bool GetValue(Tile tile, int type)
+        private static bool GetValue(Tile tile, byte type)
         {
             switch (type)
             {
                 case 1:
-                    return tile.Wire;
+                    return tile.HasRedWire;
                 case 2:
-                    return tile.Wire2;
+                    return tile.HasBlueWire;
                 case 3:
-                    return tile.Wire3;
+                    return tile.HasGreenWire;
                 case 4:
-                    return tile.Wire4;
+                    return tile.HasYellowWire;
                 case 5:
-                    return tile.Actuator;
+                    return tile.HasActuator;
                 case 6:
-                    return tile.Actuated;
+                    return tile.IsActuated;
                 default:
                     return false;
             }
         }
 
-        private Tile SetValue(Tile tile, int type, bool value)
+        private static Tile SetValue(Tile tile, byte type, bool value)
         {
             switch (type)
             {
                 case 1:
-                    tile.Wire = value;
+                    tile.HasRedWire = value;
                     return tile;
                 case 2:
-                    tile.Wire2 = value;
+                    tile.HasBlueWire = value;
                     return tile;
                 case 3:
-                    tile.Wire3 = value;
+                    tile.HasGreenWire = value;
                     return tile;
                 case 4:
-                    tile.Wire4 = value;
+                    tile.HasYellowWire = value;
                     return tile;
                 case 5:
-                    tile.Actuator = value;
+                    tile.HasActuator = value;
                     return tile;
                 case 6:
-                    tile.Actuated = value;
+                    tile.IsActuated = value;
                     return tile;
                 default:
                     return tile;
             }
         }
 
-        [TestCase(1, true)]
-        [TestCase(1, false)]
-        [TestCase(3, false)]
-        public void Apply(int type, bool value)
+        private static readonly object[] ApplyTestCases =
+        {
+            new object[] {State.RedWire, (byte)1, true},
+            new object[] {State.NotRedWire, (byte)1, false}
+        };
+
+        private static readonly object[] MatchesTestCases =
+        {
+            new object[] {State.RedWire, (byte)1, true, true},
+            new object[] {State.BlueWire, (byte)2, false, false}
+        };
+
+        [TestCaseSource(nameof(ApplyTestCases))]
+        public void Apply(State state, byte expectedType, bool expectedValue)
         {
             var tile = new Tile();
-            var state = new State(type, value);
 
             tile = state.Apply(tile);
 
-            Assert.AreEqual(value, GetValue(tile, type));
+            Assert.AreEqual(expectedValue, GetValue(tile, expectedType));
         }
 
-        [TestCase(1)]
-        public void GetType(int type)
-        {
-            var state = new State(type, false);
-
-            Assert.AreEqual(type, state.Type);
-        }
-
-        [TestCase(true)]
-        public void GetValue(bool value)
-        {
-            var state = new State(0, value);
-
-            Assert.AreEqual(value, state.Value);
-        }
-
-        [TestCase(1, true, 1, false, false)]
-        [TestCase(3, true, 2, true, false)]
-        [TestCase(1, true, 1, true, true)]
-        [TestCase(3, false, 3, false, true)]
-        public void Matches(int type, bool value, int actualType, bool actualValue, bool expected)
+        [TestCaseSource(nameof(MatchesTestCases))]
+        public void Matches(State state, byte actualType, bool actualValue, bool expected)
         {
             var tile = new Tile();
             tile = SetValue(tile, actualType, actualValue);
-            var state = new State(type, value);
 
             Assert.AreEqual(expected, state.Matches(tile));
         }
 
         [TestCase("red wire", 1, true)]
         [TestCase("!red wire", 1, false)]
-        public void Parse(string s, int expectedType, bool expectedValue)
+        public void Parse(string s, byte expectedType, bool expectedValue)
         {
+            var tile = new Tile();
+
             var result = State.Parse(s);
 
             Assert.IsTrue(result.WasSuccessful);
-            Assert.AreEqual(expectedType, result.Value.Type);
-            Assert.AreEqual(expectedValue, result.Value.Value);
+            tile = result.Value.Apply(tile);
+            Assert.AreEqual(expectedValue, GetValue(tile, expectedType));
         }
 
         [TestCase("")]

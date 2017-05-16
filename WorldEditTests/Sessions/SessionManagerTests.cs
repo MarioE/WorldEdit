@@ -65,7 +65,7 @@ namespace WorldEditTests.Sessions
             var session = sessionManager.GetOrCreate("test");
             sessionManager.StartRemoving("test");
 
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
             var session2 = sessionManager.GetOrCreate("test");
             Assert.AreNotEqual(session, session2);
         }

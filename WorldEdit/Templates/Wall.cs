@@ -7,6 +7,7 @@ namespace WorldEdit.Templates
     /// </summary>
     public class Wall : ITemplate
     {
+        private const byte MaxId = 231;
         public static readonly Wall AdamantiteBeam = new Wall(32);
         public static readonly Wall Air = new Wall(0);
         public static readonly Wall AmberGemspark = new Wall(153);
@@ -156,52 +157,45 @@ namespace WorldEdit.Templates
         public static readonly Wall YellowStainedGlass = new Wall(89);
         public static readonly Wall YellowStucco = new Wall(37);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Wall" /> class with the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        public Wall(byte type)
-        {
-            Type = type;
-        }
+        private readonly byte _type;
 
-        /// <summary>
-        /// Gets the type.
-        /// </summary>
-        public byte Type { get; }
+        private Wall(byte type)
+        {
+            _type = type;
+        }
 
         /// <summary>
         /// Parses the specified string into a wall.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<Wall> Parse(string s)
+        public static Result<Wall> Parse(string s)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (byte.TryParse(s, out var type))
+            if (byte.TryParse(s, out var type) && type < MaxId)
             {
-                return ParsingResult.From(new Wall(type));
+                return Result.From(new Wall(type));
             }
 
             var field = typeof(Wall).GetField(s.ToPascalCase());
             return field != null
-                ? ParsingResult.From((Wall)field.GetValue(null))
-                : ParsingResult.FromError<Wall>($"Invalid wall '{s}'.");
+                ? Result.From((Wall)field.GetValue(null))
+                : Result.FromError<Wall>($"Invalid wall '{s}'.");
         }
 
         /// <inheritdoc />
         public Tile Apply(Tile tile)
         {
-            tile.Wall = Type;
+            tile.Wall = _type;
             return tile;
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile) => tile.Wall == Type;
+        public bool Matches(Tile tile) => tile.Wall == _type;
     }
 }

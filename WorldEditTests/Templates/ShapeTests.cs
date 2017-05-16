@@ -8,53 +8,66 @@ namespace WorldEditTests.Templates
     [TestFixture]
     public class ShapeTests
     {
-        [TestCase(-1)]
-        [TestCase(0)]
-        [TestCase(4)]
-        public void Apply(int type)
+        private static int GetShape(Tile tile) => tile.IsHalfBlock ? -1 : tile.Slope;
+
+        private static Tile SetShape(Tile tile, int shape)
+        {
+            if (shape < 0)
+            {
+                tile.IsHalfBlock = true;
+            }
+            else
+            {
+                tile.Slope = shape;
+            }
+            return tile;
+        }
+
+        private static readonly object[] ApplyTestCases =
+        {
+            new object[] {Shape.Half, -1},
+            new object[] {Shape.Normal, 0},
+            new object[] {Shape.TopLeft, 2}
+        };
+
+        private static readonly object[] MatchesTestCases =
+        {
+            new object[] {Shape.Half, 1, false},
+            new object[] {Shape.Half, -1, true},
+            new object[] {Shape.TopLeft, 2, true},
+            new object[] {Shape.TopLeft, 3, false}
+        };
+
+        [TestCaseSource(nameof(ApplyTestCases))]
+        public void Apply(Shape shape, int expectedShape)
         {
             var tile = new Tile();
-            var shape = new Shape(type);
 
             tile = shape.Apply(tile);
 
-            Assert.AreEqual(type < 0, tile.HalfBlock);
-            Assert.AreEqual(Math.Max(0, type), tile.Slope);
+            Assert.AreEqual(expectedShape, GetShape(tile));
         }
 
-        [TestCase(1)]
-        public void GetType(int type)
+        [TestCaseSource(nameof(MatchesTestCases))]
+        public void Matches(Shape shape, int actualShape, bool expected)
         {
-            var shape = new Shape(type);
-
-            Assert.AreEqual(type, shape.Type);
-        }
-
-        [TestCase(-1, 0, false)]
-        [TestCase(0, 3, false)]
-        [TestCase(-1, -1, true)]
-        [TestCase(0, 0, true)]
-        [TestCase(3, 3, true)]
-        public void Matches(int type, int actualType, bool expected)
-        {
-            var tile = new Tile
-            {
-                HalfBlock = actualType < 0,
-                Slope = Math.Max(0, actualType)
-            };
-            var shape = new Shape(type);
+            var tile = new Tile();
+            tile = SetShape(tile, actualShape);
 
             Assert.AreEqual(expected, shape.Matches(tile));
         }
 
         [TestCase("half", -1)]
         [TestCase("NORMAL", 0)]
-        public void Parse(string s, int expectedType)
+        public void Parse(string s, int expectedShape)
         {
+            var tile = new Tile();
+
             var result = Shape.Parse(s);
 
             Assert.IsTrue(result.WasSuccessful);
-            Assert.AreEqual(expectedType, result.Value.Type);
+            tile = result.Value.Apply(tile);
+            Assert.AreEqual(expectedShape, GetShape(tile));
         }
 
         [TestCase("")]

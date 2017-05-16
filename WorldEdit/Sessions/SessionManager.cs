@@ -26,7 +26,7 @@ namespace WorldEdit.Sessions
         {
             _sessionCreator = sessionCreator ?? throw new ArgumentNullException(nameof(sessionCreator));
             _gracePeriod = gracePeriod;
-            _timer.Elapsed += (sender, args) => Flush();
+            _timer.Elapsed += Flush;
             _timer.Start();
         }
 
@@ -39,26 +39,8 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Flushes all expired sessions.
-        /// </summary>
-        public void Flush()
-        {
-            lock (_lock)
-            {
-                var expiredUsernames = from s in _sessionHolders
-                                       let v = s.Value
-                                       where v.IsExpiring && DateTime.UtcNow > v.ExpirationTime
-                                       select s.Key;
-                foreach (var username in expiredUsernames.ToList())
-                {
-                    _sessionHolders.Remove(username);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the session associated with the specified username, or creates it if it does not exist. This stops the expiration
-        /// countdown.
+        /// Gets the session associated with the specified username, or creates it if it does not exist. This will stop the
+        /// expiration countdown.
         /// </summary>
         /// <param name="username">The username.</param>
         /// <returns>The session associated with the username.</returns>
@@ -102,6 +84,21 @@ namespace WorldEdit.Sessions
                 {
                     sessionHolder.IsExpiring = true;
                     sessionHolder.ExpirationTime = DateTime.UtcNow + _gracePeriod;
+                }
+            }
+        }
+
+        private void Flush(object sender, ElapsedEventArgs args)
+        {
+            lock (_lock)
+            {
+                var expiredUsernames = from s in _sessionHolders
+                                       let v = s.Value
+                                       where v.IsExpiring && DateTime.UtcNow > v.ExpirationTime
+                                       select s.Key;
+                foreach (var username in expiredUsernames.ToList())
+                {
+                    _sessionHolders.Remove(username);
                 }
             }
         }

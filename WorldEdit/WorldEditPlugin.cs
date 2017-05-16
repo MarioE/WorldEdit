@@ -21,7 +21,7 @@ namespace WorldEdit
         private readonly List<Command> _commands = new List<Command>();
         private readonly List<Module> _modules = new List<Module>();
         private Config _config = new Config();
-        private SessionManager _sessions;
+        private SessionManager _sessionManager;
         private World _world;
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace WorldEdit
             }
 
             var username = player.User?.Name ?? throw new ArgumentException("No username.", nameof(player));
-            return _sessions.GetOrCreate(username);
+            return _sessionManager.GetOrCreate(username);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace WorldEdit
 
             ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
             _world = new World(Main.tile);
-            _sessions = new SessionManager(() => new Session(_world, _config.SessionHistoryLimit),
+            _sessionManager = new SessionManager(() => new Session(_world, _config.SessionHistoryLimit),
                 _config.SessionGracePeriod);
 
             var modules = from t in Assembly.GetExecutingAssembly().GetTypes()
@@ -109,9 +109,16 @@ namespace WorldEdit
         /// </exception>
         public Command RegisterCommand(string name, CommandDelegate callback, string permission)
         {
-            var command = new Command(permission,
-                callback ?? throw new ArgumentNullException(nameof(callback)),
-                name ?? throw new ArgumentNullException(nameof(name)));
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            var command = new Command(permission, callback, name);
             _commands.Add(command);
             Commands.ChatCommands.Add(command);
             return command;
@@ -146,7 +153,7 @@ namespace WorldEdit
             var username = TShock.Players[args.Who]?.User?.Name;
             if (username != null)
             {
-                _sessions.StartRemoving(username);
+                _sessionManager.StartRemoving(username);
             }
         }
     }

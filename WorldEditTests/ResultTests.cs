@@ -5,18 +5,18 @@ using WorldEdit;
 namespace WorldEditTests
 {
     [TestFixture]
-    public class ParsingResultTests
+    public class ResultTests
     {
         [Test]
         public void Ctor_NullErrorMessage_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new ParsingResult(null));
+            Assert.Throws<ArgumentNullException>(() => new Result(null));
         }
 
         [TestCase(3)]
         public void From(int value)
         {
-            var result = ParsingResult.From(value);
+            var result = Result.From(value);
 
             Assert.AreEqual(value, result.Value);
         }
@@ -24,7 +24,7 @@ namespace WorldEditTests
         [TestCase("a")]
         public void FromError(string errorMessage)
         {
-            var result = ParsingResult.FromError<int>(errorMessage);
+            var result = Result.FromError<int>(errorMessage);
 
             Assert.AreEqual(errorMessage, result.ErrorMessage);
         }
@@ -32,13 +32,13 @@ namespace WorldEditTests
         [Test]
         public void FromError_NullErrorMessage_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => ParsingResult.FromError<int>(null));
+            Assert.Throws<ArgumentNullException>(() => Result.FromError<int>(null));
         }
 
         [TestCase("a")]
         public void GetErrorMessage(string errorMessage)
         {
-            var result = new ParsingResult(errorMessage);
+            var result = new Result(errorMessage);
 
             Assert.AreEqual(errorMessage, result.ErrorMessage);
         }
@@ -47,7 +47,7 @@ namespace WorldEditTests
         public void GetValue()
         {
             var value = new object();
-            var result = new ParsingResult(value);
+            var result = new Result(value);
 
             Assert.AreEqual(value, result.Value);
         }
@@ -55,7 +55,7 @@ namespace WorldEditTests
         [TestCase(5)]
         public void GetValue_Generic(int value)
         {
-            var result = new ParsingResult<int>(value);
+            var result = new Result<int>(value);
 
             Assert.AreEqual(value, result.Value);
         }
@@ -63,7 +63,7 @@ namespace WorldEditTests
         [Test]
         public void GetWasSuccessful_False()
         {
-            var result = new ParsingResult("Fail");
+            var result = new Result("Fail");
 
             Assert.IsFalse(result.WasSuccessful);
         }
@@ -71,7 +71,7 @@ namespace WorldEditTests
         [Test]
         public void GetWasSuccessful_True()
         {
-            var result = new ParsingResult(3);
+            var result = new Result(3);
 
             Assert.IsTrue(result.WasSuccessful);
         }

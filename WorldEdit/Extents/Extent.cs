@@ -6,6 +6,11 @@
     public abstract class Extent
     {
         /// <summary>
+        /// Gets the dimensions of the extent.
+        /// </summary>
+        public Vector Dimensions => UpperBound - LowerBound;
+
+        /// <summary>
         /// Gets a lower bound position on the extent.
         /// </summary>
         public abstract Vector LowerBound { get; }
@@ -16,7 +21,7 @@
         public abstract Vector UpperBound { get; }
 
         /// <summary>
-        /// Returns the tile located at the specified coordinates. This method will -not- check bounds.
+        /// Returns the tile located at the specified coordinates. For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
@@ -24,7 +29,7 @@
         public abstract Tile GetTile(int x, int y);
 
         /// <summary>
-        /// Returns the tile located at the specified position. This method will -not- check bounds.
+        /// Returns the tile located at the specified position. For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>The tile.</returns>
@@ -33,8 +38,8 @@
         /// <summary>
         /// Determines whether the specified coordinates are in the bounds of the extent.
         /// </summary>
-        /// <param name="x">The X coordinate.</param>
-        /// <param name="y">The Y coordinate.</param>
+        /// <param name="x">The X coordinate to check.</param>
+        /// <param name="y">The Y coordinate to check.</param>
         /// <returns><c>true</c> if the coordinates are in the bounds; otherwise, <c>false</c>.</returns>
         public bool IsInBounds(int x, int y) =>
             LowerBound.X <= x && x < UpperBound.X && LowerBound.Y <= y && y < UpperBound.Y;
@@ -47,7 +52,7 @@
         public bool IsInBounds(Vector position) => IsInBounds(position.X, position.Y);
 
         /// <summary>
-        /// Sets the tile located at the specified coordinates. This method will -not- check bounds.
+        /// Sets the tile located at the specified coordinates. For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
@@ -56,7 +61,7 @@
         public abstract bool SetTile(int x, int y, Tile tile);
 
         /// <summary>
-        /// Sets the tile located at the specified position. This method will -not- check bounds.
+        /// Sets the tile located at the specified position. For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="tile">The tile.</param>

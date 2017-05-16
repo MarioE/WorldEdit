@@ -39,27 +39,20 @@ namespace WorldEdit.Templates
         public static readonly WallColor White = new WallColor(26);
         public static readonly WallColor Yellow = new WallColor(3);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WallColor" /> class with the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        public WallColor(byte type)
-        {
-            Type = type;
-        }
+        private readonly byte _type;
 
-        /// <summary>
-        /// Gets the type.
-        /// </summary>
-        public byte Type { get; }
+        private WallColor(byte type)
+        {
+            _type = type;
+        }
 
         /// <summary>
         /// Parses the specified string into a wall color.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<WallColor> Parse(string s)
+        public static Result<WallColor> Parse(string s)
         {
             if (s == null)
             {
@@ -67,21 +60,19 @@ namespace WorldEdit.Templates
             }
 
             var field = typeof(WallColor).GetField(s.ToPascalCase());
-            if (field == null)
-            {
-                return ParsingResult.FromError<WallColor>($"Invalid wall color '{s}'.");
-            }
-            return ParsingResult.From((WallColor)field.GetValue(null));
+            return field != null
+                ? Result.From((WallColor)field.GetValue(null))
+                : Result.FromError<WallColor>($"Invalid wall color '{s}'.");
         }
 
         /// <inheritdoc />
         public Tile Apply(Tile tile)
         {
-            tile.WallColor = Type;
+            tile.WallColor = _type;
             return tile;
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile) => tile.WallColor == Type;
+        public bool Matches(Tile tile) => tile.WallColor == _type;
     }
 }

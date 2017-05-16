@@ -8,6 +8,6 @@ namespace WorldEdit.Masks
     public class NullMask : Mask
     {
         /// <inheritdoc />
-        protected override bool TestImpl(Extent extent, Vector position) => true;
+        public override bool Test(Extent extent, Vector position) => true;
     }
 }

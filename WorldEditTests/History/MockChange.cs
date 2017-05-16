@@ -5,8 +5,8 @@ namespace WorldEditTests.History
 {
     public class MockChange : Change
     {
-        protected override bool RedoImpl(Extent extent) => true;
+        public override bool Redo(Extent extent) => true;
 
-        protected override bool UndoImpl(Extent extent) => true;
+        public override bool Undo(Extent extent) => true;
     }
 }

@@ -19,7 +19,12 @@ namespace WorldEdit.History
         /// <exception cref="ArgumentNullException"><paramref name="change" /> is <c>null</c>.</exception>
         public void Add(Change change)
         {
-            _changes.Add(change ?? throw new ArgumentNullException(nameof(change)));
+            if (change == null)
+            {
+                throw new ArgumentNullException(nameof(change));
+            }
+
+            _changes.Add(change);
         }
 
         /// <summary>

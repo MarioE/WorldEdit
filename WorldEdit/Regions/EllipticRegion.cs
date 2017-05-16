@@ -12,17 +12,17 @@ namespace WorldEdit.Regions
         private readonly List<Vector> _boundaryPositions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified center position and radius.
+        /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified positions.
         /// </summary>
-        /// <param name="center">The center position.</param>
-        /// <param name="radius">The radius. The components will be normalized to positive values.</param>
-        public EllipticRegion(Vector center, Vector radius)
+        /// <param name="position1">The first position.</param>
+        /// <param name="position2">The second position.</param>
+        public EllipticRegion(Vector position1, Vector position2)
         {
-            Center = center;
-            Radius = new Vector(Math.Abs(radius.X), Math.Abs(radius.Y));
+            Center = position1;
+            Radius = new Vector(Math.Abs(position2.X - position1.X), Math.Abs(position2.Y - position1.Y));
 
             // TODO: consider more efficient hashtable implementation
-            _boundaryPositions = GenerateBoundaryPositions(center, Radius);
+            _boundaryPositions = GenerateBoundaryPositions(position1, Radius);
         }
 
         /// <summary>
@@ -45,10 +45,6 @@ namespace WorldEdit.Regions
         public override bool Contains(Vector position)
         {
             if (position.X < LowerBound.X || position.X >= UpperBound.X)
-            {
-                return false;
-            }
-            if (position.Y < LowerBound.Y || position.Y >= UpperBound.Y)
             {
                 return false;
             }

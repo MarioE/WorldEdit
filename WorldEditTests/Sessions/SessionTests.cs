@@ -78,7 +78,7 @@ namespace WorldEditTests.Sessions
         {
             var world = new World(new MockTileCollection());
             var session = new Session(world, 0);
-            var regionSelector = new RectangularRegionSelector();
+            var regionSelector = new RegionSelector();
 
             session.RegionSelector = regionSelector;
 

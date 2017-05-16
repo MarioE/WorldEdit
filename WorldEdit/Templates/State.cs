@@ -20,34 +20,22 @@ namespace WorldEdit.Templates
         public static readonly State RedWire = new State(1, true);
         public static readonly State YellowWire = new State(4, true);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="State" /> with the specified type and value.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="value">The value.</param>
-        public State(int type, bool value)
+        private readonly byte _type;
+        private readonly bool _value;
+
+        private State(byte type, bool value)
         {
-            Type = type;
-            Value = value;
+            _type = type;
+            _value = value;
         }
-
-        /// <summary>
-        /// Gets the type.
-        /// </summary>
-        public int Type { get; }
-
-        /// <summary>
-        /// Gets the value.
-        /// </summary>
-        public bool Value { get; }
 
         /// <summary>
         /// Parses the specified string into a state.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<State> Parse(string s)
+        public static Result<State> Parse(string s)
         {
             if (s == null)
             {
@@ -61,35 +49,33 @@ namespace WorldEdit.Templates
             }
 
             var field = typeof(State).GetField(s2.ToPascalCase());
-            if (field == null)
-            {
-                return ParsingResult.FromError<State>($"Invalid state '{s}'.");
-            }
-            return ParsingResult.From((State)field.GetValue(null));
+            return field != null
+                ? Result.From((State)field.GetValue(null))
+                : Result.FromError<State>($"Invalid state '{s}'.");
         }
 
         /// <inheritdoc />
         public Tile Apply(Tile tile)
         {
-            switch (Type)
+            switch (_type)
             {
                 case 1:
-                    tile.Wire = Value;
+                    tile.HasRedWire = _value;
                     return tile;
                 case 2:
-                    tile.Wire2 = Value;
+                    tile.HasBlueWire = _value;
                     return tile;
                 case 3:
-                    tile.Wire3 = Value;
+                    tile.HasGreenWire = _value;
                     return tile;
                 case 4:
-                    tile.Wire4 = Value;
+                    tile.HasYellowWire = _value;
                     return tile;
                 case 5:
-                    tile.Actuator = Value;
+                    tile.HasActuator = _value;
                     return tile;
                 case 6:
-                    tile.Actuated = Value;
+                    tile.IsActuated = _value;
                     return tile;
                 default:
                     return tile;
@@ -99,20 +85,20 @@ namespace WorldEdit.Templates
         /// <inheritdoc />
         public bool Matches(Tile tile)
         {
-            switch (Type)
+            switch (_type)
             {
                 case 1:
-                    return tile.Wire == Value;
+                    return tile.HasRedWire == _value;
                 case 2:
-                    return tile.Wire2 == Value;
+                    return tile.HasBlueWire == _value;
                 case 3:
-                    return tile.Wire3 == Value;
+                    return tile.HasGreenWire == _value;
                 case 4:
-                    return tile.Wire4 == Value;
+                    return tile.HasYellowWire == _value;
                 case 5:
-                    return tile.Actuator == Value;
+                    return tile.HasActuator == _value;
                 case 6:
-                    return tile.Actuated == Value;
+                    return tile.IsActuated == _value;
                 default:
                     return false;
             }

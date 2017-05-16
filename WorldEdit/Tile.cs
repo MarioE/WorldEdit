@@ -1,5 +1,4 @@
-﻿using System;
-using OTAPI.Tile;
+﻿using OTAPI.Tile;
 
 namespace WorldEdit
 {
@@ -8,7 +7,6 @@ namespace WorldEdit
     /// <para />
     /// This class is a mutable struct to relieve GC pressure and add ease of use.
     /// </summary>
-    [Serializable]
     public struct Tile
     {
         /// <summary>
@@ -32,33 +30,6 @@ namespace WorldEdit
             STileHeader = copy.sTileHeader;
             Type = copy.type;
             Wall = copy.wall;
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the tile is active.
-        /// </summary>
-        public bool Active
-        {
-            get => (STileHeader & 0x20) != 0;
-            set => STileHeader = (short)((STileHeader & ~0x20) | (value ? 0x20 : 0));
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the tile is actuated.
-        /// </summary>
-        public bool Actuated
-        {
-            get => (STileHeader & 0x40) != 0;
-            set => STileHeader = (short)((STileHeader & ~0x40) | (value ? 0x40 : 0));
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the tile has an actuator.
-        /// </summary>
-        public bool Actuator
-        {
-            get => (STileHeader & 0x800) != 0;
-            set => STileHeader = (short)((STileHeader & ~0x800) | (value ? 0x800 : 0));
         }
 
         /// <summary>
@@ -86,9 +57,72 @@ namespace WorldEdit
         public short FrameY { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the tile has an actuator.
+        /// </summary>
+        public bool HasActuator
+        {
+            get => (STileHeader & 0x800) != 0;
+            set => STileHeader = (short)((STileHeader & ~0x800) | (value ? 0x800 : 0));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tile has blue wire.
+        /// </summary>
+        public bool HasBlueWire
+        {
+            get => (STileHeader & 0x100) != 0;
+            set => STileHeader = (short)((STileHeader & ~0x100) | (value ? 0x100 : 0));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tile has green wire.
+        /// </summary>
+        public bool HasGreenWire
+        {
+            get => (STileHeader & 0x200) != 0;
+            set => STileHeader = (short)((STileHeader & ~0x200) | (value ? 0x200 : 0));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tile has red wire.
+        /// </summary>
+        public bool HasRedWire
+        {
+            get => (STileHeader & 0x80) != 0;
+            set => STileHeader = (short)((STileHeader & ~0x80) | (value ? 0x80 : 0));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tile has yellow wire.
+        /// </summary>
+        public bool HasYellowWire
+        {
+            get => (BTileHeader & 0x80) != 0;
+            set => BTileHeader = (byte)((BTileHeader & ~0x80) | (value ? 0x80 : 0));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tile is active.
+        /// </summary>
+        public bool IsActive
+        {
+            get => (STileHeader & 0x20) != 0;
+            set => STileHeader = (short)((STileHeader & ~0x20) | (value ? 0x20 : 0));
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tile is actuated.
+        /// </summary>
+        public bool IsActuated
+        {
+            get => (STileHeader & 0x40) != 0;
+            set => STileHeader = (short)((STileHeader & ~0x40) | (value ? 0x40 : 0));
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the tile is a half block.
         /// </summary>
-        public bool HalfBlock
+        public bool IsHalfBlock
         {
             get => (STileHeader & 0x400) != 0;
             set => STileHeader = (short)((STileHeader & ~0x400) | (value ? 0x400 : 0));
@@ -97,7 +131,7 @@ namespace WorldEdit
         /// <summary>
         /// Gets or sets a value indicating whether the tile is honey.
         /// </summary>
-        public bool Honey
+        public bool IsHoney
         {
             get => (BTileHeader & 0x40) != 0;
             set => BTileHeader = (byte)((BTileHeader & ~0x40) | (value ? 0x40 : 0));
@@ -106,7 +140,7 @@ namespace WorldEdit
         /// <summary>
         /// Gets or sets a value indicating whether the tile is lava.
         /// </summary>
-        public bool Lava
+        public bool IsLava
         {
             get => (BTileHeader & 0x20) != 0;
             set => BTileHeader = (byte)((BTileHeader & ~0x20) | (value ? 0x20 : 0));
@@ -160,43 +194,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile has red wire.
-        /// </summary>
-        public bool Wire
-        {
-            get => (STileHeader & 0x80) != 0;
-            set => STileHeader = (short)((STileHeader & ~0x80) | (value ? 0x80 : 0));
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the tile has blue wire.
-        /// </summary>
-        public bool Wire2
-        {
-            get => (STileHeader & 0x100) != 0;
-            set => STileHeader = (short)((STileHeader & ~0x100) | (value ? 0x100 : 0));
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the tile has green wire.
-        /// </summary>
-        public bool Wire3
-        {
-            get => (STileHeader & 0x200) != 0;
-            set => STileHeader = (short)((STileHeader & ~0x200) | (value ? 0x200 : 0));
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the tile has yellow wire.
-        /// </summary>
-        public bool Wire4
-        {
-            get => (BTileHeader & 0x80) != 0;
-            set => BTileHeader = (byte)((BTileHeader & ~0x80) | (value ? 0x80 : 0));
-        }
-
-        /// <summary>
-        /// Converts the tile to the equivalent <see cref="ITile" /> instance.
+        /// Converts the tile to an equivalent <see cref="ITile" /> instance.
         /// </summary>
         /// <returns>The <see cref="ITile" /> instance.</returns>
         public ITile ToITile() => new Terraria.Tile

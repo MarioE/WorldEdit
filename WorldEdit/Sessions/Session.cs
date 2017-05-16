@@ -15,7 +15,7 @@ namespace WorldEdit.Sessions
         private List<EditSession> _history = new List<EditSession>();
         private int _historyIndex;
         private Mask _mask = new NullMask();
-        private RegionSelector _regionSelector = new RectangularRegionSelector();
+        private RegionSelector _regionSelector = new RegionSelector();
         private Region _selection = new NullRegion();
 
         /// <summary>
@@ -107,6 +107,7 @@ namespace WorldEdit.Sessions
             var editSession = new EditSession(_world, Limit, _mask);
             if (remember)
             {
+                // Overwrite history at the index and limit it.
                 _history = _history.GetRange(0, _historyIndex++);
                 _history.Add(editSession);
                 while (_history.Count > _historyLimit)

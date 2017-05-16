@@ -28,10 +28,15 @@ namespace WorldEdit.Sessions
         /// </exception>
         public EditSession(World world, int limit, Mask mask)
         {
+            if (mask == null)
+            {
+                throw new ArgumentNullException(nameof(mask));
+            }
+
             _world = world ?? throw new ArgumentNullException(nameof(world));
             _extent = new LoggedExtent(_world, _changeSet);
             _extent = new LimitedExtent(_extent, limit);
-            _extent = new MaskedExtent(_extent, mask ?? throw new ArgumentNullException(nameof(mask)));
+            _extent = new MaskedExtent(_extent, mask);
         }
 
         /// <inheritdoc />
@@ -74,7 +79,7 @@ namespace WorldEdit.Sessions
         public int Redo() => _changeSet.Redo(_world);
 
         /// <summary>
-        /// Replaces the tiles in the specified region using the templates.
+        /// Replaces the tiles in the specified region using the specified templates.
         /// </summary>
         /// <param name="region">The region to modify.</param>
         /// <param name="fromTemplate">The template to match with.</param>
@@ -114,7 +119,7 @@ namespace WorldEdit.Sessions
         public override bool SetTile(int x, int y, Tile tile) => _extent.SetTile(x, y, tile);
 
         /// <summary>
-        /// Sets the tiles in the specified region using the template.
+        /// Sets the tiles in the specified region using the specified template.
         /// </summary>
         /// <param name="region">The region to modify.</param>
         /// <param name="template">The template to apply.</param>

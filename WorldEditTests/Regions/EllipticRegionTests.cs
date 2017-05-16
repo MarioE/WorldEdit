@@ -12,6 +12,7 @@ namespace WorldEditTests.Regions
         [TestCase(0, 0, 5, 7, 0, 7, true)]
         [TestCase(0, 0, 5, 7, 0, 8, false)]
         [TestCase(0, 0, 5, 7, 4, 3, true)]
+        [TestCase(0, 0, 5, 7, 5, 0, true)]
         public void Contains(int x, int y, int radiusX, int radiusY, int testX, int testY, bool expected)
         {
             var region = new EllipticRegion(new Vector(x, y), new Vector(radiusX, radiusY));

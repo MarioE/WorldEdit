@@ -11,7 +11,7 @@ namespace WorldEditTests.Templates
         [TestCase(0)]
         public void Ctor_NonPositiveWeight_ThrowsArgumentOutOfRangeException(int weight)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new PatternEntry<Block>(new Block(1), weight));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new PatternEntry<Block>(Block.Water, weight));
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace WorldEditTests.Templates
         [Test]
         public void GetTemplate()
         {
-            var template = new Block(1);
+            var template = Block.Water;
             var patternEntry = new PatternEntry<Block>(template, 1);
 
             Assert.AreEqual(template, patternEntry.Template);
@@ -32,7 +32,7 @@ namespace WorldEditTests.Templates
         [TestCase(2)]
         public void GetWeight(int weight)
         {
-            var patternEntry = new PatternEntry<Block>(new Block(1), weight);
+            var patternEntry = new PatternEntry<Block>(Block.Water, weight);
 
             Assert.AreEqual(weight, patternEntry.Weight);
         }

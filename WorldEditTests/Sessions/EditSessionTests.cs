@@ -97,8 +97,8 @@ namespace WorldEditTests.Sessions
         [TestCase(0, 0, 10, 10)]
         public void ReplaceTiles(int x, int y, int x2, int y2)
         {
-            var fromTemplate = new Wall(1);
-            var toTemplate = new Wall(2);
+            var fromTemplate = Wall.Air;
+            var toTemplate = Wall.Stone;
             var usedToMatch = new Dictionary<Vector, bool>();
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             for (var x3 = 0; x3 < 20; ++x3)
@@ -130,7 +130,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, -1, new NullMask());
 
-            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), null, new Block(2)));
+            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), null, Block.Lava));
         }
 
         [Test]
@@ -139,7 +139,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, -1, new NullMask());
 
-            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(null, new Block(1), new Block(2)));
+            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(null, Block.Water, Block.Lava));
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, -1, new NullMask());
 
-            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), new Block(1), null));
+            Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(new NullRegion(), Block.Water, null));
         }
 
         [TestCase(0, 0)]
@@ -179,10 +179,10 @@ namespace WorldEditTests.Sessions
         public void SetTileIntInt_MaskObeyed(int x, int y)
         {
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var editSession = new EditSession(world, -1, new TemplateMask(new Wall(1)));
+            var editSession = new EditSession(world, -1, new TemplateMask(Wall.AdamantiteBeam));
 
-            Assert.IsFalse(editSession.SetTile(x, y, new Tile {Wall = 1}));
-            Assert.AreNotEqual(1, editSession.GetTile(x, y).Wall);
+            Assert.IsFalse(editSession.SetTile(x, y, new Tile {Wall = 32}));
+            Assert.AreNotEqual(32, editSession.GetTile(x, y).Wall);
         }
 
         [TestCase(0, 0, 10, 10)]
@@ -191,7 +191,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, -1, new NullMask());
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
-            var template = new Block(1);
+            var template = Block.Water;
 
             editSession.SetTiles(region, template);
 
@@ -207,7 +207,7 @@ namespace WorldEditTests.Sessions
             var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
             var editSession = new EditSession(world, -1, new NullMask());
 
-            Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(null, new Block(1)));
+            Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(null, Block.Water));
         }
 
         [Test]

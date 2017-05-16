@@ -39,27 +39,20 @@ namespace WorldEdit.Templates
         public static readonly Color White = new Color(26);
         public static readonly Color Yellow = new Color(3);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Color" /> class with the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        public Color(byte type)
-        {
-            Type = type;
-        }
+        private readonly byte _type;
 
-        /// <summary>
-        /// Gets the type.
-        /// </summary>
-        public byte Type { get; }
+        private Color(byte type)
+        {
+            _type = type;
+        }
 
         /// <summary>
         /// Parses the specified string into a color.
         /// </summary>
         /// <param name="s">The string to parse.</param>
-        /// <returns>The parsing result.</returns>
+        /// <returns>The result.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s" /> is <c>null</c>.</exception>
-        public static ParsingResult<Color> Parse(string s)
+        public static Result<Color> Parse(string s)
         {
             if (s == null)
             {
@@ -67,21 +60,19 @@ namespace WorldEdit.Templates
             }
 
             var field = typeof(Color).GetField(s.ToPascalCase());
-            if (field == null)
-            {
-                return ParsingResult.FromError<Color>($"Invalid color '{s}'.");
-            }
-            return ParsingResult.From((Color)field.GetValue(null));
+            return field != null
+                ? Result.From((Color)field.GetValue(null))
+                : Result.FromError<Color>($"Invalid color '{s}'.");
         }
 
         /// <inheritdoc />
         public Tile Apply(Tile tile)
         {
-            tile.Color = Type;
+            tile.Color = _type;
             return tile;
         }
 
         /// <inheritdoc />
-        public bool Matches(Tile tile) => tile.Color == Type;
+        public bool Matches(Tile tile) => tile.Color == _type;
     }
 }
