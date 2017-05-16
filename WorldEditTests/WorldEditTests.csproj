@@ -69,7 +69,6 @@
     <Compile Include="Regions\MockRegion.cs" />
     <Compile Include="Regions\RegionSelectorTests.cs" />
     <Compile Include="Regions\RegionTests.cs" />
-    <Compile Include="Schematics\SchematicInfoTests.cs" />
     <Compile Include="Schematics\TeditSchematicFormatTests.cs" />
     <Compile Include="Sessions\EditSessionTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />

@@ -82,7 +82,6 @@
     <Compile Include="Regions\RectangularRegion.cs" />
     <Compile Include="Regions\Region.cs" />
     <Compile Include="Regions\RegionSelector.cs" />
-    <Compile Include="Schematics\SchematicInfo.cs" />
     <Compile Include="Schematics\SchematicFormat.cs" />
     <Compile Include="Schematics\SchematicFormatException.cs" />
     <Compile Include="Schematics\TeditSchematicFormat.cs" />

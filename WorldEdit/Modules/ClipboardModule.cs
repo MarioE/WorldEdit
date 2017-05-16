@@ -9,8 +9,6 @@ using WorldEdit.Schematics;
 
 namespace WorldEdit.Modules
 {
-    using SchematicDictionary = Dictionary<string, SchematicInfo>;
-
     /// <summary>
     /// Represents a module that encapsulates the clipboard functionality.
     /// </summary>
@@ -24,7 +22,7 @@ namespace WorldEdit.Modules
                 ["tedit"] = new TeditSchematicFormat()
             };
 
-        private SchematicDictionary _schematicInfos = new SchematicDictionary();
+        private Dictionary<string, SchematicInfo> _schematicInfos = new Dictionary<string, SchematicInfo>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClipboardModule" /> class with the specified WorldEdit plugin.
@@ -47,7 +45,8 @@ namespace WorldEdit.Modules
             var schematicsPath = Path.Combine("worldedit", "schematics.json");
             if (File.Exists(schematicsPath))
             {
-                _schematicInfos = JsonConvert.DeserializeObject<SchematicDictionary>(File.ReadAllText(schematicsPath));
+                _schematicInfos =
+                    JsonConvert.DeserializeObject<Dictionary<string, SchematicInfo>>(File.ReadAllText(schematicsPath));
             }
 
             var clearClipboard = Plugin.RegisterCommand("clearclipboard",
@@ -336,6 +335,13 @@ namespace WorldEdit.Modules
             };
 
             player.SendSuccessMessage("Saved schematic.");
+        }
+
+        private class SchematicInfo
+        {
+            public string Author { get; set; }
+            public string Description { get; set; }
+            public string Format { get; set; }
         }
     }
 }
