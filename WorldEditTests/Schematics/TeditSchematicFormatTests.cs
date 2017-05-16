@@ -19,14 +19,6 @@ namespace WorldEditTests.Schematics
         }
 
         [Test]
-        public void Read_NullStream_ThrowsArgumentNullException()
-        {
-            var schematicFormat = new TeditSchematicFormat();
-
-            Assert.Throws<ArgumentNullException>(() => schematicFormat.Read(null));
-        }
-
-        [Test]
         public void ReadWrite()
         {
             var clipboard = new Clipboard(new Tile?[20, 20]);
@@ -64,31 +56,6 @@ namespace WorldEditTests.Schematics
                     Assert.AreEqual((byte)(x * y), tile.Wall);
                 }
             }
-        }
-
-        [Test]
-        public void Write_NullClipboard_ThrowsArgumentNullException()
-        {
-            var schematicFormat = new TeditSchematicFormat();
-
-            Assert.Throws<ArgumentNullException>(() => schematicFormat.Write(null, new MemoryStream()));
-        }
-
-        [Test]
-        public void Write_NullStream_ThrowsArgumentNullException()
-        {
-            var schematicFormat = new TeditSchematicFormat();
-
-            Assert.Throws<ArgumentNullException>(() => schematicFormat.Write(new Clipboard(new Tile?[0, 0]), null));
-        }
-
-        [Test]
-        public void Write_ReadOnlyStream_ThrowsArgumentException()
-        {
-            var schematicFormat = new TeditSchematicFormat();
-            var stream = new MemoryStream(new byte[10], false);
-
-            Assert.Throws<ArgumentException>(() => schematicFormat.Write(new Clipboard(new Tile?[0, 0]), stream));
         }
     }
 }

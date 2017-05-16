@@ -13,17 +13,8 @@ namespace WorldEdit.Schematics
         private const uint Version = 192;
         
         /// <inheritdoc />
-        public override Result<Clipboard> Read(Stream stream)
+        protected override Result<Clipboard> ReadImpl(Stream stream)
         {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            if (!stream.CanRead)
-            {
-                throw new ArgumentException("Stream must support reading.", nameof(stream));
-            }
-
             var reader = new BinaryReader(stream, Encoding.Default, true);
             try
             {
@@ -76,21 +67,8 @@ namespace WorldEdit.Schematics
         }
 
         /// <inheritdoc />
-        public override void Write(Clipboard clipboard, Stream stream)
+        protected override void WriteImpl(Clipboard clipboard, Stream stream)
         {
-            if (clipboard == null)
-            {
-                throw new ArgumentNullException(nameof(clipboard));
-            }
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            if (!stream.CanWrite)
-            {
-                throw new ArgumentException("Stream must support writing.", nameof(stream));
-            }
-
             using (var writer = new BinaryWriter(stream, Encoding.Default, true))
             {
                 var dimensions = clipboard.Dimensions;
@@ -183,22 +161,54 @@ namespace WorldEdit.Schematics
         private static Tile DeserializeTile(BinaryReader reader, out int repeat)
         {
             var header = reader.ReadByte();
-            byte header2 = 0;
-            byte header3 = 0;
-            if ((header & 1) != 0)
+            // The format for header is as follows:
+            // sbullwa2
+            //
+            // s:   RLE length is a short
+            // b:   RLE length is a byte
+            // u:   Tile block type is a ushort
+            // ll:  Tile liquid type
+            // w:   Tile has a wall
+            // a:   Tile has a block
+            // 2:   header2 is nonzero
+
+            var header2 = 0;
+            // The format for header2 is as follows:
+            // -sssbgr3
+            //
+            // -:   Unused
+            // sss: Tile brick style
+            // b:   Tile has blue wire
+            // g:   Tile has green wire
+            // r:   Tile has red wire
+            // 3:   header3 is nonzero
+
+            var header3 = 0;
+            // The format for header3 is as follows:
+            // --ywbna-
+            //
+            // --:  Unused
+            // y:   Tile has yellow wire
+            // w:   Tile has a wall color
+            // b:   Tile has a block color
+            // n:   Tile is actuated
+            // a:   Tile has actuator
+            // -:   Unused
+
+            if ((header & 0x1) != 0)
             {
                 header2 = reader.ReadByte();
-                if ((header2 & 1) != 0)
+                if ((header2 & 0x1) != 0x0)
                 {
                     header3 = reader.ReadByte();
                 }
             }
 
             var tile = new Tile();
-            if ((header & 2) != 0)
+            if ((header & 0x2) != 0)
             {
                 tile.IsActive = true;
-                tile.Type = (header & 32) == 0 ? reader.ReadByte() : reader.ReadUInt16();
+                tile.Type = (header & 0x20) != 0 ? reader.ReadUInt16() : reader.ReadByte();
 
                 if (Main.tileFrameImportant[tile.Type])
                 {
@@ -211,23 +221,23 @@ namespace WorldEdit.Schematics
                     tile.FrameY = -1;
                 }
 
-                if ((header3 & 8) != 0)
+                if ((header3 & 0x8) != 0)
                 {
                     tile.Color = reader.ReadByte();
                 }
             }
 
-            if ((header & 4) != 0)
+            if ((header & 0x4) != 0)
             {
                 tile.Wall = reader.ReadByte();
 
-                if ((header3 & 16) != 0)
+                if ((header3 & 0x10) != 0)
                 {
                     tile.WallColor = reader.ReadByte();
                 }
             }
 
-            var liquidType = (byte)((header & 24) >> 3);
+            var liquidType = (byte)((header & 0x18) >> 3);
             if (liquidType != 0)
             {
                 tile.Liquid = reader.ReadByte();
@@ -236,10 +246,10 @@ namespace WorldEdit.Schematics
 
             if (header2 > 1)
             {
-                tile.HasRedWire = (header2 & 2) != 0;
-                tile.HasBlueWire = (header2 & 4) != 0;
-                tile.HasGreenWire = (header2 & 8) != 0;
-                var brickStyle = (header2 & 112) >> 4;
+                tile.HasRedWire = (header2 & 0x2) != 0;
+                tile.HasBlueWire = (header2 & 0x4) != 0;
+                tile.HasGreenWire = (header2 & 0x8) != 0;
+                var brickStyle = (header2 & 0x70) >> 4;
                 if (brickStyle == 1)
                 {
                     tile.IsHalfBlock = true;
@@ -252,17 +262,17 @@ namespace WorldEdit.Schematics
 
             if (header3 > 1)
             {
-                tile.HasActuator = (header3 & 2) != 0;
-                tile.IsActuated = (header3 & 4) != 0;
-                tile.HasYellowWire = (header3 & 32) != 0;
+                tile.HasActuator = (header3 & 0x2) != 0;
+                tile.IsActuated = (header3 & 0x4) != 0;
+                tile.HasYellowWire = (header3 & 0x20) != 0;
             }
 
             repeat = 0;
-            if ((header & 64) != 0)
+            if ((header & 0x40) != 0)
             {
                 repeat = reader.ReadByte();
             }
-            else if ((header & 128) != 0)
+            else if ((header & 0x80) != 0)
             {
                 repeat = reader.ReadInt16();
             }
@@ -273,18 +283,52 @@ namespace WorldEdit.Schematics
         private static byte[] SerializeTile(Tile tile, out int dataIndex, out int headerIndex)
         {
             var data = new byte[13];
-            byte header = 0;
-            byte header2 = 0;
-            byte header3 = 0;
-            dataIndex = 3;
+            var header = 0;
+            // The format for header is as follows:
+            // sbullwa2
+            //
+            // s:   RLE length is a short
+            // b:   RLE length is a byte
+            // u:   Tile block type is a ushort
+            // ll:  Tile liquid type
+            // w:   Tile has a wall
+            // a:   Tile has a block
+            // 2:   header2 is nonzero
 
+            var header2 = 0;
+            // The format for header2 is as follows:
+            // -sssbgr3
+            //
+            // -:   Unused
+            // sss: Tile brick style
+            // b:   Tile has blue wire
+            // g:   Tile has green wire
+            // r:   Tile has red wire
+            // 3:   header3 is nonzero
+
+            var header3 = 0;
+            // The format for header3 is as follows:
+            // --ywbna-
+            //
+            // --:  Unused
+            // y:   Tile has yellow wire
+            // w:   Tile has a wall color
+            // b:   Tile has a block color
+            // n:   Tile is actuated
+            // a:   Tile has actuator
+            // -:   Unused
+
+            dataIndex = 3;
             if (tile.IsActive)
             {
-                header |= 2;
+                // header:
+                // ------a-
+                // Tile has a block
+                header |= 0x2;
                 data[dataIndex++] = (byte)tile.Type;
                 if (tile.Type > 255)
                 {
-                    header |= 32;
+                    header |= 0x20;
                     data[dataIndex++] = (byte)(tile.Type >> 8);
                 }
 
@@ -298,55 +342,55 @@ namespace WorldEdit.Schematics
 
                 if (tile.Color != 0)
                 {
-                    header3 |= 8;
+                    header3 |= 0x8;
                     data[dataIndex++] = tile.Color;
                 }
             }
 
             if (tile.Wall != 0)
             {
-                header |= 4;
+                header |= 0x4;
                 data[dataIndex++] = tile.Wall;
 
                 if (tile.WallColor != 0)
                 {
-                    header3 |= 16;
+                    header3 |= 0x10;
                     data[dataIndex++] = tile.WallColor;
                 }
             }
 
             if (tile.Liquid != 0)
             {
-                header |= (byte)((tile.LiquidType + 1) << 3);
+                header |= (tile.LiquidType + 1) << 3;
                 data[dataIndex++] = tile.Liquid;
             }
-
-            header2 |= (byte)(tile.HasRedWire ? 2 : 0);
-            header2 |= (byte)(tile.HasBlueWire ? 4 : 0);
-            header2 |= (byte)(tile.HasGreenWire ? 8 : 0);
+            
+            header2 |= tile.HasRedWire ? 0x2 : 0;
+            header2 |= tile.HasBlueWire ? 0x4 : 0;
+            header2 |= tile.HasGreenWire ? 0x8 : 0;
             var brickStyle = tile.IsHalfBlock ? 1 : 0;
             if (tile.Slope > 0)
             {
                 brickStyle = tile.Slope + 1;
             }
-            header2 |= (byte)(brickStyle << 4);
-
-            header3 |= (byte)(tile.HasActuator ? 2 : 0);
-            header3 |= (byte)(tile.IsActuated ? 4 : 0);
-            header3 |= (byte)(tile.HasYellowWire ? 32 : 0);
+            header2 |= brickStyle << 4;
+            
+            header3 |= tile.HasActuator ? 0x2 : 0;
+            header3 |= tile.IsActuated ? 0x4 : 0;
+            header3 |= tile.HasYellowWire ? 0x20 : 0;
 
             headerIndex = 2;
             if (header3 != 0)
             {
-                header2 |= 1;
-                data[headerIndex--] = header3;
+                header2 |= 0x1;
+                data[headerIndex--] = (byte)header3;
             }
             if (header2 != 0)
             {
-                header |= 1;
-                data[headerIndex--] = header2;
+                header |= 0x1;
+                data[headerIndex--] = (byte)header2;
             }
-            data[headerIndex] = header;
+            data[headerIndex] = (byte)header;
 
             return data;
         }
