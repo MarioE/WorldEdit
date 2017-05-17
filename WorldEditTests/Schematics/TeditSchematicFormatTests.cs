@@ -83,7 +83,7 @@ namespace WorldEditTests.Schematics
         }
 
         [Test]
-        public void Write_ReadOnlyStream_ThrowsArgumentException()
+        public void Write_StreamIsReadOnly_ThrowsArgumentException()
         {
             var schematicFormat = new TeditSchematicFormat();
             var stream = new MemoryStream(new byte[10], false);

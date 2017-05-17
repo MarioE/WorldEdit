@@ -68,7 +68,8 @@ namespace WorldEdit
                 throw new ArgumentNullException(nameof(player));
             }
 
-            var username = player.User?.Name ?? throw new ArgumentException("Username required.", nameof(player));
+            var username = player.User?.Name ??
+                           throw new ArgumentException("Player must have username.", nameof(player));
             return _sessionManager.GetOrCreate(username);
         }
 

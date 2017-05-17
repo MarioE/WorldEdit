@@ -41,7 +41,7 @@ namespace WorldEditTests.Sessions
         }
 
         [Test]
-        public void Ctor_NegativeHistoryLimit_ThrowsArgumentOutOfRangeException()
+        public void Ctor_HistoryLimitNegative_ThrowsArgumentOutOfRangeException()
         {
             using (var world = new World(new MockTileCollection()))
             {

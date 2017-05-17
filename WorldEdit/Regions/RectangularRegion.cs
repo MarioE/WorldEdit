@@ -55,7 +55,7 @@ namespace WorldEdit.Regions
 
         /// <inheritdoc />
         public override Region Expand(Vector delta) => Change(delta, true);
-        
+
         /// <inheritdoc />
         public override Region Inset(int delta) => Contract(delta * Vector.One).Contract(-delta * Vector.One);
 

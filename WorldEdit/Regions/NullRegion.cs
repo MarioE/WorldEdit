@@ -32,7 +32,7 @@ namespace WorldEdit.Regions
         /// <inheritdoc />
         public override Region Expand(Vector delta) =>
             throw new InvalidOperationException("Null regions cannot expand.");
-        
+
         /// <inheritdoc />
         public override Region Inset(int delta) =>
             throw new InvalidOperationException("Null regions cannot contract.");

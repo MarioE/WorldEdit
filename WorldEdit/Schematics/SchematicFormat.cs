@@ -13,7 +13,7 @@ namespace WorldEdit.Schematics
         /// </summary>
         /// <param name="stream">The stream to read from.</param>
         /// <returns>The result.</returns>
-        /// <exception cref="ArgumentException">The stream does not support reading.</exception>
+        /// <exception cref="ArgumentException"><paramref name="stream" /> does not support reading.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <c>null</c>.</exception>
         public abstract Result<Clipboard> Read(Stream stream);
 
@@ -22,7 +22,7 @@ namespace WorldEdit.Schematics
         /// </summary>
         /// <param name="clipboard">The clipboard to write.</param>
         /// <param name="stream">The stream to write to.</param>
-        /// <exception cref="ArgumentException">The stream does not support writing.</exception>
+        /// <exception cref="ArgumentException"><paramref name="stream" /> does not support writing.</exception>
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="clipboard" /> or <paramref name="stream" /> is <c>null</c>.
         /// </exception>

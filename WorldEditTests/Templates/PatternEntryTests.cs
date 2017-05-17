@@ -7,17 +7,17 @@ namespace WorldEditTests.Templates
     [TestFixture]
     public class PatternEntryTests
     {
-        [TestCase(-1)]
-        [TestCase(0)]
-        public void Ctor_NonPositiveWeight_ThrowsArgumentOutOfRangeException(int weight)
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new PatternEntry<Block>(Block.Water, weight));
-        }
-
         [Test]
         public void Ctor_NullTemplate_ThrowsArgumenNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new PatternEntry<Block>(null, 1));
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        public void Ctor_WeightNotPositive_ThrowsArgumentOutOfRangeException(int weight)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new PatternEntry<Block>(Block.Water, weight));
         }
 
         [Test]

@@ -16,8 +16,8 @@ namespace WorldEdit.Regions
         /// Initializes a new instance of the <see cref="PolygonalRegion" /> class with the specified vertices.
         /// </summary>
         /// <param name="vertices">The vertices.</param>
+        /// <exception cref="ArgumentException"><paramref name="vertices" /> contains less than three items.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertices" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="vertices" /> contains fewer than three items.</exception>
         public PolygonalRegion(IEnumerable<Vector> vertices)
         {
             if (vertices == null)
@@ -29,7 +29,7 @@ namespace WorldEdit.Regions
 
             if (_vertices.Count < 3)
             {
-                throw new ArgumentException("Must have at least three vertices.", nameof(vertices));
+                throw new ArgumentException("Vertices list must have at least three items.", nameof(vertices));
             }
         }
 
@@ -103,7 +103,7 @@ namespace WorldEdit.Regions
         /// <inheritdoc />
         public override Region Expand(Vector delta) =>
             throw new InvalidOperationException("Polygonal regions cannot expand.");
-        
+
         /// <inheritdoc />
         public override Region Inset(int delta) =>
             throw new InvalidOperationException("Polygonal regions cannot contract.");

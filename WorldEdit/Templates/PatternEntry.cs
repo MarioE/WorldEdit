@@ -13,12 +13,14 @@ namespace WorldEdit.Templates
         /// </summary>
         /// <param name="template">The template.</param>
         /// <param name="weight">The weight.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="template" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is not positive.</exception>
         public PatternEntry(T template, int weight)
         {
             Template = template ?? throw new ArgumentNullException(nameof(template));
             Weight = weight > 0
                 ? weight
-                : throw new ArgumentOutOfRangeException(nameof(weight), "Positive number required.");
+                : throw new ArgumentOutOfRangeException(nameof(weight), "Number must be positive.");
         }
 
         /// <summary>

@@ -36,20 +36,20 @@ namespace WorldEditTests.Regions
             Assert.Throws<InvalidOperationException>(() => region.Contract(new Vector(deltaX, deltaY)));
         }
 
-        [TestCase(0)]
-        [TestCase(1)]
-        [TestCase(2)]
-        public void Ctor_LessThanThreeVertices_ThrowsArgumentException(int count)
-        {
-            var vertices = new Vector[count];
-
-            Assert.Throws<ArgumentException>(() => new PolygonalRegion(vertices));
-        }
-
         [Test]
         public void Ctor_NullVertices_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new PolygonalRegion(null));
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Ctor_VerticesLessThanThreeItems_ThrowsArgumentException(int count)
+        {
+            var vertices = new Vector[count];
+
+            Assert.Throws<ArgumentException>(() => new PolygonalRegion(vertices));
         }
 
         [TestCase(1, 1)]

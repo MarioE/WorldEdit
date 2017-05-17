@@ -57,7 +57,7 @@ namespace WorldEdit.Modules
                 "Pastes your clipboard to your primary position."
             };
         }
-        
+
         private void ClearClipboard(CommandArgs args)
         {
             var player = args.Player;

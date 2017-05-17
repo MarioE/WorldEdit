@@ -33,7 +33,7 @@ namespace WorldEdit.Sessions
             _world = world ?? throw new ArgumentNullException(nameof(world));
             _historyLimit = historyLimit >= 0
                 ? historyLimit
-                : throw new ArgumentOutOfRangeException(nameof(historyLimit), "Non-negative number required.");
+                : throw new ArgumentOutOfRangeException(nameof(historyLimit), "Number must be non-negative.");
         }
 
         /// <summary>
