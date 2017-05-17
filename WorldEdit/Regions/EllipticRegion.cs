@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace WorldEdit.Regions
 {
@@ -9,21 +7,25 @@ namespace WorldEdit.Regions
     /// </summary>
     public class EllipticRegion : Region
     {
-        private readonly List<Vector> _boundaryPositions;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified positions.
+        /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified center position and radius.
         /// </summary>
-        /// <param name="position1">The first position.</param>
-        /// <param name="position2">The second position.</param>
-        public EllipticRegion(Vector position1, Vector position2)
+        /// <param name="center">The center position.</param>
+        /// <param name="radius">The radius.</param>
+        public EllipticRegion(Vector center, Vector radius)
         {
-            Center = position1;
-            Radius = new Vector(Math.Abs(position2.X - position1.X), Math.Abs(position2.Y - position1.Y));
-
-            // TODO: consider more efficient hashtable implementation
-            _boundaryPositions = GenerateBoundaryPositions(position1, Radius);
+            Center = center;
+            Radius = new Vector(Math.Abs(radius.X), Math.Abs(radius.Y));
         }
+
+        /// <inheritdoc />
+        public override bool CanContract => true;
+
+        /// <inheritdoc />
+        public override bool CanExpand => true;
+
+        /// <inheritdoc />
+        public override bool CanShift => true;
 
         /// <summary>
         /// Gets the center position.
@@ -44,14 +46,10 @@ namespace WorldEdit.Regions
         /// <inheritdoc />
         public override bool Contains(Vector position)
         {
-            if (position.X < LowerBound.X || position.X >= UpperBound.X)
-            {
-                return false;
-            }
-
-            var minimumY = _boundaryPositions.Where(v => v.X == position.X).Min(v => v.Y);
-            var maximumY = _boundaryPositions.Where(v => v.X == position.X).Max(v => v.Y);
-            return minimumY <= position.Y && position.Y <= maximumY;
+            var offset = position - Center;
+            var aSquared = (Radius.X + 0.5) * (Radius.X + 0.5);
+            var bSquared = (Radius.Y + 0.5) * (Radius.Y + 0.5);
+            return bSquared * offset.X * offset.X + aSquared * offset.Y * offset.Y <= aSquared * bSquared;
         }
 
         /// <inheritdoc />
@@ -59,21 +57,7 @@ namespace WorldEdit.Regions
 
         /// <inheritdoc />
         public override Region Expand(Vector delta) => Change(delta, true);
-
-        /// <inheritdoc />
-        public override IEnumerator<Vector> GetEnumerator()
-        {
-            for (var x = LowerBound.X; x < UpperBound.X; ++x)
-            {
-                var minimumY = _boundaryPositions.Where(v => v.X == x).Min(v => v.Y);
-                var maximumY = _boundaryPositions.Where(v => v.X == x).Max(v => v.Y);
-                for (var y = minimumY; y <= maximumY; ++y)
-                {
-                    yield return new Vector(x, y);
-                }
-            }
-        }
-
+        
         /// <inheritdoc />
         public override Region Inset(int delta) => Change(delta * Vector.One, false);
 
@@ -82,73 +66,6 @@ namespace WorldEdit.Regions
 
         /// <inheritdoc />
         public override Region Shift(Vector displacement) => new EllipticRegion(Center + displacement, Radius);
-
-        private static List<Vector> GenerateBoundaryPositions(Vector center, Vector radius)
-        {
-            // See http://stackoverflow.com/questions/15474122/is-there-a-midpoint-ellipse-algorithm
-            // This algorithm works better when x < y. Thus, we exchange them if necessary.
-            var boundaryPositions = new List<Vector>();
-            var isFlipped = radius.X > radius.Y;
-            var xSquared = isFlipped ? radius.Y * radius.Y : radius.X * radius.X;
-            var ySquared = isFlipped ? radius.X * radius.X : radius.Y * radius.Y;
-            var x = 0;
-            var y = isFlipped ? radius.X : radius.Y;
-
-            void AddBoundaryPosition(int dx, int dy)
-            {
-                if (isFlipped)
-                {
-                    boundaryPositions.Add(center + new Vector(dy, dx));
-                    boundaryPositions.Add(center + new Vector(-dy, dx));
-                    boundaryPositions.Add(center + new Vector(dy, -dx));
-                    boundaryPositions.Add(center + new Vector(-dy, -dx));
-                }
-                else
-                {
-                    boundaryPositions.Add(center + new Vector(dx, dy));
-                    boundaryPositions.Add(center + new Vector(-dx, dy));
-                    boundaryPositions.Add(center + new Vector(dx, -dy));
-                    boundaryPositions.Add(center + new Vector(-dx, -dy));
-                }
-            }
-
-            // Add the top and bottom points.
-            AddBoundaryPosition(0, y);
-
-            // Add the first half of all the quadrants.
-            var p = Math.Round(ySquared - xSquared * y + xSquared / 4.0);
-            var px = 0;
-            var py = 2 * xSquared * y;
-            while (px < py)
-            {
-                if (p >= 0)
-                {
-                    --y;
-                    py -= 2 * xSquared;
-                    p -= py;
-                }
-                px += 2 * ySquared;
-                p += ySquared + px;
-                AddBoundaryPosition(++x, y);
-            }
-
-            // Add the second half of all the quadrants.
-            p = Math.Round(ySquared * (x + 0.5) * (x + 0.5) + xSquared * (y - 1) * (y - 1) - xSquared * ySquared);
-            while (y > 0)
-            {
-                if (p <= 0)
-                {
-                    ++x;
-                    px += 2 * ySquared;
-                    p += px;
-                }
-                py -= 2 * xSquared;
-                p += xSquared - py;
-                AddBoundaryPosition(x, --y);
-            }
-
-            return boundaryPositions;
-        }
 
         private Region Change(Vector delta, bool isExpansion)
         {

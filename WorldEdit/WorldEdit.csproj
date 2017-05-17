@@ -74,6 +74,10 @@
     <Compile Include="Modules\RegionModule.cs" />
     <Compile Include="Modules\SelectionModule.cs" />
     <Compile Include="Modules\UtilityModule.cs" />
+    <Compile Include="Regions\Selectors\EllipticRegionSelector.cs" />
+    <Compile Include="Regions\PolygonalRegion.cs" />
+    <Compile Include="Regions\Selectors\PolygonalRegionSelector.cs" />
+    <Compile Include="Regions\Selectors\RectangularRegionSelector.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Result{T}.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,7 +85,7 @@
     <Compile Include="Regions\NullRegion.cs" />
     <Compile Include="Regions\RectangularRegion.cs" />
     <Compile Include="Regions\Region.cs" />
-    <Compile Include="Regions\RegionSelector.cs" />
+    <Compile Include="Regions\Selectors\RegionSelector.cs" />
     <Compile Include="Schematics\SchematicFormat.cs" />
     <Compile Include="Schematics\TeditSchematicFormat.cs" />
     <Compile Include="Sessions\EditSession.cs" />

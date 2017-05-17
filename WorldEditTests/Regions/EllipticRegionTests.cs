@@ -46,6 +46,30 @@ namespace WorldEditTests.Regions
             Assert.AreEqual(new Vector(expectedRadiusX, expectedRadiusY), region2.Radius);
         }
 
+        [Test]
+        public void GetCanContract()
+        {
+            var region = new EllipticRegion(Vector.Zero, Vector.Zero);
+
+            Assert.IsTrue(region.CanContract);
+        }
+
+        [Test]
+        public void GetCanExpand()
+        {
+            var region = new EllipticRegion(Vector.Zero, Vector.Zero);
+
+            Assert.IsTrue(region.CanExpand);
+        }
+
+        [Test]
+        public void GetCanShift()
+        {
+            var region = new EllipticRegion(Vector.Zero, Vector.Zero);
+
+            Assert.IsTrue(region.CanShift);
+        }
+
         [TestCase(0, 0, 4, 6, 1, 3, 5)]
         [TestCase(0, 0, 4, 6, 2, 2, 4)]
         public void Inset(int x, int y, int radiusX, int radiusY, int delta, int expectedRadiusX, int expectedRadiusY)

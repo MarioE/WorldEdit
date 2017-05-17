@@ -18,6 +18,8 @@ namespace WorldEdit
     [ApiVersion(2, 1)]
     public class WorldEditPlugin : TerrariaPlugin
     {
+        private static readonly string ConfigPath = Path.Combine("worldedit", "config.json");
+
         private readonly List<Command> _commands = new List<Command>();
         private readonly List<Module> _modules = new List<Module>();
         private Config _config = new Config();
@@ -76,10 +78,9 @@ namespace WorldEdit
         public override void Initialize()
         {
             Directory.CreateDirectory("worldedit");
-            var configPath = Path.Combine("worldedit", "config.json");
-            if (File.Exists(configPath))
+            if (File.Exists(ConfigPath))
             {
-                _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configPath));
+                _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigPath));
             }
 
             ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
@@ -132,8 +133,7 @@ namespace WorldEdit
         {
             if (disposing)
             {
-                var configPath = Path.Combine("worldedit", "config.json");
-                File.WriteAllText(configPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
+                File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
 
                 ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave);
                 foreach (var command in _commands)

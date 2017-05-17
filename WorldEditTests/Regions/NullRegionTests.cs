@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using WorldEdit;
 using WorldEdit.Regions;
 
@@ -17,35 +18,51 @@ namespace WorldEditTests.Regions
         }
 
         [TestCase(1, 1)]
-        public void Contract(int deltaX, int deltaY)
+        public void Contract_ThrowsInvalidOperationException(int deltaX, int deltaY)
         {
             var region = new NullRegion();
 
-            Assert.IsInstanceOf<NullRegion>(region.Contract(new Vector(deltaX, deltaY)));
-        }
-
-        [Test]
-        public void Dimensions()
-        {
-            var region = new NullRegion();
-
-            Assert.AreEqual(Vector.Zero, region.Dimensions);
+            Assert.Throws<InvalidOperationException>(() => region.Contract(new Vector(deltaX, deltaY)));
         }
 
         [TestCase(1, 1)]
-        public void Expand(int deltaX, int deltaY)
+        public void Expand_ThrowsInvalidOperationException(int deltaX, int deltaY)
         {
             var region = new NullRegion();
 
-            Assert.IsInstanceOf<NullRegion>(region.Expand(new Vector(deltaX, deltaY)));
+            Assert.Throws<InvalidOperationException>(() => region.Expand(new Vector(deltaX, deltaY)));
+        }
+
+        [Test]
+        public void GetCanContract()
+        {
+            var region = new NullRegion();
+
+            Assert.IsFalse(region.CanContract);
+        }
+
+        [Test]
+        public void GetCanExpand()
+        {
+            var region = new NullRegion();
+
+            Assert.IsFalse(region.CanExpand);
+        }
+
+        [Test]
+        public void GetCanShift()
+        {
+            var region = new NullRegion();
+
+            Assert.IsFalse(region.CanShift);
         }
 
         [TestCase(1)]
-        public void Inset(int delta)
+        public void Inset_ThrowsInvalidOperationException(int delta)
         {
             var region = new NullRegion();
 
-            Assert.IsInstanceOf<NullRegion>(region.Inset(delta));
+            Assert.Throws<InvalidOperationException>(() => region.Inset(delta));
         }
 
         [Test]
@@ -57,19 +74,19 @@ namespace WorldEditTests.Regions
         }
 
         [TestCase(1)]
-        public void Outset(int delta)
+        public void Outset_ThrowsInvalidOperationException(int delta)
         {
             var region = new NullRegion();
 
-            Assert.IsInstanceOf<NullRegion>(region.Outset(delta));
+            Assert.Throws<InvalidOperationException>(() => region.Outset(delta));
         }
 
         [TestCase(1, 1)]
-        public void Shift(int deltaX, int deltaY)
+        public void Shift_ThrowsInvalidOperationException(int deltaX, int deltaY)
         {
             var region = new NullRegion();
 
-            Assert.IsInstanceOf<NullRegion>(region.Shift(new Vector(deltaX, deltaY)));
+            Assert.Throws<InvalidOperationException>(() => region.Shift(new Vector(deltaX, deltaY)));
         }
 
         [Test]

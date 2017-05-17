@@ -47,6 +47,30 @@ namespace WorldEditTests.Regions
             Assert.AreEqual(new Vector(expectedX2, expectedY2), region2.Position2);
         }
 
+        [Test]
+        public void GetCanContract()
+        {
+            var region = new RectangularRegion(Vector.Zero, Vector.Zero);
+
+            Assert.IsTrue(region.CanContract);
+        }
+
+        [Test]
+        public void GetCanExpand()
+        {
+            var region = new RectangularRegion(Vector.Zero, Vector.Zero);
+
+            Assert.IsTrue(region.CanExpand);
+        }
+
+        [Test]
+        public void GetCanShift()
+        {
+            var region = new RectangularRegion(Vector.Zero, Vector.Zero);
+
+            Assert.IsTrue(region.CanShift);
+        }
+
         [TestCase(5, 4, 8, 10, 1, 6, 5, 7, 9)]
         [TestCase(8, 4, 5, 10, 1, 7, 5, 6, 9)]
         [TestCase(8, 10, 5, 4, 1, 7, 9, 6, 5)]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria.ID;
 using TShockAPI;
 using WorldEdit.Regions;
+using WorldEdit.Regions.Selectors;
 
 namespace WorldEdit.Modules
 {
@@ -19,12 +20,13 @@ namespace WorldEdit.Modules
                 ["right"] = new Vector(1, 0),
                 ["up"] = new Vector(0, -1)
             };
-        
-        private static readonly Dictionary<string, Type> RegionTypes =
-            new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+
+        private static readonly Dictionary<string, Func<RegionSelector>> RegionSelectors =
+            new Dictionary<string, Func<RegionSelector>>(StringComparer.OrdinalIgnoreCase)
             {
-                ["elliptic"] = typeof(EllipticRegion),
-                ["rectangular"] = typeof(RectangularRegion)
+                ["elliptic"] = () => new EllipticRegionSelector(),
+                ["polygonal"] = () => new PolygonalRegionSelector(),
+                ["rectangular"] = () => new RectangularRegionSelector()
             };
 
         /// <summary>
@@ -156,7 +158,7 @@ namespace WorldEdit.Modules
                 player.SendErrorMessage($"Invalid direction '{inputDirection}'.");
                 return;
             }
-            
+
             var inputDistance = parameters[1];
             if (!int.TryParse(inputDistance, out var distance) || distance <= 0)
             {
@@ -168,21 +170,39 @@ namespace WorldEdit.Modules
             var selection = session.Selection;
             if (commandName.Equals("contract", StringComparison.OrdinalIgnoreCase))
             {
+                if (!selection.CanContract)
+                {
+                    player.SendSuccessMessage("Cannot contract selection.");
+                    return;
+                }
+
                 session.Selection = selection.Contract(distance * direction);
                 player.SendSuccessMessage(
                     $"Contracted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
             }
-            else if (commandName.Equals("shift", StringComparison.OrdinalIgnoreCase))
-            {
-                session.Selection = selection.Shift(distance * direction);
-                player.SendSuccessMessage(
-                    $"Shifted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
-            }
             else if (commandName.Equals("expand", StringComparison.OrdinalIgnoreCase))
             {
+                if (!selection.CanExpand)
+                {
+                    player.SendSuccessMessage("Cannot expand selection.");
+                    return;
+                }
+
                 session.Selection = selection.Expand(distance * direction);
                 player.SendSuccessMessage(
                     $"Expanded selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
+            }
+            else if (commandName.Equals("shift", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!selection.CanShift)
+                {
+                    player.SendSuccessMessage("Cannot shift selection.");
+                    return;
+                }
+
+                session.Selection = selection.Shift(distance * direction);
+                player.SendSuccessMessage(
+                    $"Shifted selection {inputDirection.ToLowerInvariant()} by {distance} tiles.");
             }
         }
 
@@ -208,11 +228,23 @@ namespace WorldEdit.Modules
             var selection = session.Selection;
             if (commandName.Equals("inset", StringComparison.OrdinalIgnoreCase))
             {
+                if (!selection.CanContract)
+                {
+                    player.SendSuccessMessage("Cannot inset selection.");
+                    return;
+                }
+
                 session.Selection = selection.Inset(distance);
                 player.SendSuccessMessage($"Inset selection by {distance} tiles.");
             }
             else if (commandName.Equals("outset", StringComparison.OrdinalIgnoreCase))
             {
+                if (!selection.CanExpand)
+                {
+                    player.SendSuccessMessage("Cannot outset selection.");
+                    return;
+                }
+
                 session.Selection = selection.Outset(distance);
                 player.SendSuccessMessage($"Outset selection by {distance} tiles.");
             }
@@ -298,19 +330,17 @@ namespace WorldEdit.Modules
                 return;
             }
 
-            var inputRegionType = parameters[0];
-            if (!RegionTypes.TryGetValue(inputRegionType, out var regionType))
+            var inputSelector = parameters[0];
+            if (!RegionSelectors.TryGetValue(inputSelector, out var selector))
             {
-                player.SendErrorMessage($"Invalid region type '{inputRegionType}'.");
+                player.SendErrorMessage($"Invalid region type '{inputSelector}'.");
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
+            session.RegionSelector = selector();
             session.Selection = new NullRegion();
-            var regionSelector = session.RegionSelector;
-            regionSelector.Clear();
-            regionSelector.RegionType = regionType;
-            player.SendSuccessMessage($"Set selector to {inputRegionType.ToLowerInvariant()}.");
+            player.SendSuccessMessage($"Set selector to {inputSelector.ToLowerInvariant()}.");
         }
 
         private void Wand(CommandArgs args)

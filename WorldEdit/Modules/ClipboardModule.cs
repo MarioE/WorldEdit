@@ -313,7 +313,7 @@ namespace WorldEdit.Modules
                 player.SendErrorMessage($"Invalid schematic format '{inputSchematicFormat}'.");
                 return;
             }
-            
+
             var inputDescription = string.Join(" ", parameters.Skip(3));
             if (string.IsNullOrWhiteSpace(inputDescription))
             {

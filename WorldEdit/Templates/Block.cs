@@ -7,7 +7,7 @@ namespace WorldEdit.Templates
     /// </summary>
     public class Block : ITemplate
     {
-        private const ushort MaxId = 470;
+        private const ushort MaxType = 470;
         public static readonly Block ActiveStone = new Block(130);
         public static readonly Block AdamantiteBeam = new Block(150);
         public static readonly Block AdamantiteOre = new Block(111);
@@ -259,9 +259,9 @@ namespace WorldEdit.Templates
         public static readonly Block YellowStucco = new Block(154);
         public static readonly Block YellowTeam = new Block(432);
         public static readonly Block YellowTeamPlatform = new Block(437);
+
         private readonly short _frameX;
         private readonly short _frameY;
-
         private readonly int _type;
 
         private Block(int type, short frameX = -1, short frameY = -1)
@@ -308,7 +308,7 @@ namespace WorldEdit.Templates
                 return Result.From(new Block(blockResult.Value._type, frameX, frameY));
             }
 
-            if (ushort.TryParse(s, out var type) && type < MaxId)
+            if (ushort.TryParse(s, out var type) && type < MaxType)
             {
                 return Result.From(new Block(type));
             }

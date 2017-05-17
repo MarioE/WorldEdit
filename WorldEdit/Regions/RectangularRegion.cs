@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace WorldEdit.Regions
 {
@@ -20,6 +19,15 @@ namespace WorldEdit.Regions
             LowerBound = new Vector(Math.Min(position1.X, position2.X), Math.Min(position1.Y, position2.Y));
             UpperBound = new Vector(Math.Max(position1.X, position2.X) + 1, Math.Max(position1.Y, position2.Y) + 1);
         }
+
+        /// <inheritdoc />
+        public override bool CanContract => true;
+
+        /// <inheritdoc />
+        public override bool CanExpand => true;
+
+        /// <inheritdoc />
+        public override bool CanShift => true;
 
         /// <inheritdoc />
         public override Vector LowerBound { get; }
@@ -46,19 +54,7 @@ namespace WorldEdit.Regions
 
         /// <inheritdoc />
         public override Region Expand(Vector delta) => Change(delta, true);
-
-        /// <inheritdoc />
-        public override IEnumerator<Vector> GetEnumerator()
-        {
-            for (var x = LowerBound.X; x < UpperBound.X; ++x)
-            {
-                for (var y = LowerBound.Y; y < UpperBound.Y; ++y)
-                {
-                    yield return new Vector(x, y);
-                }
-            }
-        }
-
+        
         /// <inheritdoc />
         public override Region Inset(int delta) => Contract(delta * Vector.One).Contract(-delta * Vector.One);
 

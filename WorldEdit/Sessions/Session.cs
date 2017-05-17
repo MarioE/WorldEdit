@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WorldEdit.Masks;
 using WorldEdit.Regions;
+using WorldEdit.Regions.Selectors;
 
 namespace WorldEdit.Sessions
 {
@@ -15,7 +16,7 @@ namespace WorldEdit.Sessions
         private List<EditSession> _history = new List<EditSession>();
         private int _historyIndex;
         private Mask _mask = new NullMask();
-        private RegionSelector _regionSelector = new RegionSelector();
+        private RegionSelector _regionSelector = new RectangularRegionSelector();
         private Region _selection = new NullRegion();
 
         /// <summary>

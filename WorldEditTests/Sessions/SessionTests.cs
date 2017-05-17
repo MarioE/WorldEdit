@@ -4,6 +4,7 @@ using OTAPI.Tile;
 using WorldEdit;
 using WorldEdit.Masks;
 using WorldEdit.Regions;
+using WorldEdit.Regions.Selectors;
 using WorldEdit.Sessions;
 
 namespace WorldEditTests.Sessions
@@ -78,7 +79,7 @@ namespace WorldEditTests.Sessions
         {
             var world = new World(new MockTileCollection());
             var session = new Session(world, 0);
-            var regionSelector = new RegionSelector();
+            var regionSelector = new RectangularRegionSelector();
 
             session.RegionSelector = regionSelector;
 

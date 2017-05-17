@@ -7,7 +7,7 @@ namespace WorldEdit.Templates
     /// </summary>
     public class Wall : ITemplate
     {
-        private const byte MaxId = 231;
+        private const byte MaxType = 231;
         public static readonly Wall AdamantiteBeam = new Wall(32);
         public static readonly Wall Air = new Wall(0);
         public static readonly Wall AmberGemspark = new Wall(153);
@@ -177,7 +177,7 @@ namespace WorldEdit.Templates
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (byte.TryParse(s, out var type) && type < MaxId)
+            if (byte.TryParse(s, out var type) && type < MaxType)
             {
                 return Result.From(new Wall(type));
             }

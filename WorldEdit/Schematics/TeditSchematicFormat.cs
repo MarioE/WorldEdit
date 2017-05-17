@@ -11,10 +11,19 @@ namespace WorldEdit.Schematics
     public class TeditSchematicFormat : SchematicFormat
     {
         private const uint Version = 192;
-        
+
         /// <inheritdoc />
-        protected override Result<Clipboard> ReadImpl(Stream stream)
+        public override Result<Clipboard> Read(Stream stream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (!stream.CanRead)
+            {
+                throw new ArgumentException("Stream must support reading.", nameof(stream));
+            }
+
             var reader = new BinaryReader(stream, Encoding.Default, true);
             try
             {
@@ -36,7 +45,7 @@ namespace WorldEdit.Schematics
                             {
                                 return Result.FromError<Clipboard>("RLE was too long.");
                             }
-                            
+
                             tiles[x, y] = tile;
                         }
                     }
@@ -67,8 +76,21 @@ namespace WorldEdit.Schematics
         }
 
         /// <inheritdoc />
-        protected override void WriteImpl(Clipboard clipboard, Stream stream)
+        public override void Write(Clipboard clipboard, Stream stream)
         {
+            if (clipboard == null)
+            {
+                throw new ArgumentNullException(nameof(clipboard));
+            }
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (!stream.CanWrite)
+            {
+                throw new ArgumentException("Stream must support writing.", nameof(stream));
+            }
+
             using (var writer = new BinaryWriter(stream, Encoding.Default, true))
             {
                 var dimensions = clipboard.Dimensions;
@@ -364,7 +386,7 @@ namespace WorldEdit.Schematics
                 header |= (tile.LiquidType + 1) << 3;
                 data[dataIndex++] = tile.Liquid;
             }
-            
+
             header2 |= tile.HasRedWire ? 0x2 : 0;
             header2 |= tile.HasBlueWire ? 0x4 : 0;
             header2 |= tile.HasGreenWire ? 0x8 : 0;
@@ -374,7 +396,7 @@ namespace WorldEdit.Schematics
                 brickStyle = tile.Slope + 1;
             }
             header2 |= brickStyle << 4;
-            
+
             header3 |= tile.HasActuator ? 0x2 : 0;
             header3 |= tile.IsActuated ? 0x4 : 0;
             header3 |= tile.HasYellowWire ? 0x20 : 0;
