@@ -76,7 +76,7 @@ namespace WorldEdit.Modules
             }
 
             var inputSize = parameters[0];
-            if (!int.TryParse(inputSize, out var size) || size <= 0)
+            if (!int.TryParse(inputSize, out var size) || size < 0)
             {
                 player.SendErrorMessage($"Invalid size '{inputSize}'.");
                 return;

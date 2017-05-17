@@ -37,13 +37,12 @@ namespace WorldEditTests.Tools
             Assert.Throws<ArgumentNullException>(() => new BrushTool<Block>(1, null));
         }
 
-        [TestCase(-1)]
-        [TestCase(0)]
-        public void Ctor_RadiusNotPositive_ThrowsArgumentOutOfRangeException(int radius)
+        [Test]
+        public void Ctor_RadiusNegative_ThrowsArgumentOutOfRangeException()
         {
             var pattern = new Pattern<Block>(new PatternEntry<Block>[0]);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BrushTool<Block>(radius, pattern));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BrushTool<Block>(-1, pattern));
         }
     }
 }

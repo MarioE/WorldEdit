@@ -21,12 +21,12 @@ namespace WorldEdit.Tools
         /// <param name="radius">The radius.</param>
         /// <param name="pattern">The pattern.</param>
         /// <exception cref="ArgumentNullException"><paramref name="pattern" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="radius" /> is not positive.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="radius" /> is negative.</exception>
         public BrushTool(int radius, Pattern<T> pattern)
         {
-            _radius = radius > 0
+            _radius = radius >= 0
                 ? radius
-                : throw new ArgumentOutOfRangeException(nameof(radius), "Number must be positive.");
+                : throw new ArgumentOutOfRangeException(nameof(radius), "Number must be non-negative.");
             _pattern = pattern ?? throw new ArgumentNullException(nameof(pattern));
         }
 
