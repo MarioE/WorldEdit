@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using WorldEdit.Extents;
 using WorldEdit.Regions;
 using WorldEdit.Templates;
@@ -33,16 +32,8 @@ namespace WorldEdit.Tools
         /// <inheritdoc />
         public int Apply(Extent extent, Vector position)
         {
-            var count = 0;
             var region = new EllipticRegion(position, _radius * Vector.One);
-            foreach (var position2 in region.Where(extent.IsInBounds))
-            {
-                if (extent.SetTile(position2, _pattern.Apply(extent.GetTile(position2))))
-                {
-                    ++count;
-                }
-            }
-            return count;
+            return extent.SetTiles(region, _pattern);
         }
     }
 }

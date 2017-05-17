@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using OTAPI.Tile;
 using WorldEdit;
 using WorldEdit.Masks;
-using WorldEdit.Regions;
 using WorldEdit.Sessions;
 using WorldEdit.Templates;
 using TTile = Terraria.Tile;
@@ -15,41 +12,6 @@ namespace WorldEditTests.Sessions
     [TestFixture]
     public class EditSessionTests
     {
-        [TestCase(0, 0, 10, 10)]
-        public void ClearTiles(int x, int y, int x2, int y2)
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                for (var x3 = 0; x3 < 20; ++x3)
-                {
-                    for (var y3 = 0; y3 < 10; ++y3)
-                    {
-                        world.SetTile(x3, y3, new Tile {Wall = (byte)(x3 * y3 % 4)});
-                    }
-                }
-                var editSession = new EditSession(world, -1, new NullMask());
-                var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
-
-                editSession.ClearTiles(region);
-
-                foreach (var position in region.Where(editSession.IsInBounds))
-                {
-                    Assert.AreEqual(new Tile(), editSession.GetTile(position));
-                }
-            }
-        }
-
-        [Test]
-        public void ClearTiles_NullRegion_ThrowsArgumentNullException()
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.Throws<ArgumentNullException>(() => editSession.ClearTiles(null));
-            }
-        }
-
         [Test]
         public void Ctor_NullMask_ThrowsArgumentNullException()
         {
@@ -104,73 +66,6 @@ namespace WorldEditTests.Sessions
             }
         }
 
-        [TestCase(0, 0, 10, 10)]
-        public void ReplaceTiles(int x, int y, int x2, int y2)
-        {
-            var fromTemplate = Wall.Air;
-            var toTemplate = Wall.Stone;
-            var usedToMatch = new Dictionary<Vector, bool>();
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                for (var x3 = 0; x3 < 20; ++x3)
-                {
-                    for (var y3 = 0; y3 < 10; ++y3)
-                    {
-                        world.SetTile(x3, y3, new Tile {Wall = (byte)(x3 * y3 % 4)});
-                        usedToMatch[new Vector(x3, y3)] = fromTemplate.Matches(world.GetTile(x3, y3));
-                    }
-                }
-                var editSession = new EditSession(world, -1, new NullMask());
-                var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
-
-                editSession.ReplaceTiles(region, fromTemplate, toTemplate);
-
-                foreach (var position in region.Where(editSession.IsInBounds))
-                {
-                    Assert.IsFalse(fromTemplate.Matches(editSession.GetTile(position)));
-                    if (usedToMatch[position])
-                    {
-                        Assert.IsTrue(toTemplate.Matches(editSession.GetTile(position)));
-                    }
-                }
-            }
-        }
-
-        [Test]
-        public void ReplaceTiles_NullFromTemplate_ThrowsArgumentNullException()
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.Throws<ArgumentNullException>(
-                    () => editSession.ReplaceTiles(new NullRegion(), null, Block.Lava));
-            }
-        }
-
-        [Test]
-        public void ReplaceTiles_NullRegion_ThrowsArgumentNullException()
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.Throws<ArgumentNullException>(() => editSession.ReplaceTiles(null, Block.Water, Block.Lava));
-            }
-        }
-
-        [Test]
-        public void ReplaceTiles_NullToTemplate_ThrowsArgumentNullException()
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.Throws<ArgumentNullException>(
-                    () => editSession.ReplaceTiles(new NullRegion(), Block.Water, null));
-            }
-        }
-
         [TestCase(0, 0)]
         public void SetTileIntInt(int x, int y)
         {
@@ -208,46 +103,6 @@ namespace WorldEditTests.Sessions
 
                 Assert.IsFalse(editSession.SetTile(x, y, new Tile {Wall = 32}));
                 Assert.AreNotEqual(32, editSession.GetTile(x, y).Wall);
-            }
-        }
-
-        [TestCase(0, 0, 10, 10)]
-        public void SetTiles(int x, int y, int x2, int y2)
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-                var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
-                var template = Block.Water;
-
-                editSession.SetTiles(region, template);
-
-                foreach (var position in region.Where(editSession.IsInBounds))
-                {
-                    Assert.IsTrue(template.Matches(editSession.GetTile(position)));
-                }
-            }
-        }
-
-        [Test]
-        public void SetTiles_NullRegion_ThrowsArgumentNullException()
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(null, Block.Water));
-            }
-        }
-
-        [Test]
-        public void SetTiles_NullTemplate_ThrowsArgumentNullException()
-        {
-            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.Throws<ArgumentNullException>(() => editSession.SetTiles(new NullRegion(), null));
             }
         }
 

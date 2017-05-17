@@ -108,6 +108,8 @@ namespace WorldEdit.Modules
                 var x = args.X;
                 var y = args.Y;
                 var position = new Vector(x, y);
+
+                // TODO: implement tool undo. Create new EditSession every 500 blocks?
                 var editSession = session.CreateEditSession();
                 session.Tool.Apply(editSession, position);
                 args.Handled = true;
