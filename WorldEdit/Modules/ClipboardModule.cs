@@ -86,12 +86,13 @@ namespace WorldEdit.Modules
             };
 
             var schematic = Plugin.RegisterCommand("/schematic", Schematic, "worldedit.clipboard.schematic");
+            schematic.Names.Add("/schem");
             schematic.HelpDesc = new[]
             {
                 "Syntax: //schematic delete <name>",
                 "Syntax: //schematic list [page]",
                 "Syntax: //schematic load <name>",
-                "Syntax: //schematic save <name> <format>",
+                "Syntax: //schematic save <name> <format> [description]",
                 "",
                 "Manages schematics. Currently, the only valid format is tedit."
             };
@@ -137,8 +138,14 @@ namespace WorldEdit.Modules
             }
 
             var clipboard = session.Clipboard;
+            if (clipboard == null)
+            {
+                player.SendErrorMessage("Invalid clipboard.");
+                return;
+            }
+
             var editSession = session.CreateEditSession(true);
-            clipboard?.PasteTo(editSession, position.Value);
+            clipboard.PasteTo(editSession, position.Value);
             Netplay.ResetSections();
             player.SendSuccessMessage("Pasted clipboard to primary position.");
         }
