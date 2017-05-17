@@ -77,8 +77,8 @@ namespace WorldEdit.Regions
                 var x2 = flipped ? vertex.X : nextVertex.X;
                 if (x1 <= position.X && position.X <= x2)
                 {
-                    var y1 = !flipped ? nextVertex.Y : vertex.Y;
-                    var y2 = !flipped ? vertex.Y : nextVertex.Y;
+                    var y1 = flipped ? nextVertex.Y : vertex.Y;
+                    var y2 = flipped ? vertex.Y : nextVertex.Y;
                     var crossProduct = (position.Y - y1) * (x2 - x1) - (y2 - y1) * (position.X - x1);
                     if (crossProduct == 0)
                     {
