@@ -22,6 +22,9 @@ namespace WorldEdit.Modules
                 ["tedit"] = new TeditSchematicFormat()
             };
 
+        private static readonly string SchematicPathFormat = Path.Combine("worldedit", "schematics", "{0}.schematic");
+        private static readonly string SchematicsPath = Path.Combine("worldedit", "schematics.json");
+
         private Dictionary<string, SchematicInfo> _schematicInfos = new Dictionary<string, SchematicInfo>();
 
         /// <summary>
@@ -35,18 +38,17 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Deregister()
         {
-            var schematicsPath = Path.Combine("worldedit", "schematics.json");
-            File.WriteAllText(schematicsPath, JsonConvert.SerializeObject(_schematicInfos, Formatting.Indented));
+            File.WriteAllText(SchematicsPath, JsonConvert.SerializeObject(_schematicInfos, Formatting.Indented));
         }
 
         /// <inheritdoc />
         public override void Register()
         {
-            var schematicsPath = Path.Combine("worldedit", "schematics.json");
-            if (File.Exists(schematicsPath))
+            Directory.CreateDirectory(Path.Combine("worldedit", "schematics"));
+            if (File.Exists(SchematicsPath))
             {
                 _schematicInfos =
-                    JsonConvert.DeserializeObject<Dictionary<string, SchematicInfo>>(File.ReadAllText(schematicsPath));
+                    JsonConvert.DeserializeObject<Dictionary<string, SchematicInfo>>(File.ReadAllText(SchematicsPath));
             }
 
             var clearClipboard = Plugin.RegisterCommand("clearclipboard",
@@ -198,7 +200,7 @@ namespace WorldEdit.Modules
             }
 
             _schematicInfos.Remove(inputName);
-            var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
+            var schematicPath = string.Format(SchematicPathFormat, inputName);
             File.Delete(schematicPath);
             player.SendSuccessMessage("Deleted schematic.");
         }
@@ -262,7 +264,7 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
+            var schematicPath = string.Format(SchematicPathFormat, inputName);
             using (var stream = File.OpenRead(schematicPath))
             {
                 var clipboardResult = schematicFormat.Read(stream);
@@ -320,7 +322,7 @@ namespace WorldEdit.Modules
                 inputDescription = "N/A";
             }
 
-            var schematicPath = Path.Combine("worldedit", $"{inputName}.schematic");
+            var schematicPath = string.Format(SchematicPathFormat, inputName);
             using (var stream = File.OpenWrite(schematicPath))
             {
                 schematicFormat.Write(clipboard, stream);
