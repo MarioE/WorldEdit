@@ -173,7 +173,7 @@ namespace WorldEdit.Modules
             {
                 if (!selection.CanContract)
                 {
-                    player.SendSuccessMessage("Cannot contract selection.");
+                    player.SendErrorMessage("Cannot contract selection.");
                     return;
                 }
 
@@ -185,7 +185,7 @@ namespace WorldEdit.Modules
             {
                 if (!selection.CanExpand)
                 {
-                    player.SendSuccessMessage("Cannot expand selection.");
+                    player.SendErrorMessage("Cannot expand selection.");
                     return;
                 }
 
@@ -197,7 +197,7 @@ namespace WorldEdit.Modules
             {
                 if (!selection.CanShift)
                 {
-                    player.SendSuccessMessage("Cannot shift selection.");
+                    player.SendErrorMessage("Cannot shift selection.");
                     return;
                 }
 
@@ -231,7 +231,7 @@ namespace WorldEdit.Modules
             {
                 if (!selection.CanContract)
                 {
-                    player.SendSuccessMessage("Cannot inset selection.");
+                    player.SendErrorMessage("Cannot inset selection.");
                     return;
                 }
 
@@ -242,7 +242,7 @@ namespace WorldEdit.Modules
             {
                 if (!selection.CanExpand)
                 {
-                    player.SendSuccessMessage("Cannot outset selection.");
+                    player.SendErrorMessage("Cannot outset selection.");
                     return;
                 }
 
