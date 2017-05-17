@@ -46,8 +46,9 @@ namespace WorldEdit.Regions
         public override Vector UpperBound { get; }
 
         /// <inheritdoc />
-        public override bool Contains(Vector position) => LowerBound.X <= position.X && position.X < UpperBound.X &&
-                                                          LowerBound.Y <= position.Y && position.Y < UpperBound.Y;
+        public override bool Contains(Vector position) =>
+            LowerBound.X <= position.X && position.X < UpperBound.X &&
+            LowerBound.Y <= position.Y && position.Y < UpperBound.Y;
 
         /// <inheritdoc />
         public override Region Contract(Vector delta) => Change(delta, false);

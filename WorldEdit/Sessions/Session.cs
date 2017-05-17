@@ -22,7 +22,7 @@ namespace WorldEdit.Sessions
         /// <summary>
         /// Initializes a new instance of the <see cref="Session" /> class with the specified world and history limit.
         /// </summary>
-        /// <param name="world">The world.</param>
+        /// <param name="world">The world to modify.</param>
         /// <param name="historyLimit">The history limit.</param>
         /// <exception cref="ArgumentNullException"><paramref name="world" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="historyLimit" /> is negative.</exception>

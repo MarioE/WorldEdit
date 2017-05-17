@@ -343,9 +343,6 @@ namespace WorldEdit.Schematics
             dataIndex = 3;
             if (tile.IsActive)
             {
-                // header:
-                // ------a-
-                // Tile has a block
                 header |= 0x2;
                 data[dataIndex++] = (byte)tile.Type;
                 if (tile.Type > 255)

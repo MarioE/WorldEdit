@@ -345,7 +345,7 @@ namespace WorldEdit.Templates
         {
             if (-4 <= _type && _type <= -2)
             {
-                return tile.Liquid > 0 && tile.LiquidType == -_type - 2;
+                return !tile.IsActive && tile.Liquid > 0 && tile.LiquidType == -_type - 2;
             }
             if (_type == -1)
             {

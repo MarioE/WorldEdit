@@ -76,7 +76,7 @@ namespace WorldEdit.Modules
             var setWall = Plugin.RegisterCommand("/setwall", Set<Wall>, "worldedit.region.setwall");
             setWall.HelpDesc = new[]
             {
-                "Syntax: //set <pattern>",
+                "Syntax: //setwall <pattern>",
                 "",
                 "Sets the walls in your selection."
             };
@@ -94,7 +94,7 @@ namespace WorldEdit.Modules
         {
             var parameters = args.Parameters;
             var player = args.Player;
-            var inputPatterns = string.Join("", parameters).Split('|');
+            var inputPatterns = string.Join(" ", parameters).Split('|');
             if (parameters.Count < 1 || inputPatterns.Length != 2)
             {
                 var commandName = args.GetCommandName();

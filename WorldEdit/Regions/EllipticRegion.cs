@@ -11,7 +11,7 @@ namespace WorldEdit.Regions
         /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified center position and radius.
         /// </summary>
         /// <param name="center">The center position.</param>
-        /// <param name="radius">The radius.</param>
+        /// <param name="radius">The radius. The components will be normalized to non-negative values.</param>
         public EllipticRegion(Vector center, Vector radius)
         {
             Center = center;

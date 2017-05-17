@@ -10,7 +10,7 @@ namespace WorldEdit.Regions.Selectors
         private readonly List<Vector> _positions = new List<Vector>();
 
         /// <inheritdoc />
-        public override Vector? PrimaryPosition => _positions.Count != 0 ? (Vector?)_positions[0] : null;
+        public override Vector? PrimaryPosition => _positions.Count > 0 ? (Vector?)_positions[0] : null;
 
         /// <inheritdoc />
         public override void Clear()

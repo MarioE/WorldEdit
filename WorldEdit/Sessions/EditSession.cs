@@ -20,9 +20,9 @@ namespace WorldEdit.Sessions
         /// <summary>
         /// Initializes a new instance of the <see cref="EditSession" /> class with the specified world, limit, and mask.
         /// </summary>
-        /// <param name="world">The world.</param>
+        /// <param name="world">The world to modify.</param>
         /// <param name="limit">The limit on the number of tiles that can be set.</param>
-        /// <param name="mask">The mask.</param>
+        /// <param name="mask">The mask to test.</param>
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="world" /> or <paramref name="mask" /> is <c>null</c>.
         /// </exception>

@@ -72,6 +72,7 @@
     <Compile Include="Modules\HistoryModule.cs" />
     <Compile Include="Modules\Module.cs" />
     <Compile Include="Modules\RegionModule.cs" />
+    <Compile Include="Modules\SchematicModule.cs" />
     <Compile Include="Modules\SelectionModule.cs" />
     <Compile Include="Modules\UtilityModule.cs" />
     <Compile Include="Regions\Selectors\EllipticRegionSelector.cs" />

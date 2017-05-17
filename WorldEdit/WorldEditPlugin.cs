@@ -59,8 +59,8 @@ namespace WorldEdit
         /// </summary>
         /// <param name="player">The player.</param>
         /// <returns>The session associated with the player.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="player" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="player" /> has no username.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="player" /> is <c>null</c>.</exception>
         public Session GetOrCreateSession(TSPlayer player)
         {
             if (player == null)
@@ -68,7 +68,7 @@ namespace WorldEdit
                 throw new ArgumentNullException(nameof(player));
             }
 
-            var username = player.User?.Name ?? throw new ArgumentException("No username.", nameof(player));
+            var username = player.User?.Name ?? throw new ArgumentException("Username required.", nameof(player));
             return _sessionManager.GetOrCreate(username);
         }
 
