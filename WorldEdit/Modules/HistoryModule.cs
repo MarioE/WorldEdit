@@ -1,5 +1,4 @@
-﻿using Terraria;
-using TShockAPI;
+﻿using TShockAPI;
 
 namespace WorldEdit.Modules
 {
@@ -68,7 +67,6 @@ namespace WorldEdit.Modules
             }
 
             var count = session.Redo();
-            Netplay.ResetSections();
             player.SendSuccessMessage($"Redone {count} changes.");
         }
 
@@ -83,7 +81,6 @@ namespace WorldEdit.Modules
             }
 
             var count = session.Undo();
-            Netplay.ResetSections();
             player.SendSuccessMessage($"Undone {count} changes.");
         }
     }

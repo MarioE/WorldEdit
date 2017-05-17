@@ -79,6 +79,8 @@
     <Compile Include="Templates\WallColorTests.cs" />
     <Compile Include="Templates\PatternEntryTests.cs" />
     <Compile Include="Templates\PatternTests.cs" />
+    <Compile Include="Tools\BrushToolTests.cs" />
+    <Compile Include="Tools\NullToolTests.cs" />
     <Compile Include="WorldTests.cs" />
     <Compile Include="Masks\NegatedMaskTests.cs" />
     <Compile Include="Masks\NullMaskTests.cs" />

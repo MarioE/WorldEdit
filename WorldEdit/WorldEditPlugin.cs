@@ -133,6 +133,8 @@ namespace WorldEdit
         {
             if (disposing)
             {
+                _world.Dispose();
+
                 File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
 
                 ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave);

@@ -1,5 +1,4 @@
-﻿using Terraria;
-using TShockAPI;
+﻿using TShockAPI;
 
 namespace WorldEdit.Modules
 {
@@ -58,7 +57,7 @@ namespace WorldEdit.Modules
                 "Pastes your clipboard to your primary position."
             };
         }
-
+        
         private void ClearClipboard(CommandArgs args)
         {
             var player = args.Player;
@@ -83,7 +82,6 @@ namespace WorldEdit.Modules
             var editSession = session.CreateEditSession(true);
             session.Clipboard = Clipboard.CopyFrom(editSession, session.Selection);
             editSession.ClearTiles(session.Selection);
-            Netplay.ResetSections();
             player.SendSuccessMessage("Cut clipboard from selection.");
         }
 
@@ -107,7 +105,6 @@ namespace WorldEdit.Modules
 
             var editSession = session.CreateEditSession(true);
             clipboard.PasteTo(editSession, position.Value);
-            Netplay.ResetSections();
             player.SendSuccessMessage("Pasted clipboard to primary position.");
         }
     }

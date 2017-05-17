@@ -1,5 +1,4 @@
-﻿using Terraria;
-using TShockAPI;
+﻿using TShockAPI;
 using WorldEdit.Templates;
 
 namespace WorldEdit.Modules
@@ -119,7 +118,6 @@ namespace WorldEdit.Modules
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
             var count = editSession.ReplaceTiles(session.Selection, fromPatternResult.Value, toPatternResult.Value);
-            Netplay.ResetSections();
             player.SendSuccessMessage($"Modified {count} tiles.");
         }
 
@@ -144,7 +142,6 @@ namespace WorldEdit.Modules
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
             var count = editSession.SetTiles(session.Selection, patternResult.Value);
-            Netplay.ResetSections();
             player.SendSuccessMessage($"Modified {count} tiles.");
         }
     }

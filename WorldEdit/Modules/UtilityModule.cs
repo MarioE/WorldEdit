@@ -72,10 +72,10 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            var inputLimit = parameters[0].ToLowerInvariant();
+            var inputLimit = parameters[0];
             if (!int.TryParse(inputLimit, out var limit))
             {
-                player.SendErrorMessage($"Invalid limit '{inputLimit}'.");
+                player.SendErrorMessage($"Invalid limit '{inputLimit.ToLowerInvariant()}'.");
                 return;
             }
 

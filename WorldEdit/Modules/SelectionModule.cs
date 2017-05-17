@@ -112,7 +112,7 @@ namespace WorldEdit.Modules
                 "Changes your selector. Valid selectors are:",
                 "- elliptic: Select the center and radius of an ellipse.",
                 "- polygonal: Select the vertices of a polygon.",
-                "- rectangular: Select the two opposite points of a rectangle.",
+                "- rectangular: Select the two opposite points of a rectangle."
             };
 
             var shift = Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");
@@ -129,7 +129,7 @@ namespace WorldEdit.Modules
             {
                 "Syntax: //wand",
                 "",
-                "Toggles wand mode. This allows you to use wrenches to select positions."
+                "Toggles wand mode. This allows you to use wrenches to select positions and use tools."
             };
         }
 
@@ -355,9 +355,11 @@ namespace WorldEdit.Modules
             {
                 player.GiveItemIfNot(ItemID.Wrench);
                 player.GiveItemIfNot(ItemID.BlueWrench);
+                player.GiveItemIfNot(ItemID.GreenWrench);
                 player.GiveItemIfNot(ItemID.Wire, 999);
                 player.SendInfoMessage("Use the red wrench to set the primary position.");
                 player.SendInfoMessage("Use the blue wrench to set the secondary position.");
+                player.SendInfoMessage("Use the green wrench to use tools.");
             }
         }
     }

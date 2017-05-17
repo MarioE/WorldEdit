@@ -1,7 +1,7 @@
 ﻿namespace WorldEdit.Templates
 {
     /// <summary>
-    /// Represents a template that can be applied to and matched with tiles.
+    /// Specifies a template that can be applied to and matched with tiles.
     /// </summary>
     public interface ITemplate
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using WorldEdit.Masks;
 using WorldEdit.Regions;
 using WorldEdit.Regions.Selectors;
+using WorldEdit.Tools;
 
 namespace WorldEdit.Sessions
 {
@@ -18,6 +19,7 @@ namespace WorldEdit.Sessions
         private Mask _mask = new NullMask();
         private RegionSelector _regionSelector = new RectangularRegionSelector();
         private Region _selection = new NullRegion();
+        private ITool _tool = new NullTool();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Session" /> class with the specified world and history limit.
@@ -87,6 +89,16 @@ namespace WorldEdit.Sessions
         {
             get => _selection;
             set => _selection = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        /// <summary>
+        /// Gets or sets the tool.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
+        public ITool Tool
+        {
+            get => _tool;
+            set => _tool = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>

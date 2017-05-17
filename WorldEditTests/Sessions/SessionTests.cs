@@ -15,33 +15,38 @@ namespace WorldEditTests.Sessions
         [Test]
         public void ClearHistory()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
-            session.CreateEditSession(true);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
+                session.CreateEditSession(true);
 
-            session.ClearHistory();
+                session.ClearHistory();
 
-            Assert.IsFalse(session.CanUndo);
+                Assert.IsFalse(session.CanUndo);
+            }
         }
 
         [TestCase(false)]
         [TestCase(true)]
         public void CreateEditSession(bool remember)
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 1);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 1);
 
-            session.CreateEditSession(remember);
+                session.CreateEditSession(remember);
 
-            Assert.AreEqual(remember, session.CanUndo);
+                Assert.AreEqual(remember, session.CanUndo);
+            }
         }
 
         [Test]
         public void Ctor_NegativeHistoryLimit_ThrowsArgumentOutOfRangeException()
         {
-            var world = new World(new MockTileCollection());
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Session(world, -1));
+            using (var world = new World(new MockTileCollection()))
+            {
+                Assert.Throws<ArgumentOutOfRangeException>(() => new Session(world, -1));
+            }
         }
 
         [Test]
@@ -54,118 +59,140 @@ namespace WorldEditTests.Sessions
         [TestCase(false)]
         public void GetSetIsWandMode(bool value)
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
 
-            session.IsWandMode = value;
+                session.IsWandMode = value;
 
-            Assert.AreEqual(value, session.IsWandMode);
+                Assert.AreEqual(value, session.IsWandMode);
+            }
         }
 
         [Test]
         public void GetSetMask()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
-            var mask = new NullMask();
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
+                var mask = new NullMask();
 
-            session.Mask = mask;
+                session.Mask = mask;
 
-            Assert.AreEqual(mask, session.Mask);
+                Assert.AreEqual(mask, session.Mask);
+            }
         }
 
         [Test]
         public void GetSetRegionSelector()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
-            var regionSelector = new RectangularRegionSelector();
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
+                var regionSelector = new RectangularRegionSelector();
 
-            session.RegionSelector = regionSelector;
+                session.RegionSelector = regionSelector;
 
-            Assert.AreEqual(regionSelector, session.RegionSelector);
+                Assert.AreEqual(regionSelector, session.RegionSelector);
+            }
         }
 
         [Test]
         public void GetSetSelection()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
-            var selection = new NullRegion();
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
+                var selection = new NullRegion();
 
-            session.Selection = selection;
+                session.Selection = selection;
 
-            Assert.AreEqual(selection, session.Selection);
+                Assert.AreEqual(selection, session.Selection);
+            }
         }
 
         [Test]
         public void Redo()
         {
-            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var session = new Session(world, 1);
-            var editSession = session.CreateEditSession(true);
-            editSession.SetTile(0, 0, new Tile {Wall = 1});
-            session.Undo();
+            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
+            {
+                var session = new Session(world, 1);
+                var editSession = session.CreateEditSession(true);
+                editSession.SetTile(0, 0, new Tile {Wall = 1});
+                session.Undo();
 
-            Assert.AreEqual(1, session.Redo());
-            Assert.AreEqual(1, world.GetTile(0, 0).Wall);
+                Assert.AreEqual(1, session.Redo());
+                Assert.AreEqual(1, world.GetTile(0, 0).Wall);
+            }
         }
 
         [Test]
         public void Redo_CannotRedo_ThrowsInvalidOperationException()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
 
-            Assert.Throws<InvalidOperationException>(() => session.Redo());
+                Assert.Throws<InvalidOperationException>(() => session.Redo());
+            }
         }
 
         [Test]
         public void SetMask_NullValue_ThrowsArgumentNullException()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
 
-            Assert.Throws<ArgumentNullException>(() => session.Mask = null);
+                Assert.Throws<ArgumentNullException>(() => session.Mask = null);
+            }
         }
 
         [Test]
         public void SetRegionSelector_NullValue_ThrowsArgumentNullException()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
 
-            Assert.Throws<ArgumentNullException>(() => session.RegionSelector = null);
+                Assert.Throws<ArgumentNullException>(() => session.RegionSelector = null);
+            }
         }
 
         [Test]
         public void SetSelection_NullValue_ThrowsArgumentNullException()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
 
-            Assert.Throws<ArgumentNullException>(() => session.Selection = null);
+                Assert.Throws<ArgumentNullException>(() => session.Selection = null);
+            }
         }
 
         [Test]
         public void Undo()
         {
-            var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]});
-            var session = new Session(world, 1);
-            var editSession = session.CreateEditSession(true);
-            editSession.SetTile(0, 0, new Tile {Wall = 1});
+            using (var world = new World(new MockTileCollection {Tiles = new ITile[20, 10]}))
+            {
+                var session = new Session(world, 1);
+                var editSession = session.CreateEditSession(true);
+                editSession.SetTile(0, 0, new Tile {Wall = 1});
 
-            Assert.AreEqual(1, session.Undo());
-            Assert.AreNotEqual(1, world.GetTile(0, 0).Wall);
+                Assert.AreEqual(1, session.Undo());
+                Assert.AreNotEqual(1, world.GetTile(0, 0).Wall);
+            }
         }
 
         [Test]
         public void Undo_CannotUndo_ThrowsInvalidOperationException()
         {
-            var world = new World(new MockTileCollection());
-            var session = new Session(world, 0);
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
 
-            Assert.Throws<InvalidOperationException>(() => session.Undo());
+                Assert.Throws<InvalidOperationException>(() => session.Undo());
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ namespace WorldEdit.Sessions
         /// Clears the tiles in the specified region.
         /// </summary>
         /// <param name="region">The region to modify.</param>
-        /// <returns>The number of modified tiles.</returns>
+        /// <returns>The number of modifications.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="region" /> is <c>null</c>.</exception>
         public int ClearTiles(Region region)
         {
@@ -84,7 +84,7 @@ namespace WorldEdit.Sessions
         /// <param name="region">The region to modify.</param>
         /// <param name="fromTemplate">The template to match with.</param>
         /// <param name="toTemplate">The template to apply.</param>
-        /// <returns>The number of modified tiles.</returns>
+        /// <returns>The number of modifications.</returns>
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="region" />, <paramref name="fromTemplate" />, or <paramref name="toTemplate" /> is <c>null</c>.
         /// </exception>
@@ -123,7 +123,7 @@ namespace WorldEdit.Sessions
         /// </summary>
         /// <param name="region">The region to modify.</param>
         /// <param name="template">The template to apply.</param>
-        /// <returns>The number of modified tiles.</returns>
+        /// <returns>The number of modifications.</returns>
         public int SetTiles(Region region, ITemplate template)
         {
             if (region == null)

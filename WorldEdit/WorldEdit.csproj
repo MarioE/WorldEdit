@@ -74,6 +74,7 @@
     <Compile Include="Modules\RegionModule.cs" />
     <Compile Include="Modules\SchematicModule.cs" />
     <Compile Include="Modules\SelectionModule.cs" />
+    <Compile Include="Modules\ToolModule.cs" />
     <Compile Include="Modules\UtilityModule.cs" />
     <Compile Include="Regions\Selectors\EllipticRegionSelector.cs" />
     <Compile Include="Regions\PolygonalRegion.cs" />
@@ -102,6 +103,9 @@
     <Compile Include="Templates\Wall.cs" />
     <Compile Include="Templates\WallColor.cs" />
     <Compile Include="Tile.cs" />
+    <Compile Include="Tools\BrushTool.cs" />
+    <Compile Include="Tools\ITool.cs" />
+    <Compile Include="Tools\NullTool.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="World.cs" />
     <Compile Include="WorldEditPlugin.cs" />
