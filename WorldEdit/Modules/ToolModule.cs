@@ -34,15 +34,33 @@ namespace WorldEdit.Modules
             {
                 "Syntax: //brush <size> <pattern>",
                 "",
-                "Changes your tool to a brush tool for blocks."
+                "Changes your tool to a brush tool that changes blocks."
             };
 
             var brushWall = Plugin.RegisterCommand("/brushwall", Brush<Wall>, "worldedit.tool.brushwall");
             brushWall.HelpDesc = new[]
             {
-                "Syntax: //brush <size> <pattern>",
+                "Syntax: //brushwall <size> <pattern>",
                 "",
-                "Changes your tool to a brush tool for walls."
+                "Changes your tool to a brush tool that changes walls."
+            };
+
+            var colorBrush = Plugin.RegisterCommand("/paintbrush", Brush<Color>, "worldedit.tool.paintbrush");
+            colorBrush.HelpDesc = new[]
+            {
+                "Syntax: //paintbrush <size> <pattern>",
+                "",
+                "Changes your tool to a brush tool that paints blocks."
+            };
+
+            var colorWallBrush = Plugin.RegisterCommand("/paintbrushwall",
+                Brush<Color>,
+                "worldedit.tool.paintbrushwall");
+            colorWallBrush.HelpDesc = new[]
+            {
+                "Syntax: //paintbrushwall <size> <pattern>",
+                "",
+                "Changes your tool to a brush tool that paints walls."
             };
         }
 

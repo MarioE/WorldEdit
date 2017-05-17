@@ -24,20 +24,20 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            var color = Plugin.RegisterCommand("/color", Set<Color>, "worldedit.region.color");
-            color.HelpDesc = new[]
+            var paint = Plugin.RegisterCommand("/paint", Set<Color>, "worldedit.region.paint");
+            paint.HelpDesc = new[]
             {
-                "Syntax: //color <pattern>",
+                "Syntax: //paint <pattern>",
                 "",
-                "Colors the blocks in your selection."
+                "Paints the blocks in your selection."
             };
 
-            var colorWall = Plugin.RegisterCommand("/colorwall", Set<WallColor>, "worldedit.region.colorwall");
-            colorWall.HelpDesc = new[]
+            var paintWall = Plugin.RegisterCommand("/paintwall", Set<WallColor>, "worldedit.region.paintwall");
+            paintWall.HelpDesc = new[]
             {
-                "Syntax: //colorwall <pattern>",
+                "Syntax: //paintwall <pattern>",
                 "",
-                "Colors the blocks in your selection."
+                "Paints the walls in your selection."
             };
 
             var replace = Plugin.RegisterCommand("/replace", Replace<Block>, "worldedit.region.replace");
