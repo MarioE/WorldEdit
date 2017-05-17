@@ -107,11 +107,12 @@ namespace WorldEdit.Modules
             var select = Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
             select.HelpDesc = new[]
             {
-                "Syntax: //select <region-type>",
+                "Syntax: //select <selector>",
                 "",
-                "Changes your region type. Valid region types are:",
+                "Changes your selector. Valid selectors are:",
                 "- elliptic: Select the center and radius of an ellipse.",
-                "- rectangular: Select the two opposite points of a rectangle."
+                "- polygonal: Select the vertices of a polygon.",
+                "- rectangular: Select the two opposite points of a rectangle.",
             };
 
             var shift = Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");
@@ -326,14 +327,14 @@ namespace WorldEdit.Modules
             var player = args.Player;
             if (parameters.Count != 1)
             {
-                player.SendErrorMessage("Syntax: //select <region-type>");
+                player.SendErrorMessage("Syntax: //select <selector>");
                 return;
             }
 
             var inputSelector = parameters[0];
             if (!RegionSelectors.TryGetValue(inputSelector, out var selector))
             {
-                player.SendErrorMessage($"Invalid region type '{inputSelector}'.");
+                player.SendErrorMessage($"Invalid selector '{inputSelector}'.");
                 return;
             }
 
