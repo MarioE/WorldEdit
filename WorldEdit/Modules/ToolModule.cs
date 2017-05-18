@@ -45,18 +45,18 @@ namespace WorldEdit.Modules
                 "Changes your tool to a brush tool that changes walls."
             };
 
-            var colorBrush = Plugin.RegisterCommand("/paintbrush", Brush<Color>, "worldedit.tool.paintbrush");
-            colorBrush.HelpDesc = new[]
+            var paintBrush = Plugin.RegisterCommand("/paintbrush", Brush<Color>, "worldedit.tool.paintbrush");
+            paintBrush.HelpDesc = new[]
             {
                 "Syntax: //paintbrush <size> <pattern>",
                 "",
                 "Changes your tool to a brush tool that paints blocks."
             };
 
-            var colorWallBrush = Plugin.RegisterCommand("/paintbrushwall",
-                Brush<Color>,
+            var paintBrushWall = Plugin.RegisterCommand("/paintbrushwall",
+                Brush<WallColor>,
                 "worldedit.tool.paintbrushwall");
-            colorWallBrush.HelpDesc = new[]
+            paintBrushWall.HelpDesc = new[]
             {
                 "Syntax: //paintbrushwall <size> <pattern>",
                 "",
@@ -108,12 +108,12 @@ namespace WorldEdit.Modules
                 var x = args.X;
                 var y = args.Y;
                 var position = new Vector(x, y);
+                player.SendTileSquare(x, y, 1);
+                args.Handled = true;
 
                 // TODO: implement tool undo. Create new EditSession every 500 blocks?
                 var editSession = session.CreateEditSession();
                 session.Tool.Apply(editSession, position);
-                args.Handled = true;
-                player.SendTileSquare(x, y, 1);
             }
         }
     }

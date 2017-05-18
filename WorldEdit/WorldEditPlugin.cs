@@ -134,6 +134,7 @@ namespace WorldEdit
         {
             if (disposing)
             {
+                _sessionManager.Dispose();
                 _world.Dispose();
 
                 File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
