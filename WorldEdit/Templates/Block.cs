@@ -350,7 +350,7 @@ namespace WorldEdit.Templates
             }
             if (_type == -1)
             {
-                return !tile.IsActive;
+                return !tile.IsActive && tile.Liquid == 0;
             }
 
             var doFramesMatch = (_frameX == -1 || tile.FrameX == _frameX) && (_frameY == -1 || tile.FrameY == _frameY);
