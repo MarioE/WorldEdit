@@ -13,8 +13,8 @@ namespace WorldEdit
     /// </summary>
     public sealed class World : Extent, IDisposable
     {
-        private const int SectionHeight = 150;
-        private const int SectionWidth = 200;
+        private static readonly int SectionHeight = 150;
+        private static readonly int SectionWidth = 200;
 
         private readonly HashSet<Vector> _dirtySections = new HashSet<Vector>();
         private readonly object _lock = new object();

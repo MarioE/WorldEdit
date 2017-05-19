@@ -13,8 +13,6 @@ namespace WorldEdit.Modules
     /// </summary>
     public sealed class SchematicModule : Module
     {
-        private const int SchematicsPerPage = 5;
-
         private static readonly Dictionary<string, SchematicFormat> SchematicFormats =
             new Dictionary<string, SchematicFormat>(StringComparer.OrdinalIgnoreCase)
             {
@@ -23,6 +21,7 @@ namespace WorldEdit.Modules
 
         private static readonly string SchematicPathFormat = Path.Combine("worldedit", "schematics", "{0}.schematic");
         private static readonly string SchematicsPath = Path.Combine("worldedit", "schematics.json");
+        private static readonly int SchematicsPerPage = 5;
 
         private Dictionary<string, SchematicInfo> _schematicInfos = new Dictionary<string, SchematicInfo>();
 

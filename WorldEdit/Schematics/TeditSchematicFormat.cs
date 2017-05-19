@@ -10,7 +10,7 @@ namespace WorldEdit.Schematics
     /// </summary>
     public sealed class TeditSchematicFormat : SchematicFormat
     {
-        private const uint Version = 192;
+        private static readonly uint Version = 192;
 
         /// <inheritdoc />
         public override Result<Clipboard> Read(Stream stream)
