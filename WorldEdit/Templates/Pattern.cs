@@ -41,16 +41,16 @@ namespace WorldEdit.Templates
             {
                 var s3 = s2;
                 var weight = 1;
-                var index = s2.IndexOf('*');
-                if (index != -1)
+                var split = s2.Split('*');
+                if (split.Length == 2)
                 {
-                    var inputWeight = s2.Substring(0, index);
+                    var inputWeight = split[0];
                     if (!int.TryParse(inputWeight, out weight) || weight <= 0)
                     {
                         return Result.FromError<Pattern<T>>($"Invalid weight '{inputWeight}'.");
                     }
 
-                    s3 = s2.Substring(index + 1);
+                    s3 = split[1];
                 }
 
                 var templateResult = (Result<T>)typeof(T).GetMethod("Parse").Invoke(null, new object[] {s3});

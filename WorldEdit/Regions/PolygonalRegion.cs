@@ -29,7 +29,7 @@ namespace WorldEdit.Regions
 
             if (_vertices.Count < 3)
             {
-                throw new ArgumentException("Vertices list must have at least three items.", nameof(vertices));
+                throw new ArgumentException("Vertex list must have at least three items.", nameof(vertices));
             }
         }
 
@@ -80,14 +80,11 @@ namespace WorldEdit.Regions
                     var y1 = flipped ? nextVertex.Y : vertex.Y;
                     var y2 = flipped ? vertex.Y : nextVertex.Y;
                     var crossProduct = (position.Y - y1) * (x2 - x1) - (y2 - y1) * (position.X - x1);
-                    if (crossProduct == 0)
+                    if (crossProduct == 0 && y1 <= position.Y == position.Y <= y2)
                     {
-                        if (y1 <= position.Y == position.Y <= y2)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
-                    else if (crossProduct < 0 && x1 != position.X)
+                    if (crossProduct < 0 && x1 != position.X)
                     {
                         result = !result;
                     }

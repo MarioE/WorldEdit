@@ -70,7 +70,7 @@ namespace WorldEdit.Extents
         public bool IsInBounds(Vector position) => IsInBounds(position.X, position.Y);
 
         /// <summary>
-        /// Replaces the tiles in the specified region using the specified templates.
+        /// Modifies the tiles in the specified region by applying the specified template where possible.
         /// </summary>
         /// <param name="region">The region to modify.</param>
         /// <param name="fromTemplate">The template to match with.</param>
@@ -79,7 +79,7 @@ namespace WorldEdit.Extents
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="region" />, <paramref name="fromTemplate" />, or <paramref name="toTemplate" /> is <c>null</c>.
         /// </exception>
-        public int ReplaceTiles(Region region, ITemplate fromTemplate, ITemplate toTemplate)
+        public int ReplaceTemplates(Region region, ITemplate fromTemplate, ITemplate toTemplate)
         {
             if (region == null)
             {
@@ -107,24 +107,7 @@ namespace WorldEdit.Extents
         }
 
         /// <summary>
-        /// Sets the tile located at the specified coordinates. For speed purposes, this method has -no- validation!
-        /// </summary>
-        /// <param name="x">The X coordinate.</param>
-        /// <param name="y">The Y coordinate.</param>
-        /// <param name="tile">The tile.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
-        public abstract bool SetTile(int x, int y, Tile tile);
-
-        /// <summary>
-        /// Sets the tile located at the specified position. For speed purposes, this method has -no- validation!
-        /// </summary>
-        /// <param name="position">The position.</param>
-        /// <param name="tile">The tile.</param>
-        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
-        public bool SetTile(Vector position, Tile tile) => SetTile(position.X, position.Y, tile);
-
-        /// <summary>
-        /// Sets the tiles in the specified region using the specified template.
+        /// Modifies the tiles in the specified region by applying the specified template.
         /// </summary>
         /// <param name="region">The region to modify.</param>
         /// <param name="template">The template to apply.</param>
@@ -132,7 +115,7 @@ namespace WorldEdit.Extents
         /// <exception cref="ArgumentNullException">
         /// Either <paramref name="region" /> or <paramref name="template" /> is <c>null</c>.
         /// </exception>
-        public int SetTiles(Region region, ITemplate template)
+        public int SetTemplates(Region region, ITemplate template)
         {
             if (region == null)
             {
@@ -153,5 +136,22 @@ namespace WorldEdit.Extents
             }
             return count;
         }
+
+        /// <summary>
+        /// Sets the tile located at the specified coordinates. For speed purposes, this method has -no- validation!
+        /// </summary>
+        /// <param name="x">The X coordinate.</param>
+        /// <param name="y">The Y coordinate.</param>
+        /// <param name="tile">The tile.</param>
+        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        public abstract bool SetTile(int x, int y, Tile tile);
+
+        /// <summary>
+        /// Sets the tile located at the specified position. For speed purposes, this method has -no- validation!
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="tile">The tile.</param>
+        /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        public bool SetTile(Vector position, Tile tile) => SetTile(position.X, position.Y, tile);
     }
 }

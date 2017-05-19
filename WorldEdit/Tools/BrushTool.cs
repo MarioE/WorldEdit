@@ -33,7 +33,7 @@ namespace WorldEdit.Tools
         public int Apply(Extent extent, Vector position)
         {
             var region = new EllipticRegion(position, _radius * Vector.One);
-            return extent.SetTiles(region, _pattern);
+            return extent.SetTemplates(region, _pattern);
         }
     }
 }

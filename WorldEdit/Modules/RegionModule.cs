@@ -117,7 +117,7 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
-            var count = editSession.ReplaceTiles(session.Selection, fromPatternResult.Value, toPatternResult.Value);
+            var count = editSession.ReplaceTemplates(session.Selection, fromPatternResult.Value, toPatternResult.Value);
             player.SendSuccessMessage($"Modified {count} tiles.");
         }
 
@@ -141,7 +141,7 @@ namespace WorldEdit.Modules
 
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession(true);
-            var count = editSession.SetTiles(session.Selection, patternResult.Value);
+            var count = editSession.SetTemplates(session.Selection, patternResult.Value);
             player.SendSuccessMessage($"Modified {count} tiles.");
         }
     }

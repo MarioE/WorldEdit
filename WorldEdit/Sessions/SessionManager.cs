@@ -8,7 +8,7 @@ namespace WorldEdit.Sessions
     /// <summary>
     /// Manages sessions, allowing them to expire automatically.
     /// </summary>
-    public class SessionManager : IDisposable
+    public sealed class SessionManager : IDisposable
     {
         private readonly TimeSpan _gracePeriod;
         private readonly object _lock = new object();

@@ -50,7 +50,6 @@ namespace WorldEdit.Schematics
                         }
                     }
                 }
-
                 DeserializeChests(reader);
                 DeserializeSigns(reader);
 

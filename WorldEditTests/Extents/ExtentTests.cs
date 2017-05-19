@@ -79,7 +79,7 @@ namespace WorldEditTests.Extents
 
 
         [TestCase(0, 0, 10, 10)]
-        public void ReplaceTiles(int x, int y, int x2, int y2)
+        public void ReplaceTemplates(int x, int y, int x2, int y2)
         {
             var fromTemplate = Wall.Air;
             var toTemplate = Wall.Stone;
@@ -95,7 +95,7 @@ namespace WorldEditTests.Extents
             }
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
 
-            extent.ReplaceTiles(region, fromTemplate, toTemplate);
+            extent.ReplaceTemplates(region, fromTemplate, toTemplate);
 
             foreach (var position in region.Where(extent.IsInBounds))
             {
@@ -108,38 +108,38 @@ namespace WorldEditTests.Extents
         }
 
         [Test]
-        public void ReplaceTiles_NullFromTemplate_ThrowsArgumentNullException()
+        public void ReplaceTemplates_NullFromTemplate_ThrowsArgumentNullException()
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            Assert.Throws<ArgumentNullException>(() => extent.ReplaceTiles(new NullRegion(), null, Block.Lava));
+            Assert.Throws<ArgumentNullException>(() => extent.ReplaceTemplates(new NullRegion(), null, Block.Lava));
         }
 
         [Test]
-        public void ReplaceTiles_NullRegion_ThrowsArgumentNullException()
+        public void ReplaceTemplates_NullRegion_ThrowsArgumentNullException()
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            Assert.Throws<ArgumentNullException>(() => extent.ReplaceTiles(null, Block.Water, Block.Lava));
+            Assert.Throws<ArgumentNullException>(() => extent.ReplaceTemplates(null, Block.Water, Block.Lava));
         }
 
         [Test]
-        public void ReplaceTiles_NullToTemplate_ThrowsArgumentNullException()
+        public void ReplaceTemplates_NullToTemplate_ThrowsArgumentNullException()
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            Assert.Throws<ArgumentNullException>(() => extent.ReplaceTiles(new NullRegion(), Block.Water, null));
+            Assert.Throws<ArgumentNullException>(() => extent.ReplaceTemplates(new NullRegion(), Block.Water, null));
         }
 
 
         [TestCase(0, 0, 10, 10)]
-        public void SetTiles(int x, int y, int x2, int y2)
+        public void SetTemplates(int x, int y, int x2, int y2)
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
             var region = new RectangularRegion(new Vector(x, y), new Vector(x2, y2));
             var template = Block.Water;
 
-            extent.SetTiles(region, template);
+            extent.SetTemplates(region, template);
 
             foreach (var position in region.Where(extent.IsInBounds))
             {
@@ -148,19 +148,19 @@ namespace WorldEditTests.Extents
         }
 
         [Test]
-        public void SetTiles_NullRegion_ThrowsArgumentNullException()
+        public void SetTemplates_NullRegion_ThrowsArgumentNullException()
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            Assert.Throws<ArgumentNullException>(() => extent.SetTiles(null, Block.Water));
+            Assert.Throws<ArgumentNullException>(() => extent.SetTemplates(null, Block.Water));
         }
 
         [Test]
-        public void SetTiles_NullTemplate_ThrowsArgumentNullException()
+        public void SetTemplates_NullTemplate_ThrowsArgumentNullException()
         {
             var extent = new MockExtent {Tiles = new ITile[20, 10]};
 
-            Assert.Throws<ArgumentNullException>(() => extent.SetTiles(new NullRegion(), null));
+            Assert.Throws<ArgumentNullException>(() => extent.SetTemplates(new NullRegion(), null));
         }
 
         [TestCase(0, 0)]

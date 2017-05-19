@@ -11,7 +11,7 @@ namespace WorldEdit
     /// <summary>
     /// Represents a world backed with a tile collection. Players will periodically be notified of changes.
     /// </summary>
-    public class World : Extent, IDisposable
+    public sealed class World : Extent, IDisposable
     {
         private const int SectionHeight = 150;
         private const int SectionWidth = 200;
@@ -50,18 +50,21 @@ namespace WorldEdit
         /// <inheritdoc />
         public override bool SetTile(int x, int y, Tile tile)
         {
+            // Don't construct a new instance of ITile, if at all possible. This reduces GC pressure.
             if (_tiles[x, y] == null)
             {
-                _tiles[x, y] = new Terraria.Tile();
+                _tiles[x, y] = tile.ToITile();
             }
-
-            _tiles[x, y].bTileHeader = tile.BTileHeader;
-            _tiles[x, y].frameX = tile.FrameX;
-            _tiles[x, y].frameY = tile.FrameY;
-            _tiles[x, y].liquid = tile.Liquid;
-            _tiles[x, y].sTileHeader = tile.STileHeader;
-            _tiles[x, y].type = tile.Type;
-            _tiles[x, y].wall = tile.Wall;
+            else
+            {
+                _tiles[x, y].bTileHeader = tile.BTileHeader;
+                _tiles[x, y].frameX = tile.FrameX;
+                _tiles[x, y].frameY = tile.FrameY;
+                _tiles[x, y].liquid = tile.Liquid;
+                _tiles[x, y].sTileHeader = tile.STileHeader;
+                _tiles[x, y].type = tile.Type;
+                _tiles[x, y].wall = tile.Wall;
+            }
 
             lock (_lock)
             {
