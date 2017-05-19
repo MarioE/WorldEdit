@@ -24,6 +24,15 @@ namespace WorldEditTests.Extents
             Assert.Throws<ArgumentNullException>(() => new MaskedExtent(new MockExtent(), null));
         }
 
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var extent = new MockExtent {Tiles = new ITile[width, height]};
+            var maskedExtent = new MaskedExtent(extent, new NullMask());
+
+            Assert.AreEqual(extent.Dimensions, maskedExtent.Dimensions);
+        }
+
         [TestCase(0, 0)]
         public void GetTileIntInt(int x, int y)
         {
@@ -32,15 +41,6 @@ namespace WorldEditTests.Extents
             var maskedExtent = new MaskedExtent(new MockExtent {Tiles = tiles}, new NullMask());
 
             Assert.AreEqual(1, maskedExtent.GetTile(x, y).Type);
-        }
-
-        [TestCase(20, 10)]
-        public void LowerBound(int width, int height)
-        {
-            var extent = new MockExtent {Tiles = new ITile[width, height]};
-            var maskedExtent = new MaskedExtent(extent, new NullMask());
-
-            Assert.AreEqual(extent.LowerBound, maskedExtent.LowerBound);
         }
 
         [TestCase(0, 0)]
@@ -62,15 +62,6 @@ namespace WorldEditTests.Extents
 
             Assert.IsTrue(maskedExtent.SetTile(x, y, new Tile {Wall = 2}));
             Assert.AreEqual(2, maskedExtent.GetTile(x, y).Wall);
-        }
-
-        [TestCase(20, 10)]
-        public void UpperBound(int width, int height)
-        {
-            var extent = new MockExtent {Tiles = new ITile[width, height]};
-            var maskedExtent = new MaskedExtent(extent, new NullMask());
-
-            Assert.AreEqual(extent.UpperBound, maskedExtent.UpperBound);
         }
     }
 }

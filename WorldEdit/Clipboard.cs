@@ -23,10 +23,7 @@ namespace WorldEdit
         }
 
         /// <inheritdoc />
-        public override Vector LowerBound => Vector.Zero;
-
-        /// <inheritdoc />
-        public override Vector UpperBound => new Vector(_tiles.GetLength(0), _tiles.GetLength(1));
+        public override Vector Dimensions => new Vector(_tiles.GetLength(0), _tiles.GetLength(1));
 
         /// <summary>
         /// Copies a clipboard from the specified extent and region. The region bounds will be used when copying.
@@ -73,9 +70,9 @@ namespace WorldEdit
                 throw new ArgumentNullException(nameof(extent));
             }
 
-            for (var x = LowerBound.X; x < UpperBound.X; ++x)
+            for (var x = 0; x < Dimensions.X; ++x)
             {
-                for (var y = LowerBound.Y; y < UpperBound.Y; ++y)
+                for (var y = 0; y < Dimensions.Y; ++y)
                 {
                     var tile = _tiles[x, y];
                     if (tile != null)

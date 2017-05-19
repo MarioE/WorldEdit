@@ -24,6 +24,15 @@ namespace WorldEditTests.Extents
             Assert.Throws<ArgumentNullException>(() => new LoggedExtent(new MockExtent(), null));
         }
 
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var extent = new MockExtent {Tiles = new ITile[width, height]};
+            var loggedExtent = new LoggedExtent(extent, new ChangeSet());
+
+            Assert.AreEqual(extent.Dimensions, loggedExtent.Dimensions);
+        }
+
         [TestCase(0, 0)]
         public void GetTileIntInt(int x, int y)
         {
@@ -32,15 +41,6 @@ namespace WorldEditTests.Extents
             var loggedExtent = new LoggedExtent(new MockExtent {Tiles = tiles}, new ChangeSet());
 
             Assert.AreEqual(1, loggedExtent.GetTile(x, y).Type);
-        }
-
-        [TestCase(20, 10)]
-        public void LowerBound(int width, int height)
-        {
-            var extent = new MockExtent {Tiles = new ITile[width, height]};
-            var loggedExtent = new LoggedExtent(extent, new ChangeSet());
-
-            Assert.AreEqual(extent.LowerBound, loggedExtent.LowerBound);
         }
 
         [TestCase(0, 0)]
@@ -56,15 +56,6 @@ namespace WorldEditTests.Extents
             Assert.AreEqual(new Vector(x, y), change.Position);
             Assert.AreEqual(0, change.OldTile.Wall);
             Assert.AreEqual(1, change.NewTile.Wall);
-        }
-
-        [TestCase(20, 10)]
-        public void UpperBound(int width, int height)
-        {
-            var extent = new MockExtent {Tiles = new ITile[width, height]};
-            var loggedExtent = new LoggedExtent(extent, new ChangeSet());
-
-            Assert.AreEqual(extent.UpperBound, loggedExtent.UpperBound);
         }
     }
 }

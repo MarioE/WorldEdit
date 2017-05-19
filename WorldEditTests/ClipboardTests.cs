@@ -24,8 +24,7 @@ namespace WorldEditTests
 
             var clipboard = Clipboard.CopyFrom(extent, region);
 
-            Assert.AreEqual(Vector.Zero, clipboard.LowerBound);
-            Assert.AreEqual(new Vector(11, 6), clipboard.UpperBound);
+            Assert.AreEqual(new Vector(11, 6), clipboard.Dimensions);
             for (var x = 0; x < 10; ++x)
             {
                 for (var y = 0; y < 5; ++y)
@@ -62,8 +61,7 @@ namespace WorldEditTests
 
             var clipboard = Clipboard.CopyFrom(extent, region);
 
-            Assert.AreEqual(Vector.Zero, clipboard.LowerBound);
-            Assert.AreEqual(new Vector(11, 6), clipboard.UpperBound);
+            Assert.AreEqual(new Vector(11, 6), clipboard.Dimensions);
             Assert.AreEqual(19 * 9, clipboard.GetTile(0, 0).Wall);
         }
 
@@ -71,6 +69,14 @@ namespace WorldEditTests
         public void Ctor_NullTiles_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new Clipboard(null));
+        }
+
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var clipboard = new Clipboard(new Tile?[width, height]);
+
+            Assert.AreEqual(new Vector(width, height), clipboard.Dimensions);
         }
 
         [TestCase(0, 0)]
@@ -81,14 +87,6 @@ namespace WorldEditTests
             var clipboard = new Clipboard(tiles);
 
             Assert.AreEqual(1, clipboard.GetTile(x, y).Type);
-        }
-
-        [TestCase(20, 10)]
-        public void LowerBound(int width, int height)
-        {
-            var clipboard = new Clipboard(new Tile?[width, height]);
-
-            Assert.AreEqual(Vector.Zero, clipboard.LowerBound);
         }
 
         [Test]
@@ -148,14 +146,6 @@ namespace WorldEditTests
 
             Assert.IsTrue(clipboard.SetTile(x, y, new Tile {Wall = 1}));
             Assert.AreEqual(1, clipboard.GetTile(x, y).Wall);
-        }
-
-        [TestCase(20, 10)]
-        public void UpperBound(int width, int height)
-        {
-            var clipboard = new Clipboard(new Tile?[width, height]);
-
-            Assert.AreEqual(new Vector(width, height), clipboard.UpperBound);
         }
     }
 }

@@ -26,6 +26,18 @@ namespace WorldEditTests.Sessions
             Assert.Throws<ArgumentNullException>(() => new EditSession(null, -1, new NullMask()));
         }
 
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var extent = new MockTileCollection {Tiles = new ITile[width, height]};
+            using (var world = new World(extent))
+            {
+                var editSession = new EditSession(world, -1, new NullMask());
+
+                Assert.AreEqual(new Vector(width, height), editSession.Dimensions);
+            }
+        }
+
         [TestCase(0, 0)]
         public void GetTileIntInt(int x, int y)
         {
@@ -36,18 +48,6 @@ namespace WorldEditTests.Sessions
                 var editSession = new EditSession(world, -1, new NullMask());
 
                 Assert.AreEqual(1, editSession.GetTile(x, y).Type);
-            }
-        }
-
-        [TestCase(20, 10)]
-        public void LowerBound(int width, int height)
-        {
-            var extent = new MockTileCollection {Tiles = new ITile[width, height]};
-            using (var world = new World(extent))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.AreEqual(Vector.Zero, editSession.LowerBound);
             }
         }
 
@@ -117,18 +117,6 @@ namespace WorldEditTests.Sessions
 
                 Assert.AreEqual(1, editSession.Undo());
                 Assert.AreEqual(oldWall, editSession.GetTile(0, 0).Wall);
-            }
-        }
-
-        [TestCase(20, 10)]
-        public void UpperBound(int width, int height)
-        {
-            var extent = new MockTileCollection {Tiles = new ITile[width, height]};
-            using (var world = new World(extent))
-            {
-                var editSession = new EditSession(world, -1, new NullMask());
-
-                Assert.AreEqual(new Vector(width, height), editSession.UpperBound);
             }
         }
     }

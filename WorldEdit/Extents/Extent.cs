@@ -13,17 +13,7 @@ namespace WorldEdit.Extents
         /// <summary>
         /// Gets the dimensions of the extent.
         /// </summary>
-        public Vector Dimensions => UpperBound - LowerBound;
-
-        /// <summary>
-        /// Gets a lower bound position on the extent.
-        /// </summary>
-        public abstract Vector LowerBound { get; }
-
-        /// <summary>
-        /// Gets a non-inclusive upper bound position on the extent.
-        /// </summary>
-        public abstract Vector UpperBound { get; }
+        public abstract Vector Dimensions { get; }
 
         /// <summary>
         /// Clears the tiles in the specified region.
@@ -70,8 +60,7 @@ namespace WorldEdit.Extents
         /// <param name="x">The X coordinate to check.</param>
         /// <param name="y">The Y coordinate to check.</param>
         /// <returns><c>true</c> if the coordinates are in the bounds; otherwise, <c>false</c>.</returns>
-        public bool IsInBounds(int x, int y) =>
-            LowerBound.X <= x && x < UpperBound.X && LowerBound.Y <= y && y < UpperBound.Y;
+        public bool IsInBounds(int x, int y) => 0 <= x && x < Dimensions.X && 0 <= y && y < Dimensions.Y;
 
         /// <summary>
         /// Determines whether the specified position is in in the bounds of the extent.

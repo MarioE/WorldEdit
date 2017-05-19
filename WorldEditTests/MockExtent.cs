@@ -8,8 +8,7 @@ namespace WorldEditTests
     {
         public ITile[,] Tiles;
 
-        public override Vector LowerBound => Vector.Zero;
-        public override Vector UpperBound => new Vector(Tiles.GetLength(0), Tiles.GetLength(1));
+        public override Vector Dimensions => new Vector(Tiles.GetLength(0), Tiles.GetLength(1));
 
         public override Tile GetTile(int x, int y) => new Tile(Tiles[x, y]);
 

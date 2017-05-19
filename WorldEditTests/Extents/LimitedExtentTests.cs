@@ -16,6 +16,15 @@ namespace WorldEditTests.Extents
             Assert.Throws<ArgumentNullException>(() => new LimitedExtent(null, -1));
         }
 
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var extent = new MockExtent {Tiles = new ITile[width, height]};
+            var limitedExtent = new LimitedExtent(extent, -1);
+
+            Assert.AreEqual(extent.Dimensions, limitedExtent.Dimensions);
+        }
+
         [TestCase(0, 0)]
         public void GetTileIntInt(int x, int y)
         {
@@ -24,15 +33,6 @@ namespace WorldEditTests.Extents
             var limitedExtent = new LimitedExtent(new MockExtent {Tiles = tiles}, -1);
 
             Assert.AreEqual(1, limitedExtent.GetTile(x, y).Type);
-        }
-
-        [TestCase(20, 10)]
-        public void LowerBound(int width, int height)
-        {
-            var extent = new MockExtent {Tiles = new ITile[width, height]};
-            var limitedExtent = new LimitedExtent(extent, -1);
-
-            Assert.AreEqual(extent.LowerBound, limitedExtent.LowerBound);
         }
 
         [TestCase(0, 0)]
@@ -55,15 +55,6 @@ namespace WorldEditTests.Extents
 
             Assert.IsFalse(limitedExtent.SetTile(x, y, new Tile {Wall = 1}));
             Assert.AreNotEqual(1, limitedExtent.GetTile(x, y).Wall);
-        }
-
-        [TestCase(20, 10)]
-        public void UpperBound(int width, int height)
-        {
-            var extent = new MockExtent {Tiles = new ITile[width, height]};
-            var limitedExtent = new LimitedExtent(extent, -1);
-
-            Assert.AreEqual(extent.UpperBound, limitedExtent.UpperBound);
         }
     }
 }

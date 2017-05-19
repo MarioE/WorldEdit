@@ -99,17 +99,15 @@ namespace WorldEdit.Schematics
                 writer.Write(dimensions.X);
                 writer.Write(dimensions.Y);
 
-                var lowerBound = clipboard.LowerBound;
-                var upperBound = clipboard.UpperBound;
-                for (var x = lowerBound.X; x < upperBound.X; ++x)
+                for (var x = 0; x < dimensions.X; ++x)
                 {
-                    for (var y = lowerBound.Y; y < upperBound.Y;)
+                    for (var y = 0; y < dimensions.Y;)
                     {
                         var tile = clipboard.GetTile(x, y);
                         var data = SerializeTile(tile, out var dataIndex, out var headerIndex);
 
                         short repeat = 0;
-                        while (++y < upperBound.Y && tile.Equals(clipboard.GetTile(x, y)))
+                        while (++y < dimensions.Y && tile.Equals(clipboard.GetTile(x, y)))
                         {
                             ++repeat;
                         }

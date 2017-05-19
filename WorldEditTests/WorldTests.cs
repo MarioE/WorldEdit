@@ -15,6 +15,16 @@ namespace WorldEditTests
             Assert.Throws<ArgumentNullException>(() => new World(null));
         }
 
+        [TestCase(20, 10)]
+        public void Dimensions(int width, int height)
+        {
+            var extent = new MockTileCollection {Tiles = new ITile[width, height]};
+            using (var world = new World(extent))
+            {
+                Assert.AreEqual(new Vector(width, height), world.Dimensions);
+            }
+        }
+
         [TestCase(0, 0)]
         public void GetTileIntInt(int x, int y)
         {
@@ -26,16 +36,6 @@ namespace WorldEditTests
             }
         }
 
-        [TestCase(20, 10)]
-        public void LowerBound(int width, int height)
-        {
-            var extent = new MockTileCollection {Tiles = new ITile[width, height]};
-            using (var world = new World(extent))
-            {
-                Assert.AreEqual(Vector.Zero, world.LowerBound);
-            }
-        }
-
         [TestCase(0, 0)]
         public void SetTileIntInt(int x, int y)
         {
@@ -43,16 +43,6 @@ namespace WorldEditTests
             {
                 Assert.IsTrue(world.SetTile(x, y, new Tile {Wall = 1}));
                 Assert.AreEqual(1, world.GetTile(x, y).Wall);
-            }
-        }
-
-        [TestCase(20, 10)]
-        public void UpperBound(int width, int height)
-        {
-            var extent = new MockTileCollection {Tiles = new ITile[width, height]};
-            using (var world = new World(extent))
-            {
-                Assert.AreEqual(new Vector(width, height), world.UpperBound);
             }
         }
     }

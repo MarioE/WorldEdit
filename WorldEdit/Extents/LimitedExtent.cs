@@ -24,10 +24,7 @@ namespace WorldEdit.Extents
         }
 
         /// <inheritdoc />
-        public override Vector LowerBound => _extent.LowerBound;
-
-        /// <inheritdoc />
-        public override Vector UpperBound => _extent.UpperBound;
+        public override Vector Dimensions => _extent.Dimensions;
 
         /// <inheritdoc />
         public override Tile GetTile(int x, int y) => _extent.GetTile(x, y);

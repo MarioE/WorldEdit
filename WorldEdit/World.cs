@@ -34,10 +34,7 @@ namespace WorldEdit
         }
 
         /// <inheritdoc />
-        public override Vector LowerBound => Vector.Zero;
-
-        /// <inheritdoc />
-        public override Vector UpperBound => new Vector(_tiles.Width, _tiles.Height);
+        public override Vector Dimensions => new Vector(_tiles.Width, _tiles.Height);
 
         /// <summary>
         /// Disposes the world.

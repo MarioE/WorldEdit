@@ -105,7 +105,7 @@ namespace WorldEdit
         /// Returns the hash code of the vector.
         /// </summary>
         /// <returns>The hash code.</returns>
-        public override int GetHashCode() => X << 16 | (ushort)Y;
+        public override int GetHashCode() => (X << 16) | (ushort)Y;
 
         /// <summary>
         /// Returns the string representation of the vector.
