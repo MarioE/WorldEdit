@@ -81,6 +81,15 @@ namespace WorldEditTests.Regions
             Assert.AreEqual(new Vector(expectedRadiusX, expectedRadiusY), region2.Radius);
         }
 
+        [TestCase(0, 0, 10, 10, -10, -10)]
+        [TestCase(4, 10, 6, 11, -2, -1)]
+        public void LowerBound(int x, int y, int radiusX, int radiusY, int expectedX, int expectedY)
+        {
+            var region = new EllipticRegion(new Vector(x, y), new Vector(radiusX, radiusY));
+
+            Assert.AreEqual(new Vector(expectedX, expectedY), region.LowerBound);
+        }
+
         [TestCase(0, 0, 4, 6, 1, 5, 7)]
         [TestCase(0, 0, 4, 6, 2, 6, 8)]
         public void Outset(int x, int y, int radiusX, int radiusY, int delta, int expectedRadiusX, int expectedRadiusY)
@@ -102,6 +111,15 @@ namespace WorldEditTests.Regions
             var region2 = (EllipticRegion)region.Shift(new Vector(deltaX, deltaY));
 
             Assert.AreEqual(new Vector(expectedX, expectedY), region2.Center);
+        }
+
+        [TestCase(0, 0, 10, 10, 11, 11)]
+        [TestCase(4, 10, 6, 11, 11, 22)]
+        public void UpperBound(int x, int y, int radiusX, int radiusY, int expectedX, int expectedY)
+        {
+            var region = new EllipticRegion(new Vector(x, y), new Vector(radiusX, radiusY));
+
+            Assert.AreEqual(new Vector(expectedX, expectedY), region.UpperBound);
         }
     }
 }
