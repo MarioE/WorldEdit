@@ -50,7 +50,7 @@ namespace WorldEdit.Regions
         /// Contracts the region by the specified delta. The signs of the delta components indicate the directions of contraction.
         /// </summary>
         /// <param name="delta">The delta.</param>
-        /// <returns>The result.</returns>
+        /// <returns>The resulting region.</returns>
         /// <exception cref="InvalidOperationException">The region cannot contract.</exception>
         public abstract Region Contract(Vector delta);
 
@@ -58,7 +58,7 @@ namespace WorldEdit.Regions
         /// Expands the region by the specified delta. The signs of the delta components indicate the directions of expansion.
         /// </summary>
         /// <param name="delta">The delta.</param>
-        /// <returns>The result.</returns>
+        /// <returns>The resulting region.</returns>
         /// <exception cref="InvalidOperationException">The region cannot expand.</exception>
         public abstract Region Expand(Vector delta);
 
@@ -85,7 +85,7 @@ namespace WorldEdit.Regions
         /// Insets the region by the specified delta.
         /// </summary>
         /// <param name="delta">The delta.</param>
-        /// <returns>The result.</returns>
+        /// <returns>The resulting region.</returns>
         /// <exception cref="InvalidOperationException">The region cannot contract.</exception>
         public abstract Region Inset(int delta);
 
@@ -93,7 +93,7 @@ namespace WorldEdit.Regions
         /// Outsets the region by the specified delta.
         /// </summary>
         /// <param name="delta">The delta.</param>
-        /// <returns>The result.</returns>
+        /// <returns>The resulting region.</returns>
         /// <exception cref="InvalidOperationException">The region cannot expand.</exception>
         public abstract Region Outset(int delta);
 
@@ -101,7 +101,7 @@ namespace WorldEdit.Regions
         /// Shifts the region by the specified displacement.
         /// </summary>
         /// <param name="displacement">The displacement.</param>
-        /// <returns>The result.</returns>
+        /// <returns>The resulting region.</returns>
         /// <exception cref="InvalidOperationException">The region cannot shift.</exception>
         public abstract Region Shift(Vector displacement);
 

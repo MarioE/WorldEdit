@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using WorldEdit;
 using WorldEdit.Regions;
 using WorldEdit.Regions.Selectors;
@@ -11,48 +12,92 @@ namespace WorldEditTests.Regions.Selectors
         [Test]
         public void Clear()
         {
-            var selector = new PolygonalRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-            selector.SelectSecondary(Vector.One);
-            selector.SelectSecondary(Vector.One);
+            RegionSelector selector = new PolygonalRegionSelector(Enumerable.Empty<Vector>());
+            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.SelectSecondary(Vector.One);
+            selector = selector.SelectSecondary(Vector.One);
 
-            selector.Clear();
+            var selector2 = (PolygonalRegionSelector)selector.Clear();
 
-            Assert.AreEqual(null, selector.PrimaryPosition);
+            Assert.AreEqual(0, selector2.Positions.Count);
+        }
+
+        [Test]
+        public void GetRegion()
+        {
+            RegionSelector selector = new PolygonalRegionSelector(Enumerable.Empty<Vector>());
+            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.SelectSecondary(Vector.One);
+            selector = selector.SelectSecondary(Vector.One);
+
+            var region = (PolygonalRegion)selector.GetRegion();
+
+            Assert.AreEqual(3, region.Vertices.Count);
+            Assert.AreEqual(Vector.Zero, region.Vertices[0]);
+            Assert.AreEqual(Vector.One, region.Vertices[1]);
+            Assert.AreEqual(Vector.One, region.Vertices[2]);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void GetRegion_LessThanThreePositions_NullRegion(int count)
+        {
+            RegionSelector selector = new PolygonalRegionSelector(Enumerable.Empty<Vector>());
+            if (count-- > 0)
+            {
+                selector = selector.SelectPrimary(Vector.Zero);
+            }
+            while (count-- > 0)
+            {
+                selector = selector.SelectSecondary(Vector.Zero);
+            }
+
+            Assert.IsInstanceOf<NullRegion>(selector.GetRegion());
         }
 
         [TestCase(1, 5)]
-        public void SelectPrimary_NullRegion(int x, int y)
+        public void PrimaryPosition(int x, int y)
         {
             var selector = new PolygonalRegionSelector();
 
-            var region = selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (PolygonalRegionSelector)selector.SelectPrimary(new Vector(x, y));
 
-            Assert.IsInstanceOf<NullRegion>(region);
-            Assert.AreEqual(new Vector(x, y), selector.PrimaryPosition);
+            Assert.AreEqual(new Vector(x, y), selector2.PrimaryPosition);
         }
 
-        [TestCase(6, 20)]
-        public void SelectSecondary_CorrectRegion(int x2, int y2)
+        [TestCase(1, 5)]
+        public void SelectPrimary(int x, int y)
         {
             var selector = new PolygonalRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-            selector.SelectSecondary(Vector.One);
 
-            var region = (PolygonalRegion)selector.SelectSecondary(new Vector(x2, y2));
+            var selector2 = (PolygonalRegionSelector)selector.SelectPrimary(new Vector(x, y));
 
-            Assert.AreEqual(3, region.Vertices.Count);
-            Assert.AreEqual(new Vector(x2, y2), region.Vertices[2]);
+            Assert.AreEqual(new Vector(x, y), selector2.PrimaryPosition);
         }
 
-        [TestCase(5, 5)]
-        public void SelectSecondary_OnlyTwo_NullRegion(int x2, int y2)
+        [TestCase(1, 5)]
+        public void SelectPrimary_PreviousSelected(int x, int y)
         {
-            var selector = new PolygonalRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-            var region = selector.SelectPrimary(Vector.Zero);
+            RegionSelector selector = new PolygonalRegionSelector();
+            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.SelectSecondary(Vector.One);
 
-            Assert.IsInstanceOf<NullRegion>(region);
+            var selector2 = (PolygonalRegionSelector)selector.SelectPrimary(new Vector(x, y));
+
+            Assert.AreEqual(new Vector(x, y), selector2.PrimaryPosition);
+        }
+
+        [TestCase(1, 5)]
+        public void SelectSecondary(int x, int y)
+        {
+            RegionSelector selector = new PolygonalRegionSelector();
+            selector = selector.SelectPrimary(Vector.Zero);
+
+            var selector2 = (PolygonalRegionSelector)selector.SelectSecondary(new Vector(x, y));
+
+            Assert.AreEqual(2, selector2.Positions.Count);
+            Assert.AreEqual(new Vector(x, y), selector2.Positions[1]);
         }
     }
 }

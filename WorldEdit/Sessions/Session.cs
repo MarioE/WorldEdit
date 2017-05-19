@@ -10,6 +10,7 @@ namespace WorldEdit.Sessions
     /// <summary>
     /// Represents a player's session.
     /// </summary>
+    // TODO: consider better encapsulation
     public sealed class Session
     {
         private readonly int _historyLimit;
@@ -70,15 +71,19 @@ namespace WorldEdit.Sessions
             get => _mask;
             set => _mask = value ?? throw new ArgumentNullException(nameof(value));
         }
-
+        
         /// <summary>
-        /// Gets or sets the region selector.
+        /// Gets or sets the region selector. Setting the region selector will update the selection.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         public RegionSelector RegionSelector
         {
             get => _regionSelector;
-            set => _regionSelector = value ?? throw new ArgumentNullException(nameof(value));
+            set
+            {
+                _regionSelector = value ?? throw new ArgumentNullException(nameof(value));
+                _selection = value.GetRegion();
+            }
         }
 
         /// <summary>
@@ -109,7 +114,7 @@ namespace WorldEdit.Sessions
             _history.Clear();
             _historyIndex = 0;
         }
-
+        
         /// <summary>
         /// Creates a new edit session, optionally remembering its history.
         /// </summary>
@@ -146,7 +151,7 @@ namespace WorldEdit.Sessions
 
             return _history[_historyIndex++].Redo();
         }
-
+        
         /// <summary>
         /// Undoes an edit session.
         /// </summary>

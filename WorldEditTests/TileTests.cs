@@ -99,7 +99,7 @@ namespace WorldEditTests
             typeof(Tile).GetProperty(propertyName).SetValue(tile, value);
 
             var itile = ((Tile)tile).ToITile();
-            Assert.AreEqual(value, typeof(ITile).GetMethod(methodName, new Type[0]).Invoke(itile, new object[0]));
+            Assert.AreEqual(value, typeof(ITile).GetMethod(methodName, new Type[0]).Invoke(itile, null));
         }
 
         [TestCaseSource(nameof(PropertyTestCases))]

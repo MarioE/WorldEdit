@@ -11,58 +11,75 @@ namespace WorldEditTests.Regions.Selectors
         [Test]
         public void Clear()
         {
-            var selector = new RectangularRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-            selector.SelectSecondary(Vector.One);
+            RegionSelector selector = new RectangularRegionSelector();
+            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.SelectSecondary(Vector.One);
 
-            selector.Clear();
+            var selector2 = (RectangularRegionSelector)selector.Clear();
 
-            Assert.AreEqual(null, selector.PrimaryPosition);
+            Assert.AreEqual(null, selector2.Position1);
+            Assert.AreEqual(null, selector2.Position2);
         }
 
-        [TestCase(1, 5)]
-        public void SelectPrimary_CorrectRegion(int x, int y)
+        [TestCase(0, 0, 4, 4)]
+        public void GetRegion(int x, int y, int x2, int y2)
         {
-            var selector = new RectangularRegionSelector();
-            selector.SelectSecondary(Vector.Zero);
+            RegionSelector selector = new RectangularRegionSelector();
+            selector = selector.SelectPrimary(new Vector(x, y));
+            selector = selector.SelectSecondary(new Vector(x2, y2));
 
-            var region = (RectangularRegion)selector.SelectPrimary(new Vector(x, y));
+            var region = (RectangularRegion)selector.GetRegion();
 
             Assert.AreEqual(new Vector(x, y), region.Position1);
-            Assert.AreEqual(Vector.Zero, region.Position2);
-        }
-
-        [TestCase(5, 5)]
-        public void SelectPrimary_NoSecondary_NullRegion(int x, int y)
-        {
-            var selector = new RectangularRegionSelector();
-
-            var region = selector.SelectPrimary(new Vector(x, y));
-
-            Assert.IsInstanceOf<NullRegion>(region);
-            Assert.AreEqual(new Vector(x, y), selector.PrimaryPosition);
-        }
-
-        [TestCase(6, 20)]
-        public void SelectSecondary_CorrectRegion(int x2, int y2)
-        {
-            var selector = new RectangularRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-
-            var region = (RectangularRegion)selector.SelectSecondary(new Vector(x2, y2));
-
-            Assert.AreEqual(Vector.Zero, region.Position1);
             Assert.AreEqual(new Vector(x2, y2), region.Position2);
         }
 
-        [TestCase(5, 5)]
-        public void SelectSecondary_NoPrimary_NullRegion(int x2, int y2)
+        [Test]
+        public void GetRegion_NoPrimary_NullRegion()
+        {
+            RegionSelector selector = new RectangularRegionSelector();
+            selector = selector.SelectSecondary(Vector.Zero);
+
+            Assert.IsInstanceOf<NullRegion>(selector.GetRegion());
+        }
+
+        [Test]
+        public void GetRegion_NoSecondary_NullRegion()
+        {
+            RegionSelector selector = new RectangularRegionSelector();
+            selector = selector.SelectPrimary(Vector.Zero);
+
+            Assert.IsInstanceOf<NullRegion>(selector.GetRegion());
+        }
+
+        [TestCase(1, 5)]
+        public void PrimaryPosition(int x, int y)
         {
             var selector = new RectangularRegionSelector();
 
-            var region = selector.SelectSecondary(new Vector(x2, y2));
+            var selector2 = (RectangularRegionSelector)selector.SelectPrimary(new Vector(x, y));
 
-            Assert.IsInstanceOf<NullRegion>(region);
+            Assert.AreEqual(new Vector(x, y), selector2.PrimaryPosition);
+        }
+
+        [TestCase(1, 5)]
+        public void SelectPrimary(int x, int y)
+        {
+            var selector = new RectangularRegionSelector();
+
+            var selector2 = (RectangularRegionSelector)selector.SelectPrimary(new Vector(x, y));
+
+            Assert.AreEqual(new Vector(x, y), selector2.Position1);
+        }
+
+        [TestCase(1, 5)]
+        public void SelectSecondary(int x, int y)
+        {
+            var selector = new RectangularRegionSelector();
+
+            var selector2 = (RectangularRegionSelector)selector.SelectSecondary(new Vector(x, y));
+
+            Assert.AreEqual(new Vector(x, y), selector2.Position2);
         }
     }
 }

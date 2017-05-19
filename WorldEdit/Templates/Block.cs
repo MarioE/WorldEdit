@@ -258,6 +258,7 @@ namespace WorldEdit.Templates
         public static readonly Block YellowStucco = new Block(154);
         public static readonly Block YellowTeam = new Block(432);
         public static readonly Block YellowTeamPlatform = new Block(437);
+
         private static readonly ushort MaxType = 470;
 
         private readonly short _frameX;

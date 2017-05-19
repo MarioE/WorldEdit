@@ -51,7 +51,7 @@ namespace WorldEdit.Regions
         /// <summary>
         /// Gets a read-only view of the vertices.
         /// </summary>
-        public ReadOnlyCollection<Vector> Vertices => _vertices.AsReadOnly();
+        public IReadOnlyList<Vector> Vertices => _vertices.AsReadOnly();
 
         /// <inheritdoc />
         public override bool Contains(Vector position)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Terraria.ID;
 using TShockAPI;
-using WorldEdit.Regions;
 using WorldEdit.Regions.Selectors;
 
 namespace WorldEdit.Modules
@@ -21,12 +20,12 @@ namespace WorldEdit.Modules
                 ["up"] = new Vector(0, -1)
             };
 
-        private static readonly Dictionary<string, Func<RegionSelector>> RegionSelectors =
-            new Dictionary<string, Func<RegionSelector>>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, RegionSelector> SelectorTypes =
+            new Dictionary<string, RegionSelector>(StringComparer.OrdinalIgnoreCase)
             {
-                ["elliptic"] = () => new EllipticRegionSelector(),
-                ["polygonal"] = () => new PolygonalRegionSelector(),
-                ["rectangular"] = () => new RectangularRegionSelector()
+                ["elliptic"] = new EllipticRegionSelector(),
+                ["polygonal"] = new PolygonalRegionSelector(),
+                ["rectangular"] = new RectangularRegionSelector()
             };
 
         /// <summary>
@@ -137,8 +136,7 @@ namespace WorldEdit.Modules
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            session.Selection = new NullRegion();
-            session.RegionSelector.Clear();
+            session.RegionSelector = session.RegionSelector.Clear();
             player.SendSuccessMessage("Cleared selection.");
         }
 
@@ -264,17 +262,16 @@ namespace WorldEdit.Modules
             var x = args.X;
             var y = args.Y;
             var position = new Vector(x, y);
-            var regionSelector = session.RegionSelector;
             if (action == GetDataHandlers.EditAction.PlaceWire)
             {
-                session.Selection = regionSelector.SelectPrimary(position);
+                session.RegionSelector = session.RegionSelector.SelectPrimary(position);
                 player.SendSuccessMessage($"Set primary position to {position}.");
                 args.Handled = true;
                 player.SendTileSquare(x, y, 1);
             }
             else if (action == GetDataHandlers.EditAction.PlaceWire2)
             {
-                session.Selection = regionSelector.SelectSecondary(position);
+                session.RegionSelector = session.RegionSelector.SelectSecondary(position);
                 player.SendSuccessMessage($"Set secondary position to {position}.");
                 args.Handled = true;
                 player.SendTileSquare(x, y, 1);
@@ -307,16 +304,15 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            var regionSelector = session.RegionSelector;
             var position = new Vector(x, y);
             if (commandName.Equals("pos1", StringComparison.OrdinalIgnoreCase))
             {
-                session.Selection = regionSelector.SelectPrimary(position);
+                session.RegionSelector = session.RegionSelector.SelectPrimary(position);
                 player.SendSuccessMessage($"Set primary position to {position}.");
             }
             else if (commandName.Equals("pos2", StringComparison.OrdinalIgnoreCase))
             {
-                session.Selection = regionSelector.SelectSecondary(position);
+                session.RegionSelector = session.RegionSelector.SelectSecondary(position);
                 player.SendSuccessMessage($"Set secondary position to {position}.");
             }
         }
@@ -332,15 +328,14 @@ namespace WorldEdit.Modules
             }
 
             var inputSelector = parameters[0];
-            if (!RegionSelectors.TryGetValue(inputSelector, out var selector))
+            if (!SelectorTypes.TryGetValue(inputSelector, out var selector))
             {
                 player.SendErrorMessage($"Invalid selector '{inputSelector}'.");
                 return;
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            session.RegionSelector = selector();
-            session.Selection = new NullRegion();
+            session.RegionSelector = selector;
             player.SendSuccessMessage($"Set selector to {inputSelector.ToLowerInvariant()}.");
         }
 

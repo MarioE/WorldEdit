@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using WorldEdit;
 using WorldEdit.Regions;
 using WorldEdit.Regions.Selectors;
@@ -11,58 +12,75 @@ namespace WorldEditTests.Regions.Selectors
         [Test]
         public void Clear()
         {
-            var selector = new EllipticRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-            selector.SelectSecondary(Vector.One);
+            RegionSelector selector = new EllipticRegionSelector();
+            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.SelectSecondary(Vector.One);
 
-            selector.Clear();
+            var selector2 = (EllipticRegionSelector)selector.Clear();
 
-            Assert.AreEqual(null, selector.PrimaryPosition);
+            Assert.AreEqual(null, selector2.Position1);
+            Assert.AreEqual(null, selector2.Position2);
+        }
+
+        [TestCase(0, 0, 4, 4)]
+        public void GetRegion(int x, int y, int x2, int y2)
+        {
+            RegionSelector selector = new EllipticRegionSelector();
+            selector = selector.SelectPrimary(new Vector(x, y));
+            selector = selector.SelectSecondary(new Vector(x2, y2));
+
+            var region = (EllipticRegion)selector.GetRegion();
+
+            Assert.AreEqual(new Vector(x, y), region.Center);
+            Assert.AreEqual(new Vector(Math.Abs(x2 - x), Math.Abs(y2 - y)), region.Radius);
+        }
+
+        [Test]
+        public void GetRegion_NoPrimary_NullRegion()
+        {
+            RegionSelector selector = new EllipticRegionSelector();
+            selector = selector.SelectSecondary(Vector.Zero);
+
+            Assert.IsInstanceOf<NullRegion>(selector.GetRegion());
+        }
+
+        [Test]
+        public void GetRegion_NoSecondary_NullRegion()
+        {
+            RegionSelector selector = new EllipticRegionSelector();
+            selector = selector.SelectPrimary(Vector.Zero);
+
+            Assert.IsInstanceOf<NullRegion>(selector.GetRegion());
         }
 
         [TestCase(1, 5)]
-        public void SelectPrimary_CorrectRegion(int x, int y)
+        public void PrimaryPosition(int x, int y)
         {
             var selector = new EllipticRegionSelector();
-            selector.SelectSecondary(Vector.Zero);
 
-            var region = (EllipticRegion)selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (EllipticRegionSelector)selector.SelectPrimary(new Vector(x, y));
 
-            Assert.AreEqual(new Vector(x, y), region.Center);
-            Assert.AreEqual(new Vector(x, y), region.Radius);
+            Assert.AreEqual(new Vector(x, y), selector2.PrimaryPosition);
         }
 
-        [TestCase(5, 5)]
-        public void SelectPrimary_NoSecondary_NullRegion(int x, int y)
+        [TestCase(1, 5)]
+        public void SelectPrimary(int x, int y)
         {
             var selector = new EllipticRegionSelector();
 
-            var region = selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (EllipticRegionSelector)selector.SelectPrimary(new Vector(x, y));
 
-            Assert.IsInstanceOf<NullRegion>(region);
-            Assert.AreEqual(new Vector(x, y), selector.PrimaryPosition);
+            Assert.AreEqual(new Vector(x, y),selector2.Position1);
         }
 
-        [TestCase(6, 20)]
-        public void SelectSecondary_CorrectRegion(int x2, int y2)
-        {
-            var selector = new EllipticRegionSelector();
-            selector.SelectPrimary(Vector.Zero);
-
-            var region = (EllipticRegion)selector.SelectSecondary(new Vector(x2, y2));
-
-            Assert.AreEqual(Vector.Zero, region.Center);
-            Assert.AreEqual(new Vector(x2, y2), region.Radius);
-        }
-
-        [TestCase(5, 5)]
-        public void SelectSecondary_NoPrimary_NullRegion(int x2, int y2)
+        [TestCase(1, 5)]
+        public void SelectSecondary(int x, int y)
         {
             var selector = new EllipticRegionSelector();
 
-            var region = selector.SelectSecondary(new Vector(x2, y2));
+            var selector2 = (EllipticRegionSelector)selector.SelectSecondary(new Vector(x, y));
 
-            Assert.IsInstanceOf<NullRegion>(region);
+            Assert.AreEqual(new Vector(x, y), selector2.Position2);
         }
     }
 }

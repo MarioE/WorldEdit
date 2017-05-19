@@ -94,6 +94,7 @@ namespace WorldEditTests.Sessions
                 session.RegionSelector = regionSelector;
 
                 Assert.AreEqual(regionSelector, session.RegionSelector);
+                Assert.IsInstanceOf<NullRegion>(session.Selection);
             }
         }
 

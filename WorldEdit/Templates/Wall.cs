@@ -155,6 +155,7 @@ namespace WorldEdit.Templates
         public static readonly Wall WoodenFence = new Wall(106);
         public static readonly Wall YellowStainedGlass = new Wall(89);
         public static readonly Wall YellowStucco = new Wall(37);
+
         private static readonly byte MaxType = 231;
 
         private readonly byte _type;

@@ -13,20 +13,27 @@
         /// <summary>
         /// Clears the selected positions.
         /// </summary>
-        public abstract void Clear();
+        /// <returns>The resulting region selector.</returns>
+        public abstract RegionSelector Clear();
 
         /// <summary>
-        /// Selects the primary position and returns the resulting region.
+        /// Gets the defined region.
         /// </summary>
-        /// <param name="position">The position.</param>
-        /// <returns>The resulting region.</returns>
-        public abstract Region SelectPrimary(Vector position);
+        /// <returns>The defined region.</returns>
+        public abstract Region GetRegion();
 
         /// <summary>
-        /// Selects the secondary position and returns the resulting region.
+        /// Selects the primary position.
         /// </summary>
         /// <param name="position">The position.</param>
-        /// <returns>The resulting region.</returns>
-        public abstract Region SelectSecondary(Vector position);
+        /// <returns>The resulting region selector.</returns>
+        public abstract RegionSelector SelectPrimary(Vector position);
+
+        /// <summary>
+        /// Selects the secondary position.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <returns>The resulting region selector.</returns>
+        public abstract RegionSelector SelectSecondary(Vector position);
     }
 }
