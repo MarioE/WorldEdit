@@ -8,7 +8,7 @@ namespace WorldEdit.Regions
     /// <summary>
     /// Represents a polygonal region.
     /// </summary>
-    public class PolygonalRegion : Region
+    public sealed class PolygonalRegion : Region
     {
         private readonly List<Vector> _vertices;
 

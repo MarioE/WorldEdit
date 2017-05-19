@@ -5,7 +5,7 @@ namespace WorldEdit.Templates
     /// <summary>
     /// Represents a block type.
     /// </summary>
-    public class Block : ITemplate
+    public sealed class Block : ITemplate
     {
         private const ushort MaxType = 470;
         public static readonly Block ActiveStone = new Block(130);

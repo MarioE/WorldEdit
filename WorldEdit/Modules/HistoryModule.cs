@@ -5,7 +5,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates the history functionality.
     /// </summary>
-    public class HistoryModule : Module
+    public sealed class HistoryModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HistoryModule" /> class with the specified WorldEdit plugin.

@@ -5,7 +5,7 @@ namespace WorldEdit.Templates
     /// <summary>
     /// Represents a tile state.
     /// </summary>
-    public class State : ITemplate
+    public sealed class State : ITemplate
     {
         public static readonly State Actuated = new State(6, true);
         public static readonly State Actuator = new State(5, true);

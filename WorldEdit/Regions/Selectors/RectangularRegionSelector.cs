@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a rectangular region selector.
     /// </summary>
-    public class RectangularRegionSelector : RegionSelector
+    public sealed class RectangularRegionSelector : RegionSelector
     {
         private Vector? _position1;
         private Vector? _position2;

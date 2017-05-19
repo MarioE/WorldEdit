@@ -8,7 +8,7 @@ namespace WorldEdit.History
     /// <summary>
     /// Specifies a set of changes that can be collectively undone and redone.
     /// </summary>
-    public class ChangeSet : IEnumerable<Change>
+    public sealed class ChangeSet : IEnumerable<Change>
     {
         private readonly List<Change> _changes = new List<Change>();
 

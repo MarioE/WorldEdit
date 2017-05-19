@@ -11,7 +11,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates the schematic functionality.
     /// </summary>
-    public class SchematicModule : Module
+    public sealed class SchematicModule : Module
     {
         private const int SchematicsPerPage = 5;
 

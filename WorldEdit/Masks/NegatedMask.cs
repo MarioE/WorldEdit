@@ -6,7 +6,7 @@ namespace WorldEdit.Masks
     /// <summary>
     /// Represents a negated mask.
     /// </summary>
-    public class NegatedMask : Mask
+    public sealed class NegatedMask : Mask
     {
         private readonly Mask _mask;
 

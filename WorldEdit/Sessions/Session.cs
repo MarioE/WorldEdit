@@ -10,7 +10,7 @@ namespace WorldEdit.Sessions
     /// <summary>
     /// Represents a player's session.
     /// </summary>
-    public class Session
+    public sealed class Session
     {
         private readonly int _historyLimit;
         private readonly World _world;

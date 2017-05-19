@@ -5,7 +5,7 @@ namespace WorldEdit.Extents
     /// <summary>
     /// Represents a composable extent that limits the number of tiles that can be set.
     /// </summary>
-    public class LimitedExtent : Extent
+    public sealed class LimitedExtent : Extent
     {
         private readonly Extent _extent;
         private readonly int _limit;

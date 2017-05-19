@@ -5,7 +5,7 @@ namespace WorldEdit.Regions.Selectors
     /// <summary>
     /// Represents a polygonal region selector.
     /// </summary>
-    public class PolygonalRegionSelector : RegionSelector
+    public sealed class PolygonalRegionSelector : RegionSelector
     {
         private readonly List<Vector> _positions = new List<Vector>();
 

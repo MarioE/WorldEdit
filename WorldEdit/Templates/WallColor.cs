@@ -5,7 +5,7 @@ namespace WorldEdit.Templates
     /// <summary>
     /// Represents a wall color type.
     /// </summary>
-    public class WallColor : ITemplate
+    public sealed class WallColor : ITemplate
     {
         public static readonly WallColor Black = new WallColor(25);
         public static readonly WallColor Blank = new WallColor(0);

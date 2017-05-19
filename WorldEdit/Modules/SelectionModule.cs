@@ -10,7 +10,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates the selection functionality.
     /// </summary>
-    public class SelectionModule : Module
+    public sealed class SelectionModule : Module
     {
         private static readonly Dictionary<string, Vector> Directions =
             new Dictionary<string, Vector>(StringComparer.OrdinalIgnoreCase)

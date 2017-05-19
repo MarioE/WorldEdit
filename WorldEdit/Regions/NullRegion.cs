@@ -5,7 +5,7 @@ namespace WorldEdit.Regions
     /// <summary>
     /// Represents a null region.
     /// </summary>
-    public class NullRegion : Region
+    public sealed class NullRegion : Region
     {
         /// <inheritdoc />
         public override bool CanContract => false;

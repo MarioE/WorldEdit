@@ -16,7 +16,7 @@ namespace WorldEdit
     /// Represents the WorldEdit plugin.
     /// </summary>
     [ApiVersion(2, 1)]
-    public class WorldEditPlugin : TerrariaPlugin
+    public sealed class WorldEditPlugin : TerrariaPlugin
     {
         private static readonly string ConfigPath = Path.Combine("worldedit", "config.json");
 

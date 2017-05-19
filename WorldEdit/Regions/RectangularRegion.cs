@@ -5,7 +5,7 @@ namespace WorldEdit.Regions
     /// <summary>
     /// Represents a rectangular region.
     /// </summary>
-    public class RectangularRegion : Region
+    public sealed class RectangularRegion : Region
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangularRegion" /> class with the specified positions.

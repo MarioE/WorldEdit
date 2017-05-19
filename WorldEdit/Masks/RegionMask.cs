@@ -7,7 +7,7 @@ namespace WorldEdit.Masks
     /// <summary>
     /// Represents a mask that tests for region membership.
     /// </summary>
-    public class RegionMask : Mask
+    public sealed class RegionMask : Mask
     {
         private readonly Region _region;
 

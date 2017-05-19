@@ -6,7 +6,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates region-related functionality.
     /// </summary>
-    public class RegionModule : Module
+    public sealed class RegionModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RegionModule" /> class with the specified WorldEdit plugin.

@@ -5,7 +5,7 @@ namespace WorldEdit.Templates
     /// <summary>
     /// Represents a wall type.
     /// </summary>
-    public class Wall : ITemplate
+    public sealed class Wall : ITemplate
     {
         private const byte MaxType = 231;
         public static readonly Wall AdamantiteBeam = new Wall(32);

@@ -5,7 +5,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates the clipboard functionality.
     /// </summary>
-    public class ClipboardModule : Module
+    public sealed class ClipboardModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClipboardModule" /> class with the specified WorldEdit plugin.

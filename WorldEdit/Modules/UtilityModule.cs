@@ -10,7 +10,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates the utility functionality.
     /// </summary>
-    public class UtilityModule : Module
+    public sealed class UtilityModule : Module
     {
         private readonly Dictionary<string, Func<string, Result>> _maskParsers =
             new Dictionary<string, Func<string, Result>>(StringComparer.OrdinalIgnoreCase)

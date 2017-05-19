@@ -8,7 +8,7 @@ namespace WorldEdit.Sessions
     /// <summary>
     /// Represents an edit session whose changes can be considered collectively.
     /// </summary>
-    public class EditSession : Extent
+    public sealed class EditSession : Extent
     {
         private readonly ChangeSet _changeSet = new ChangeSet();
         private readonly Extent _extent;

@@ -9,7 +9,7 @@ namespace WorldEdit.Tools
     /// Represents a brush tool that creates circles of patterns.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BrushTool<T> : ITool where T : class, ITemplate
+    public sealed class BrushTool<T> : ITool where T : class, ITemplate
     {
         private readonly Pattern<T> _pattern;
         private readonly int _radius;

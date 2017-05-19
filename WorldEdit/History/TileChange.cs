@@ -5,7 +5,7 @@ namespace WorldEdit.History
     /// <summary>
     /// Represents a tile change at a certain position.
     /// </summary>
-    public class TileChange : Change
+    public sealed class TileChange : Change
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TileChange" /> class with the specified position and tiles.

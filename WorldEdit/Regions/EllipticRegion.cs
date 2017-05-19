@@ -5,7 +5,7 @@ namespace WorldEdit.Regions
     /// <summary>
     /// Represents an elliptic region.
     /// </summary>
-    public class EllipticRegion : Region
+    public sealed class EllipticRegion : Region
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified center position and radius.

@@ -8,7 +8,7 @@ namespace WorldEdit.Schematics
     /// <summary>
     /// Represents the TEdit schematic format.
     /// </summary>
-    public class TeditSchematicFormat : SchematicFormat
+    public sealed class TeditSchematicFormat : SchematicFormat
     {
         private const uint Version = 192;
 

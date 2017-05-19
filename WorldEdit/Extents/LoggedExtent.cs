@@ -6,7 +6,7 @@ namespace WorldEdit.Extents
     /// <summary>
     /// Represents a composable extent that logs changes to a change set.
     /// </summary>
-    public class LoggedExtent : Extent
+    public sealed class LoggedExtent : Extent
     {
         private readonly ChangeSet _changeSet;
         private readonly Extent _extent;

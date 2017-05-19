@@ -7,7 +7,7 @@ namespace WorldEdit.Masks
     /// <summary>
     /// Represents a mask that tests for template matching.
     /// </summary>
-    public class TemplateMask : Mask
+    public sealed class TemplateMask : Mask
     {
         private readonly ITemplate _template;
 

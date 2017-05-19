@@ -8,7 +8,7 @@ namespace WorldEdit.Modules
     /// <summary>
     /// Represents a module that encapsulates the tool functionality.
     /// </summary>
-    public class ToolModule : Module
+    public sealed class ToolModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ToolModule" /> class with the specified WorldEdit plugin.

@@ -6,7 +6,7 @@ namespace WorldEdit.Templates
     /// <summary>
     /// Represents a block shape.
     /// </summary>
-    public class Shape : ITemplate
+    public sealed class Shape : ITemplate
     {
         public static readonly Shape BottomLeft = new Shape(4);
         public static readonly Shape BottomRight = new Shape(3);

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an elliptic region selector.
     /// </summary>
-    public class EllipticRegionSelector : RegionSelector
+    public sealed class EllipticRegionSelector : RegionSelector
     {
         private Vector? _position1;
         private Vector? _position2;

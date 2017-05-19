@@ -6,7 +6,7 @@ namespace WorldEdit.Templates
     /// Represents an entry in a pattern.
     /// </summary>
     /// <typeparam name="T">The template type.</typeparam>
-    public class PatternEntry<T> where T : class, ITemplate
+    public sealed class PatternEntry<T> where T : class, ITemplate
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PatternEntry{T}" /> class with the specified template and weight.

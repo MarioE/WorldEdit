@@ -8,7 +8,7 @@ namespace WorldEdit
     /// <summary>
     /// Represents a clipboard of tiles that can be copied, pasted, and saved.
     /// </summary>
-    public class Clipboard : Extent
+    public sealed class Clipboard : Extent
     {
         private readonly Tile?[,] _tiles;
 

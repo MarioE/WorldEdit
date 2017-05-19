@@ -5,7 +5,7 @@ namespace WorldEdit
     /// <summary>
     /// Represents a configuration.
     /// </summary>
-    public class Config
+    public sealed class Config
     {
         /// <summary>
         /// Gets the session grace period.

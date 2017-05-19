@@ -6,7 +6,7 @@ namespace WorldEdit.Extents
     /// <summary>
     /// Represents a composable extent that masks the tiles that can be set.
     /// </summary>
-    public class MaskedExtent : Extent
+    public sealed class MaskedExtent : Extent
     {
         private readonly Extent _extent;
         private readonly Mask _mask;

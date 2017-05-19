@@ -8,7 +8,7 @@ namespace WorldEdit.Templates
     /// Represents a randomized pattern of template entries.
     /// </summary>
     /// <typeparam name="T">The template type.</typeparam>
-    public class Pattern<T> : ITemplate where T : class, ITemplate
+    public sealed class Pattern<T> : ITemplate where T : class, ITemplate
     {
         private readonly List<PatternEntry<T>> _entries;
         private readonly Random _random = new Random();

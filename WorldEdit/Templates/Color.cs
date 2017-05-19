@@ -5,7 +5,7 @@ namespace WorldEdit.Templates
     /// <summary>
     /// Represents a color type.
     /// </summary>
-    public class Color : ITemplate
+    public sealed class Color : ITemplate
     {
         public static readonly Color Black = new Color(25);
         public static readonly Color Blank = new Color(0);
