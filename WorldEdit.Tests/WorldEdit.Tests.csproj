@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8BCCC4D6-A1E7-40D4-B290-E636F5FC40E0}</ProjectGuid>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WorldEdit.Tests</RootNamespace>
+    <AssemblyName>WorldEdit.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OTAPI">
+      <HintPath>..\refs\OTAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TerrariaServer">
+      <HintPath>..\refs\TerrariaServer.exe</HintPath>
+    </Reference>
+    <Reference Include="TShockAPI">
+      <HintPath>..\refs\TShockAPI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClipboardTests.cs" />
+    <Compile Include="ExtensionsTests.cs" />
+    <Compile Include="Extents\ExtentTests.cs" />
+    <Compile Include="Extents\LimitedExtentTests.cs" />
+    <Compile Include="Extents\LoggedExtentTests.cs" />
+    <Compile Include="Extents\MaskedExtentTests.cs" />
+    <Compile Include="History\ChangeSetTests.cs" />
+    <Compile Include="History\MockChange.cs" />
+    <Compile Include="History\TileChangeTests.cs" />
+    <Compile Include="Masks\MockMask.cs" />
+    <Compile Include="Regions\PolygonalRegionTests.cs" />
+    <Compile Include="Regions\Selectors\EllipticRegionSelectorTests.cs" />
+    <Compile Include="Regions\Selectors\PolygonalRegionSelectorTests.cs" />
+    <Compile Include="Regions\Selectors\RectangularRegionSelectorTests.cs" />
+    <Compile Include="ResultTests.cs" />
+    <Compile Include="Regions\EllipticRegionTests.cs" />
+    <Compile Include="Regions\MockRegion.cs" />
+    <Compile Include="Regions\RegionTests.cs" />
+    <Compile Include="Schematics\TeditSchematicFormatTests.cs" />
+    <Compile Include="Sessions\EditSessionTests.cs" />
+    <Compile Include="Sessions\SessionManagerTests.cs" />
+    <Compile Include="Sessions\SessionTests.cs" />
+    <Compile Include="Templates\WallColorTests.cs" />
+    <Compile Include="Templates\PatternEntryTests.cs" />
+    <Compile Include="Templates\PatternTests.cs" />
+    <Compile Include="Tools\BrushToolTests.cs" />
+    <Compile Include="Tools\NullToolTests.cs" />
+    <Compile Include="WorldTests.cs" />
+    <Compile Include="Masks\NegatedMaskTests.cs" />
+    <Compile Include="Masks\NullMaskTests.cs" />
+    <Compile Include="Masks\RegionMaskTests.cs" />
+    <Compile Include="Masks\TemplateMaskTests.cs" />
+    <Compile Include="MockTileCollection.cs" />
+    <Compile Include="MockExtent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Regions\NullRegionTests.cs" />
+    <Compile Include="Regions\RectangularRegionTests.cs" />
+    <Compile Include="Templates\BlockTests.cs" />
+    <Compile Include="Templates\ColorTests.cs" />
+    <Compile Include="Templates\WallTests.cs" />
+    <Compile Include="Templates\ShapeTests.cs" />
+    <Compile Include="Templates\StateTests.cs" />
+    <Compile Include="TileTests.cs" />
+    <Compile Include="VectorTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WorldEdit.Core\WorldEdit.Core.csproj">
+      <Project>{6b44a351-1146-4957-a1d3-e196efbedc38}</Project>
+      <Name>WorldEdit.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
