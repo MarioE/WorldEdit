@@ -8,14 +8,18 @@ namespace WorldEdit.History
     public abstract class Change
     {
         /// <summary>
-        /// Redoes the change onto the specified extent. For speed purposes, this method has -no- validation!
+        /// Redoes the change onto the specified extent.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
         /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
         public abstract bool Redo(Extent extent);
 
         /// <summary>
-        /// Undoes the change onto the specified extent. For speed purposes, this method has -no- validation!
+        /// Undoes the change onto the specified extent.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="extent">The extent to modify.</param>
         /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>

@@ -50,7 +50,7 @@ namespace WorldEdit
         /// <inheritdoc />
         public override bool SetTile(int x, int y, Tile tile)
         {
-            // Don't construct a new instance of ITile, if at all possible. This reduces GC pressure.
+            // If we can, avoid constructing an ITile to reduce GC pressure.
             if (_tiles[x, y] == null)
             {
                 _tiles[x, y] = tile.ToITile();

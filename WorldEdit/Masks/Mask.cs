@@ -8,7 +8,9 @@ namespace WorldEdit.Masks
     public abstract class Mask
     {
         /// <summary>
-        /// Tests the specified extent at a position. For speed purposes, this method has -no- validation!
+        /// Tests the specified extent at a position.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="extent">The extent to test.</param>
         /// <param name="position">The position.</param>

@@ -71,6 +71,9 @@ namespace WorldEdit.Regions
             delta = isExpansion ? delta : -delta;
             var position1 = Position1;
             var position2 = Position2;
+
+            // If we're expanding or contracting the same side that position1 is on relative to position2, then modify
+            // position1. Otherwise, modify position2.
             if ((position1.X < position2.X) ^ (delta.X >= 0) ^ !isExpansion)
             {
                 position1 += new Vector(delta.X, 0);
@@ -79,7 +82,6 @@ namespace WorldEdit.Regions
             {
                 position2 += new Vector(delta.X, 0);
             }
-
             if ((position1.Y < position2.Y) ^ (delta.Y >= 0) ^ !isExpansion)
             {
                 position1 += new Vector(0, delta.Y);

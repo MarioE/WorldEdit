@@ -6,7 +6,7 @@
     public sealed class RectangularRegionSelector : RegionSelector
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RectangularRegionSelector"/> class with no selected positions.
+        /// Initializes a new instance of the <see cref="RectangularRegionSelector" /> class with no selected positions.
         /// </summary>
         public RectangularRegionSelector() : this(null, null)
         {
@@ -15,8 +15,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RectangularRegionSelector" /> class with the specified positions.
         /// </summary>
-        /// <param name="position1">The first position, or <c>null</c> if it is not selected.</param>
-        /// <param name="position2">The second position, or <c>null</c> if it is not selected.</param>
+        /// <param name="position1">The first position or <c>null</c> if it is not selected.</param>
+        /// <param name="position2">The second position or <c>null</c> if it is not selected.</param>
         public RectangularRegionSelector(Vector? position1, Vector? position2)
         {
             Position1 = position1;
@@ -24,12 +24,12 @@
         }
 
         /// <summary>
-        /// Gets the first position, or <c>null</c> if it is not selected.
+        /// Gets the first position or <c>null</c> if it is not selected.
         /// </summary>
         public Vector? Position1 { get; }
 
         /// <summary>
-        /// Gets the second position, or <c>null</c> if it is not selected.
+        /// Gets the second position or <c>null</c> if it is not selected.
         /// </summary>
         public Vector? Position2 { get; }
 

@@ -40,7 +40,9 @@ namespace WorldEdit.Extents
         }
 
         /// <summary>
-        /// Returns the tile located at the specified coordinates. For speed purposes, this method has -no- validation!
+        /// Returns the tile located at the specified coordinates.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
@@ -48,7 +50,9 @@ namespace WorldEdit.Extents
         public abstract Tile GetTile(int x, int y);
 
         /// <summary>
-        /// Returns the tile located at the specified position. For speed purposes, this method has -no- validation!
+        /// Returns the tile located at the specified position.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>The tile.</returns>
@@ -138,7 +142,9 @@ namespace WorldEdit.Extents
         }
 
         /// <summary>
-        /// Sets the tile located at the specified coordinates. For speed purposes, this method has -no- validation!
+        /// Sets the tile located at the specified coordinates.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
@@ -147,7 +153,9 @@ namespace WorldEdit.Extents
         public abstract bool SetTile(int x, int y, Tile tile);
 
         /// <summary>
-        /// Sets the tile located at the specified position. For speed purposes, this method has -no- validation!
+        /// Sets the tile located at the specified position.
+        /// <para />
+        /// For speed purposes, this method has -no- validation!
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="tile">The tile.</param>

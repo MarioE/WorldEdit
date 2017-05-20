@@ -47,6 +47,7 @@ namespace WorldEdit.Regions
         public override bool Contains(Vector position)
         {
             // Add 0.5 to radius for a smoother ellipse.
+            // TODO: check if precomputing a^2 and b^2 are useful.
             var aSquared = (Radius.X + 0.5) * (Radius.X + 0.5);
             var bSquared = (Radius.Y + 0.5) * (Radius.Y + 0.5);
             var offset = position - Center;

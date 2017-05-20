@@ -12,7 +12,7 @@ namespace WorldEdit.Regions.Selectors
         private readonly List<Vector> _positions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonalRegionSelector"/> class with no selected positions.
+        /// Initializes a new instance of the <see cref="PolygonalRegionSelector" /> class with no selected positions.
         /// </summary>
         public PolygonalRegionSelector() : this(Enumerable.Empty<Vector>())
         {
@@ -42,7 +42,7 @@ namespace WorldEdit.Regions.Selectors
         public override Vector? PrimaryPosition => _positions.Count > 0 ? (Vector?)_positions[0] : null;
 
         /// <inheritdoc />
-        public override RegionSelector Clear() => new PolygonalRegionSelector(Enumerable.Empty<Vector>());
+        public override RegionSelector Clear() => new PolygonalRegionSelector();
 
         /// <inheritdoc />
         public override Region GetRegion() =>

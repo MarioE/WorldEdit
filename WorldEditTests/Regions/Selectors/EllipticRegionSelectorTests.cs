@@ -70,7 +70,7 @@ namespace WorldEditTests.Regions.Selectors
 
             var selector2 = (EllipticRegionSelector)selector.SelectPrimary(new Vector(x, y));
 
-            Assert.AreEqual(new Vector(x, y),selector2.Position1);
+            Assert.AreEqual(new Vector(x, y), selector2.Position1);
         }
 
         [TestCase(1, 5)]

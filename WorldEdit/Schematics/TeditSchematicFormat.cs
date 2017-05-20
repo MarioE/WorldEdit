@@ -179,7 +179,6 @@ namespace WorldEdit.Schematics
 
         private static Tile DeserializeTile(BinaryReader reader, out int repeat)
         {
-            var header = reader.ReadByte();
             // The format for header is as follows:
             // sbullwa2
             //
@@ -190,8 +189,8 @@ namespace WorldEdit.Schematics
             // w:   Tile has a wall
             // a:   Tile has a block
             // 2:   header2 is nonzero
+            var header = reader.ReadByte();
 
-            var header2 = 0;
             // The format for header2 is as follows:
             // -sssbgr3
             //
@@ -201,8 +200,8 @@ namespace WorldEdit.Schematics
             // g:   Tile has green wire
             // r:   Tile has red wire
             // 3:   header3 is nonzero
+            var header2 = 0;
 
-            var header3 = 0;
             // The format for header3 is as follows:
             // --ywbna-
             //
@@ -213,6 +212,7 @@ namespace WorldEdit.Schematics
             // n:   Tile is actuated
             // a:   Tile has actuator
             // -:   Unused
+            var header3 = 0;
 
             if ((header & 0x1) != 0)
             {
@@ -302,7 +302,7 @@ namespace WorldEdit.Schematics
         private static byte[] SerializeTile(Tile tile, out int dataIndex, out int headerIndex)
         {
             var data = new byte[13];
-            var header = 0;
+
             // The format for header is as follows:
             // sbullwa2
             //
@@ -313,8 +313,8 @@ namespace WorldEdit.Schematics
             // w:   Tile has a wall
             // a:   Tile has a block
             // 2:   header2 is nonzero
+            var header = 0;
 
-            var header2 = 0;
             // The format for header2 is as follows:
             // -sssbgr3
             //
@@ -324,8 +324,8 @@ namespace WorldEdit.Schematics
             // g:   Tile has green wire
             // r:   Tile has red wire
             // 3:   header3 is nonzero
+            var header2 = 0;
 
-            var header3 = 0;
             // The format for header3 is as follows:
             // --ywbna-
             //
@@ -336,6 +336,7 @@ namespace WorldEdit.Schematics
             // n:   Tile is actuated
             // a:   Tile has actuator
             // -:   Unused
+            var header3 = 0;
 
             dataIndex = 3;
             if (tile.IsActive)

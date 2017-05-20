@@ -71,7 +71,7 @@ namespace WorldEdit.Sessions
             get => _mask;
             set => _mask = value ?? throw new ArgumentNullException(nameof(value));
         }
-        
+
         /// <summary>
         /// Gets or sets the region selector. Setting the region selector will update the selection.
         /// </summary>
@@ -114,7 +114,7 @@ namespace WorldEdit.Sessions
             _history.Clear();
             _historyIndex = 0;
         }
-        
+
         /// <summary>
         /// Creates a new edit session, optionally remembering its history.
         /// </summary>
@@ -151,7 +151,7 @@ namespace WorldEdit.Sessions
 
             return _history[_historyIndex++].Redo();
         }
-        
+
         /// <summary>
         /// Undoes an edit session.
         /// </summary>

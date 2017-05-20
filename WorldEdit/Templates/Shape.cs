@@ -35,8 +35,7 @@ namespace WorldEdit.Templates
                 throw new ArgumentNullException(nameof(s));
             }
 
-            var field = typeof(Shape).GetField(s.RemoveWhitespace(),
-                BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase);
+            var field = typeof(Shape).GetField(s.ToPascalCase());
             return field != null
                 ? Result.From((Shape)field.GetValue(null))
                 : Result.FromError<Shape>($"Invalid shape '{s}'.");

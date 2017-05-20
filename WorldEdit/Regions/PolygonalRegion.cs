@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace WorldEdit.Regions
@@ -31,6 +30,9 @@ namespace WorldEdit.Regions
             {
                 throw new ArgumentException("Vertex list must have at least three items.", nameof(vertices));
             }
+
+            // Add the first vertex again to make iterating over the edges simpler.
+            _vertices.Add(_vertices[0]);
         }
 
         /// <inheritdoc />
@@ -56,6 +58,7 @@ namespace WorldEdit.Regions
         /// <inheritdoc />
         public override bool Contains(Vector position)
         {
+            // First check the bounding box to avoid the expensive computation below.
             if (position.X < LowerBound.X || position.X >= UpperBound.X ||
                 position.Y < LowerBound.Y || position.Y >= UpperBound.Y)
             {
@@ -63,7 +66,7 @@ namespace WorldEdit.Regions
             }
 
             var result = false;
-            for (var i = 0; i < _vertices.Count; ++i)
+            for (var i = 0; i < _vertices.Count - 1; ++i)
             {
                 var vertex = _vertices[i];
                 if (position == vertex)
@@ -71,19 +74,28 @@ namespace WorldEdit.Regions
                     return true;
                 }
 
-                var nextVertex = i != _vertices.Count - 1 ? _vertices[i + 1] : _vertices[0];
+                var nextVertex = _vertices[i + 1];
                 var flipped = vertex.X > nextVertex.X;
                 var x1 = flipped ? nextVertex.X : vertex.X;
                 var x2 = flipped ? vertex.X : nextVertex.X;
+
+                // Consider all edges that are above and below the position.
                 if (x1 <= position.X && position.X <= x2)
                 {
                     var y1 = flipped ? nextVertex.Y : vertex.Y;
                     var y2 = flipped ? vertex.Y : nextVertex.Y;
                     var crossProduct = (position.Y - y1) * (x2 - x1) - (y2 - y1) * (position.X - x1);
+
+                    // If the position lies on the edge and its Y component is between y1 and y2, then the position is
+                    // considered inside of the polygon. The second condition is required in the case that x1 = x2, as
+                    // otherwise any position with the same X component would be considered inside of the polygon.
                     if (crossProduct == 0 && y1 <= position.Y == position.Y <= y2)
                     {
                         return true;
                     }
+
+                    // If the position is below the edge, then reverse the result. The position must be below an odd
+                    // number of edges to be considered inside of the polygon.
                     if (crossProduct < 0 && x1 != position.X)
                     {
                         result = !result;

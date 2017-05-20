@@ -55,6 +55,20 @@ namespace WorldEditTests.Sessions
             Assert.Throws<ArgumentNullException>(() => new Session(null, 0));
         }
 
+        [Test]
+        public void GetSetClipboard()
+        {
+            using (var world = new World(new MockTileCollection()))
+            {
+                var session = new Session(world, 0);
+                var clipboard = new Clipboard(new Tile?[0, 0]);
+
+                session.Clipboard = clipboard;
+
+                Assert.AreEqual(clipboard, session.Clipboard);
+            }
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void GetSetIsWandMode(bool value)
