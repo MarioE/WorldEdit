@@ -30,9 +30,6 @@ namespace WorldEdit.Regions
             {
                 throw new ArgumentException("Vertex list must have at least three items.", nameof(vertices));
             }
-
-            // Add the first vertex again to make iterating over the edges simpler.
-            _vertices.Add(_vertices[0]);
         }
 
         /// <inheritdoc />
@@ -66,7 +63,7 @@ namespace WorldEdit.Regions
             }
 
             var result = false;
-            for (var i = 0; i < _vertices.Count - 1; ++i)
+            for (var i = 0; i < _vertices.Count; ++i)
             {
                 var vertex = _vertices[i];
                 if (position == vertex)
@@ -74,7 +71,7 @@ namespace WorldEdit.Regions
                     return true;
                 }
 
-                var nextVertex = _vertices[i + 1];
+                var nextVertex = i < _vertices.Count - 1 ? _vertices[i + 1] : _vertices[0];
                 var flipped = vertex.X > nextVertex.X;
                 var x1 = flipped ? nextVertex.X : vertex.X;
                 var x2 = flipped ? vertex.X : nextVertex.X;
