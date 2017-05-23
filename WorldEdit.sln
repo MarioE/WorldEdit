@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldEdit.Core", "WorldEdit.Core\WorldEdit.Core.csproj", "{6B44A351-1146-4957-A1D3-E196EFBEDC38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldEdit", "WorldEdit\WorldEdit.csproj", "{6B44A351-1146-4957-A1D3-E196EFBEDC38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldEdit.Core.Tests", "WorldEdit.Core.Tests\WorldEdit.Core.Tests.csproj", "{8BCCC4D6-A1E7-40D4-B290-E636F5FC40E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldEdit.Tests", "WorldEdit.Tests\WorldEdit.Tests.csproj", "{8BCCC4D6-A1E7-40D4-B290-E636F5FC40E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

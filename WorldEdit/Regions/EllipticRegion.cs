@@ -1,0 +1,73 @@
+﻿namespace WorldEdit.Regions
+{
+    /// <summary>
+    /// Represents an elliptic region.
+    /// </summary>
+    public sealed class EllipticRegion : ResizableRegion
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EllipticRegion" /> class with the specified center position and radius.
+        /// </summary>
+        /// <param name="center">The center position.</param>
+        /// <param name="radius">The radius. The components will be normalized to non-negative values.</param>
+        public EllipticRegion(Vector center, Vector radius)
+        {
+            Center = center;
+            Radius = Vector.Abs(radius);
+        }
+
+        /// <summary>
+        /// Gets the center position of this <see cref="EllipticRegion" /> instance.
+        /// </summary>
+        public Vector Center { get; }
+
+        /// <inheritdoc />
+        public override Vector LowerBound => Center - Radius;
+
+        /// <summary>
+        /// Gets the radius of this <see cref="EllipticRegion" /> instance.
+        /// </summary>
+        public Vector Radius { get; }
+
+        /// <inheritdoc />
+        public override Vector UpperBound => Center + Radius + Vector.One;
+
+        /// <inheritdoc />
+        public override bool Contains(Vector position)
+        {
+            // Add 0.5 to radius for a smoother ellipse.
+            // TODO: check if precomputing a^2 and b^2 is useful.
+            var aSquared = (Radius.X + 0.5) * (Radius.X + 0.5);
+            var bSquared = (Radius.Y + 0.5) * (Radius.Y + 0.5);
+            var offset = position - Center;
+            return bSquared * offset.X * offset.X + aSquared * offset.Y * offset.Y <= aSquared * bSquared;
+        }
+
+        /// <inheritdoc />
+        public override ResizableRegion Contract(Vector delta) => Change(delta, false);
+
+        /// <inheritdoc />
+        public override ResizableRegion Expand(Vector delta) => Change(delta, true);
+
+        /// <inheritdoc />
+        /// <remarks>
+        /// Insetting is equivalent to contracting on the X and Y axes.
+        /// </remarks>
+        public override ResizableRegion Inset(int delta) => Change(delta * Vector.One, false);
+
+        /// <inheritdoc />
+        /// <remarks>
+        /// Outsetting is equivalent to expanding on the X and Y axes.
+        /// </remarks>
+        public override ResizableRegion Outset(int delta) => Change(delta * Vector.One, true);
+
+        /// <inheritdoc />
+        public override Region Shift(Vector displacement) => new EllipticRegion(Center + displacement, Radius);
+
+        private ResizableRegion Change(Vector delta, bool isExpansion)
+        {
+            var multiplier = isExpansion ? 1 : -1;
+            return new EllipticRegion(Center, Radius + multiplier * Vector.Abs(delta));
+        }
+    }
+}
