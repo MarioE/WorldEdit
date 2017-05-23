@@ -207,15 +207,15 @@ namespace WorldEdit
             var type2 = tile.type;
             if (type2 == TileID.Containers)
             {
-                NetMessage.SendData(34, -1, -1, null, 0, x, y, (short)(frameX / 36));
+                NetMessage.SendData(34, -1, -1, null, 0, x, y, (short)(frameX / 36), index);
             }
             else if (type2 == TileID.Dressers)
             {
-                NetMessage.SendData(34, -1, -1, null, 2, x, y, (short)((frameX - 18) / 54));
+                NetMessage.SendData(34, -1, -1, null, 2, x, y, (short)((frameX - 18) / 54), index);
             }
             else if (type2 == TileID.Containers2)
             {
-                NetMessage.SendData(34, -1, -1, null, 4, x, y, (short)(frameX / 36));
+                NetMessage.SendData(34, -1, -1, null, 4, x, y, (short)(frameX / 36), index);
             }
             return true;
         }
@@ -286,15 +286,15 @@ namespace WorldEdit
             var type = _terrariaTiles[x, y].type;
             if (type == TileID.Containers)
             {
-                NetMessage.SendData(34, -1, -1, null, 1, x, y);
+                NetMessage.SendData(34, -1, -1, null, 1, x, y, 0, index);
             }
             else if (type == TileID.Dressers)
             {
-                NetMessage.SendData(34, -1, -1, null, 3, x, y);
+                NetMessage.SendData(34, -1, -1, null, 3, x, y, 0, index);
             }
             else if (type == TileID.Containers2)
             {
-                NetMessage.SendData(34, -1, -1, null, 5, x, y);
+                NetMessage.SendData(34, -1, -1, null, 5, x, y, 0, index);
             }
             return true;
         }
