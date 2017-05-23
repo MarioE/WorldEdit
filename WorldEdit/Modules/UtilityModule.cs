@@ -39,27 +39,19 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            var limit = Plugin.RegisterCommand("/limit", Limit, "worldedit.utility.limit");
-            limit.HelpDesc = new[]
-            {
-                "Syntax: //limit <limit>",
-                "",
-                "Limits the number of tiles that you can modify in a single operation.",
-                "A negative limit is treated as no limit."
-            };
+            var command = Plugin.RegisterCommand("/limit", Limit, "worldedit.utility.limit");
+            command.HelpText = "Syntax: //limit <limit>\n" +
+                               "Limits the number of tiles that you can modify in a single operation.\n" +
+                               "A negative limit is treated as no limit.";
 
-            var mask = Plugin.RegisterCommand("/mask", Mask, "worldedit.utility.mask");
-            mask.HelpDesc = new[]
-            {
-                "Syntax: //mask <mask>",
-                "",
-                "Sets your mask. Masks are used to restrict what tiles will be affected. Valid masks are:",
-                "- #none - No restrictions.",
-                "- #selection - Restricts to your current selection.",
-                "- (!)<state> - Restricts to tiles with or without certain states.",
-                "- <property> (!)= <pattern> - Restricts to tiles with or without certain properties.",
-                "  property can be block, color, shape, wall, and wallcolor."
-            };
+            command = Plugin.RegisterCommand("/mask", Mask, "worldedit.utility.mask");
+            command.HelpText = "Syntax: //mask <mask>\n" +
+                               "Sets your mask. Masks are used to restrict what tiles will be affected. Valid masks are:\n" +
+                               "- #none - No restrictions.\n" +
+                               "- #selection - Restricts to your current selection.\n" +
+                               "- (!)<state> - Restricts to tiles with or without certain states.\n" +
+                               "- <property> (!)= <pattern> - Restricts to tiles with or without certain properties.\n" +
+                               "  property can be block, color, shape, wall, and wallcolor.";
         }
 
         private void Limit(CommandArgs args)

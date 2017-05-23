@@ -26,69 +26,37 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            var paint = Plugin.RegisterCommand("/paint", Set<Color>, "worldedit.region.paint");
-            paint.HelpDesc = new[]
-            {
-                "Syntax: //paint <pattern>",
-                "",
-                "Paints the blocks in your selection."
-            };
+            var command = Plugin.RegisterCommand("/paint", Set<Color>, "worldedit.region.paint");
+            command.HelpText = "Syntax: //paint <pattern>\n" +
+                               "Paints the blocks in your selection.";
 
-            var paintWall = Plugin.RegisterCommand("/paintwall", Set<WallColor>, "worldedit.region.paintwall");
-            paintWall.HelpDesc = new[]
-            {
-                "Syntax: //paintwall <pattern>",
-                "",
-                "Paints the walls in your selection."
-            };
+            command = Plugin.RegisterCommand("/paintwall", Set<WallColor>, "worldedit.region.paintwall");
+            command.HelpText = "Syntax: //paintwall <pattern>\n" +
+                               "Paints the walls in your selection.";
 
-            var replace = Plugin.RegisterCommand("/replace", Replace<Block>, "worldedit.region.replace");
-            replace.HelpDesc = new[]
-            {
-                "Syntax: //replace <from-pattern>|<to-pattern>",
-                "",
-                "Replaces blocks in your selection that match the from pattern."
-            };
+            command = Plugin.RegisterCommand("/replace", Replace<Block>, "worldedit.region.replace");
+            command.HelpText = "Syntax: //replace <from-pattern>|<to-pattern>\n" +
+                               "Replaces the blocks in your selection.";
 
-            var replaceWall = Plugin.RegisterCommand("/replacewall", Replace<Wall>, "worldedit.region.replacewall");
-            replaceWall.HelpDesc = new[]
-            {
-                "Syntax: //replacewall <from-pattern>|<to-pattern>",
-                "",
-                "Replaces walls in your selection that match the from pattern."
-            };
+            command = Plugin.RegisterCommand("/replacewall", Replace<Wall>, "worldedit.region.replacewall");
+            command.HelpText = "Syntax: //replacewall <from-pattern>|<to-pattern>\n" +
+                               "Replaces the walls in your selection.";
 
-            var set = Plugin.RegisterCommand("/set", Set<Block>, "worldedit.region.set");
-            set.HelpDesc = new[]
-            {
-                "Syntax: //set <pattern>",
-                "",
-                "Sets the blocks in your selection."
-            };
+            command = Plugin.RegisterCommand("/set", Set<Block>, "worldedit.region.set");
+            command.HelpText = "Syntax: //set <pattern>\n" +
+                               "Sets the blocks in your selection.";
 
-            var setState = Plugin.RegisterCommand("/setstate", Set<State>, "worldedit.region.setstate");
-            setState.HelpDesc = new[]
-            {
-                "Syntax: //setstate <pattern>",
-                "",
-                "Sets the tile states in your selection."
-            };
+            command = Plugin.RegisterCommand("/setstate", Set<State>, "worldedit.region.setstate");
+            command.HelpText = "Syntax: //setstate <pattern>\n" +
+                               "Sets the tile states in your selection.";
 
-            var setWall = Plugin.RegisterCommand("/setwall", Set<Wall>, "worldedit.region.setwall");
-            setWall.HelpDesc = new[]
-            {
-                "Syntax: //setwall <pattern>",
-                "",
-                "Sets the walls in your selection."
-            };
+            command = Plugin.RegisterCommand("/setwall", Set<Wall>, "worldedit.region.setwall");
+            command.HelpText = "Syntax: //setwall <pattern>\n" +
+                               "Sets the walls in your selection.";
 
-            var shape = Plugin.RegisterCommand("/shape", Set<Shape>, "worldedit.region.shape");
-            shape.HelpDesc = new[]
-            {
-                "Syntax: //shape <pattern>",
-                "",
-                "Shapes the blocks in your selection."
-            };
+            command = Plugin.RegisterCommand("/shape", Set<Shape>, "worldedit.region.shape");
+            command.HelpText = "Syntax: //shape <pattern>\n" +
+                               "Shapes the blocks in your selection.";
         }
 
         private void Replace<T>(CommandArgs args) where T : class, ITemplate

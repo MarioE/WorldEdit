@@ -24,39 +24,21 @@ namespace WorldEdit.Modules
         /// <inheritdoc />
         public override void Register()
         {
-            var clearClipboard = Plugin.RegisterCommand("clearclipboard",
-                ClearClipboard,
-                "worldedit.clipboard.clearclipboard");
-            clearClipboard.HelpDesc = new[]
-            {
-                "Syntax: /clearclipboard",
-                "",
-                "Clears your clipboard."
-            };
+            var command = Plugin.RegisterCommand("clearclipboard", ClearClipboard, "worldedit.clipboard.clear");
+            command.HelpText = "Syntax: /clearclipboard\n" +
+                               "Clears your clipboard.";
 
-            var copy = Plugin.RegisterCommand("/copy", Copy, "worldedit.clipboard.copy");
-            copy.HelpDesc = new[]
-            {
-                "Syntax: //copy",
-                "",
-                "Copies your selection to your clipboard."
-            };
+            command = Plugin.RegisterCommand("/copy", Copy, "worldedit.clipboard.copy");
+            command.HelpText = "Syntax: //copy\n" +
+                               "Copies your selection to your clipboard.";
 
-            var cut = Plugin.RegisterCommand("/cut", Cut, "worldedit.clipboard.cut");
-            cut.HelpDesc = new[]
-            {
-                "Syntax: //cut",
-                "",
-                "Cuts your selection to your clipboard."
-            };
+            command = Plugin.RegisterCommand("/cut", Cut, "worldedit.clipboard.cut");
+            command.HelpText = "Syntax: //cut\n" +
+                               "Cuts your selection to your clipboard.";
 
-            var paste = Plugin.RegisterCommand("/paste", Paste, "worldedit.clipboard.paste");
-            paste.HelpDesc = new[]
-            {
-                "Syntax: //paste",
-                "",
-                "Pastes your clipboard to your primary position."
-            };
+            command = Plugin.RegisterCommand("/paste", Paste, "worldedit.clipboard.paste");
+            command.HelpText = "Syntax: //paste\n" +
+                               "Pastes your clipboard to your primary position.";
         }
 
         private void ClearClipboard(CommandArgs args)

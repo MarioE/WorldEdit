@@ -30,39 +30,21 @@ namespace WorldEdit.Modules
         {
             GetDataHandlers.TileEdit += OnTileEdit;
 
-            var brush = Plugin.RegisterCommand("/brush", Brush<Block>, "worldedit.tool.brush");
-            brush.HelpDesc = new[]
-            {
-                "Syntax: //brush <size> <pattern>",
-                "",
-                "Changes your tool to a brush tool that changes blocks."
-            };
+            var command = Plugin.RegisterCommand("/brush", Brush<Block>, "worldedit.tool.brush");
+            command.HelpText = "Syntax: //brush <size> <pattern>\n" +
+                               "Changes your tool to a brush tool that changes blocks.";
 
-            var brushWall = Plugin.RegisterCommand("/brushwall", Brush<Wall>, "worldedit.tool.brushwall");
-            brushWall.HelpDesc = new[]
-            {
-                "Syntax: //brushwall <size> <pattern>",
-                "",
-                "Changes your tool to a brush tool that changes walls."
-            };
+            command = Plugin.RegisterCommand("/brushwall", Brush<Wall>, "worldedit.tool.brushwall");
+            command.HelpText = "Syntax: //brushwall <size> <pattern>\n" +
+                               "Changes your tool to a brush tool that changes walls.";
 
-            var paintBrush = Plugin.RegisterCommand("/paintbrush", Brush<Color>, "worldedit.tool.paintbrush");
-            paintBrush.HelpDesc = new[]
-            {
-                "Syntax: //paintbrush <size> <pattern>",
-                "",
-                "Changes your tool to a brush tool that paints blocks."
-            };
+            command = Plugin.RegisterCommand("/paintbrush", Brush<Color>, "worldedit.tool.paintbrush");
+            command.HelpText = "Syntax: //paintbrush <size> <pattern>\n" +
+                               "Changes your tool to a brush tool that paints blocks.";
 
-            var paintBrushWall = Plugin.RegisterCommand("/paintbrushwall",
-                Brush<WallColor>,
-                "worldedit.tool.paintbrushwall");
-            paintBrushWall.HelpDesc = new[]
-            {
-                "Syntax: //paintbrushwall <size> <pattern>",
-                "",
-                "Changes your tool to a brush tool that paints walls."
-            };
+            command = Plugin.RegisterCommand("/paintbrushwall", Brush<WallColor>, "worldedit.tool.paintbrushwall");
+            command.HelpText = "Syntax: //paintbrushwall <size> <pattern>\n" +
+                               "Changes your tool to a brush tool that paints walls.";
         }
 
         private void Brush<T>(CommandArgs args) where T : class, ITemplate

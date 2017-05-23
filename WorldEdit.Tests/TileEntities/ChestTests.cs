@@ -19,16 +19,7 @@ namespace WorldEdit.Tests.TileEntities
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => new Chest(Vector.Zero, null, new Item[0]), Throws.ArgumentNullException);
         }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public void GetIsDresser(bool isDresser)
-        {
-            var chest = new Chest(Vector.Zero, "", new Item[0], isDresser);
-
-            Assert.That(chest.IsDresser, Is.EqualTo(isDresser));
-        }
-
+        
         [Test]
         public void GetItems()
         {

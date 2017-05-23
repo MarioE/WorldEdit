@@ -7,5 +7,6 @@ namespace WorldEdit
     /// </summary>
     public abstract class World : Extent
     {
+        // TODO: define methods here
     }
 }

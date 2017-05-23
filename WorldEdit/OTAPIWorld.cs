@@ -164,15 +164,10 @@ namespace WorldEdit
                 item = chest.Items.Select(Adapt).ToArray()
             };
 
-        private Chest Adapt(TerrariaChest terrariaChest)
-        {
-            var x = terrariaChest.x;
-            var y = terrariaChest.y;
-            return new Chest(new Vector(x, y),
+        private Chest Adapt(TerrariaChest terrariaChest) =>
+            new Chest(new Vector(terrariaChest.x, terrariaChest.y),
                 terrariaChest.name,
-                terrariaChest.item.Select(Adapt),
-                _terrariaTiles[x, y].type == TileID.Dressers);
-        }
+                terrariaChest.item.Select(Adapt));
 
         private TerrariaSign Adapt(Sign sign) =>
             new TerrariaSign {x = sign.Position.X, y = sign.Position.Y, text = sign.Text};
@@ -207,11 +202,22 @@ namespace WorldEdit
             _terrariaChests[index] = Adapt(chest);
             var x = chest.Position.X;
             var y = chest.Position.Y;
-            var frameX = _terrariaTiles[x, y].frameX;
-            var style = chest.IsDresser ? (frameX - 18) / 54 : frameX / 36;
-            NetMessage.SendData(34, -1, -1, null, chest.IsDresser ? 2 : 0, x, y, style);
-            NetMessage.SendData(33, -1, -1, null, index);
-            return false;
+            var tile = _terrariaTiles[x, y];
+            var frameX = tile.frameX;
+            var type2 = tile.type;
+            if (type2 == TileID.Containers)
+            {
+                NetMessage.SendData(34, -1, -1, null, 0, x, y, (short)(frameX / 36));
+            }
+            else if (type2 == TileID.Dressers)
+            {
+                NetMessage.SendData(34, -1, -1, null, 2, x, y, (short)((frameX - 18) / 54));
+            }
+            else if (type2 == TileID.Containers2)
+            {
+                NetMessage.SendData(34, -1, -1, null, 4, x, y, (short)(frameX / 36));
+            }
+            return true;
         }
 
         private bool AddSign(Sign sign)
@@ -263,15 +269,7 @@ namespace WorldEdit
             for (var i = _terrariaChests.Length - 1; i >= 0; --i)
             {
                 var terrariaChest = _terrariaChests[i];
-                if (terrariaChest == null)
-                {
-                    continue;
-                }
-
-                var x = terrariaChest.x;
-                var y = terrariaChest.y;
-                var type = _terrariaTiles[x, y].type;
-                if (x == chest.Position.X && y == chest.Position.Y && type == TileID.Dressers == chest.IsDresser)
+                if (terrariaChest != null && terrariaChest.x == chest.Position.X && terrariaChest.y == chest.Position.Y)
                 {
                     index = i;
                     break;
@@ -283,9 +281,21 @@ namespace WorldEdit
             }
 
             _terrariaChests[index] = null;
-            var x2 = chest.Position.X;
-            var y2 = chest.Position.Y;
-            NetMessage.SendData(34, -1, -1, null, chest.IsDresser ? 4 : 1, x2, y2);
+            var x = chest.Position.X;
+            var y = chest.Position.Y;
+            var type = _terrariaTiles[x, y].type;
+            if (type == TileID.Containers)
+            {
+                NetMessage.SendData(34, -1, -1, null, 1, x, y);
+            }
+            else if (type == TileID.Dressers)
+            {
+                NetMessage.SendData(34, -1, -1, null, 3, x, y);
+            }
+            else if (type == TileID.Containers2)
+            {
+                NetMessage.SendData(34, -1, -1, null, 5, x, y);
+            }
             return true;
         }
 

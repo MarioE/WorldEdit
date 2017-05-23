@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Terraria.ID;
 using TShockAPI;
 using WorldEdit.Regions;
 using WorldEdit.Regions.Selectors;
@@ -49,89 +48,49 @@ namespace WorldEdit.Modules
         {
             GetDataHandlers.TileEdit += OnTileEdit;
 
-            var clear = Plugin.RegisterCommand("/clear", Clear, "worldedit.selection.clear");
-            clear.HelpDesc = new[]
-            {
-                "Syntax: //clear",
-                "",
-                "Clears your selection."
-            };
+            var command = Plugin.RegisterCommand("/clear", Clear, "worldedit.selection.clear");
+            command.HelpText = "Syntax: //clear\n" +
+                               "Clears your selection.";
 
-            var contract = Plugin.RegisterCommand("/contract", ContractExpandShift, "worldedit.selection.contract");
-            contract.HelpDesc = new[]
-            {
-                "Syntax: //contract <direction> <distance>",
-                "",
-                "Contracts your selection."
-            };
+            command = Plugin.RegisterCommand("/contract", ContractExpandShift, "worldedit.selection.contract");
+            command.HelpText = "Syntax: //contract <direction> <distance>\n" +
+                               "Contracts your selection.";
 
-            var expand = Plugin.RegisterCommand("/expand", ContractExpandShift, "worldedit.selection.expand");
-            expand.HelpDesc = new[]
-            {
-                "Syntax: //expand <direction> <distance>",
-                "",
-                "Expands your selection."
-            };
+            command = Plugin.RegisterCommand("/expand", ContractExpandShift, "worldedit.selection.expand");
+            command.HelpText = "Syntax: //expand <direction> <distance>\n" +
+                               "Expands your selection.";
 
-            var inset = Plugin.RegisterCommand("/inset", InsetOutset, "worldedit.selection.inset");
-            inset.HelpDesc = new[]
-            {
-                "Syntax: //inset <distance>",
-                "",
-                "Insets your selection. This is equivalent to contracting on all sides."
-            };
+            command = Plugin.RegisterCommand("/inset", InsetOutset, "worldedit.selection.inset");
+            command.HelpText = "Syntax: //inset <distance>\n" +
+                               "Insets your selection. This is equivalent to contracting on all sides.";
 
-            var outset = Plugin.RegisterCommand("/outset", InsetOutset, "worldedit.selection.outset");
-            outset.HelpDesc = new[]
-            {
-                "Syntax: //outset <distance>",
-                "",
-                "Outsets your selection. This is equivalent to expanding on all sides."
-            };
+            command = Plugin.RegisterCommand("/outset", InsetOutset, "worldedit.selection.outset");
+            command.HelpText = "Syntax: //outset <distance>\n" +
+                               "Outsets your selection. This is equivalent to expanding on all sides.";
 
-            var pos1 = Plugin.RegisterCommand("/pos1", Pos1Pos2, "worldedit.selection.pos1");
-            pos1.HelpDesc = new[]
-            {
-                "Syntax: //pos1 <x> <y>",
-                "",
-                "Selects your primary position."
-            };
+            command = Plugin.RegisterCommand("/pos1", Pos1Pos2, "worldedit.selection.pos1");
+            command.HelpText = "Syntax: //pos1 <x> <y>\n" +
+                               "Selects your primary position.";
 
-            var pos2 = Plugin.RegisterCommand("/pos2", Pos1Pos2, "worldedit.selection.pos2");
-            pos2.HelpDesc = new[]
-            {
-                "Syntax: //pos2 <x> <y>",
-                "",
-                "Selects your secondary position."
-            };
+            command = Plugin.RegisterCommand("/pos2", Pos1Pos2, "worldedit.selection.pos2");
+            command.HelpText = "Syntax: //pos2 <x> <y>\n" +
+                               "Selects your secondary position.";
 
-            var select = Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
-            select.HelpDesc = new[]
-            {
-                "Syntax: //select <selector>",
-                "",
-                "Changes your selector. Valid selectors are:",
-                "- elliptic: Select the center and radius of an ellipse.",
-                "- polygonal: Select the vertices of a polygon.",
-                "- rectangular: Select the two opposite points of a rectangle."
-            };
+            command = Plugin.RegisterCommand("/select", Select, "worldedit.selection.select");
+            command.HelpText = "Syntax: //select <selector>\n" +
+                               "Changes your selector. Valid selectors are:\n" +
+                               "- elliptic: Select the center and radius of an ellipse.\n" +
+                               "- polygonal: Select the vertices of a polygon.\n" +
+                               "- rectangular: Select the two opposite points of a rectangle.";
 
-            var shift = Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");
-            shift.HelpDesc = new[]
-            {
-                "Syntax: //shift <direction> <distance>",
-                "",
-                "Shifts your selection."
-            };
+            command = Plugin.RegisterCommand("/shift", ContractExpandShift, "worldedit.selection.shift");
+            command.HelpText = "Syntax: //shift <direction> <distance>\n" +
+                               "Shifts your selection.";
 
-            var wand = Plugin.RegisterCommand("/wand", Wand, "worldedit.selection.wand");
-            wand.AllowServer = false;
-            wand.HelpDesc = new[]
-            {
-                "Syntax: //wand",
-                "",
-                "Toggles wand mode. This allows you to use wrenches to select positions and use tools."
-            };
+            command = Plugin.RegisterCommand("/wand", Wand, "worldedit.selection.wand");
+            command.AllowServer = false;
+            command.HelpText = "Syntax: //wand\n" +
+                               "Toggles wand mode. This allows you to use wrenches to select positions and use tools.";
         }
 
         private void Clear(CommandArgs args)

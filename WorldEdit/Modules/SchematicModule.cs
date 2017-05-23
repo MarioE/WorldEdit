@@ -51,17 +51,13 @@ namespace WorldEdit.Modules
                     JsonConvert.DeserializeObject<Dictionary<string, SchematicInfo>>(File.ReadAllText(SchematicsPath));
             }
 
-            var schematic = Plugin.RegisterCommand("/schematic", Schematic, "worldedit.clipboard.schematic");
-            schematic.HelpDesc = new[]
-            {
-                "Syntax: //schematic delete <name>",
-                "Syntax: //schematic list [page]",
-                "Syntax: //schematic load <name>",
-                "Syntax: //schematic save <name> <format> [description]",
-                "",
-                "Manages schematics. Currently, the only valid format is tedit."
-            };
-            schematic.Names.Add("/schem");
+            var command = Plugin.RegisterCommand("/schematic", Schematic, "worldedit.clipboard.schematic");
+            command.HelpText = "Syntax: //schematic delete <name>\n" +
+                               "Syntax: //schematic list [page]\n" +
+                               "Syntax: //schematic load <name>\n" +
+                               "Syntax: //schematic save <name> <format> [description]\n" +
+                               "Manages schematics. Currently, the only valid format is tedit.";
+            command.Names.Add("/schem");
         }
 
         private void Schematic(CommandArgs args)

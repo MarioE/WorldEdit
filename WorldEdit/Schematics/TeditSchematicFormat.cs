@@ -277,7 +277,7 @@ namespace WorldEdit.Schematics
                     tiles[x, y] = tile;
                     while (repeat-- > 0)
                     {
-                        tiles[x, y] = tile;
+                        tiles[x, ++y] = tile;
                     }
                 }
             }
@@ -436,12 +436,11 @@ namespace WorldEdit.Schematics
             {
                 for (var y = 0; y < dimensions.Y;)
                 {
-                    var position = new Vector(x, y);
-                    var tile = extent.GetTile(position);
+                    var tile = extent.GetTile(new Vector(x, y));
                     var data = SerializeTile(tile, out var dataIndex, out var headerIndex);
 
                     short repeat = 0;
-                    while (++y < dimensions.Y && tile == extent.GetTile(position))
+                    while (++y < dimensions.Y && tile == extent.GetTile(new Vector(x, y)))
                     {
                         ++repeat;
                     }
