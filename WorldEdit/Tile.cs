@@ -10,12 +10,10 @@ namespace WorldEdit
     /// This is a mutable struct for the following reasons:
     /// <para />
     /// - Value semantics are important, and if this were a class instead, then many copies would have to be made, leading to
-    /// far
-    /// too much GC pressure.
+    /// far too much GC pressure.
     /// <para />
     /// - Tiles can be thought of as a collection of variables, and each variable should be indepdendently modifiable. As long
-    /// as
-    /// this is understood, then mutability should be okay.
+    /// as this is understood, then mutability should be okay.
     /// </remarks>
     public struct Tile : IEquatable<Tile>
     {

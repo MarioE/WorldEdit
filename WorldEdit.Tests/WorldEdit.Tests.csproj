@@ -109,6 +109,8 @@
     <Compile Include="TileEntities\ItemFrameTests.cs" />
     <Compile Include="TileEntities\SignTests.cs" />
     <Compile Include="TileTests.cs" />
+    <Compile Include="Tools\BrushToolTests.cs" />
+    <Compile Include="Tools\BlankToolTests.cs" />
     <Compile Include="VectorTests.cs" />
   </ItemGroup>
   <ItemGroup />

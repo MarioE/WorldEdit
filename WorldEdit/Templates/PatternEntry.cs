@@ -7,6 +7,7 @@ namespace WorldEdit.Templates
     /// Represents an entry in a <see cref="Pattern{T}" /> instance.
     /// </summary>
     /// <typeparam name="T">The template type, which must contain a static method with signature <c>T TryParse(string)</c>.</typeparam>
+    // TODO: consider non-generic entries
     public sealed class PatternEntry<T> where T : class, ITemplate
     {
         /// <summary>

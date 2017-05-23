@@ -3,7 +3,7 @@
 namespace WorldEdit
 {
     /// <summary>
-    /// Represents a world backed by a tile collection. Players will be periodically notified of changes.
+    /// Specifies a world.
     /// </summary>
     public abstract class World : Extent
     {

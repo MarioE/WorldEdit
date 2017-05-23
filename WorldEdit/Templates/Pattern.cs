@@ -20,6 +20,7 @@ namespace WorldEdit.Templates
         /// <param name="entries">The entries, which must not be <c>null</c> or contain <c>null</c>.</param>
         /// <exception cref="ArgumentException"><paramref name="entries" /> contains <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="entries" /> is <c>null</c>.</exception>
+        // TODO: consider non-generic pattern entries?
         public Pattern([NotNull] [ItemNotNull] IEnumerable<PatternEntry<T>> entries)
         {
             if (entries == null)

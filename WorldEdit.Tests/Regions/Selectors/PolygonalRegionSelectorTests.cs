@@ -21,6 +21,13 @@ namespace WorldEdit.Tests.Regions.Selectors
         }
 
         [Test]
+        public void Ctor_NullPositions_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => new PolygonalRegionSelector(null), Throws.ArgumentNullException);
+        }
+
+        [Test]
         public void GetRegion()
         {
             RegionSelector selector = new PolygonalRegionSelector();

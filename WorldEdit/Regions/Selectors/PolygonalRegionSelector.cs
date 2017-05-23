@@ -20,9 +20,9 @@ namespace WorldEdit.Regions.Selectors
         /// <summary>
         /// Initializes a new instance of the <see cref="PolygonalRegionSelector" /> class with the specified positions.
         /// </summary>
-        /// <param name="positions">The positions.</param>
+        /// <param name="positions">The positions, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="positions" /> is <c>null</c>.</exception>
-        public PolygonalRegionSelector(IEnumerable<Vector> positions)
+        public PolygonalRegionSelector([NotNull] IEnumerable<Vector> positions)
         {
             if (positions == null)
             {

@@ -286,6 +286,7 @@ namespace WorldEdit.Templates
         /// This method will parse strings of the form "type" or "type:frameX:frameY", where type can be a name or ID and
         /// frameX and frameY are short frame values.
         /// </remarks>
+        // TODO: consider converting to parser classes?
         [CanBeNull]
         [Pure]
         public static Block TryParse([NotNull] string s)
