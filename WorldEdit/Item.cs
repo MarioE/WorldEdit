@@ -30,17 +30,17 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets the prefix of this <see cref="Item" /> instance.
+        /// Gets the prefix.
         /// </summary>
         public byte Prefix { get; }
 
         /// <summary>
-        /// Gets the stack size of this <see cref="Item" /> instance.
+        /// Gets the stack size.
         /// </summary>
         public int StackSize { get; }
 
         /// <summary>
-        /// Gets the type of this <see cref="Item" /> instance.
+        /// Gets the type.
         /// </summary>
         public int Type { get; }
 
@@ -61,7 +61,7 @@ namespace WorldEdit
         public static bool operator !=(Item item, Item item2) => !item.Equals(item2);
 
         /// <summary>
-        /// Determines whether this <see cref="Item" /> instance equals the specified item.
+        /// Determines whether the item equals the specified item.
         /// </summary>
         /// <param name="other">The other item.</param>
         /// <returns><c>true</c> if the two are equal; otherwise <c>false</c>.</returns>
@@ -69,7 +69,7 @@ namespace WorldEdit
         public bool Equals(Item other) => Prefix == other.Prefix && StackSize == other.StackSize && Type == other.Type;
 
         /// <summary>
-        /// Determines whether this <see cref="Item" /> instance equals the specified object.
+        /// Determines whether the item equals the specified object.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns><c>true</c> if the two are equal; otherwise, <c>false</c>.</returns>
@@ -77,7 +77,7 @@ namespace WorldEdit
         public override bool Equals(object obj) => obj is Item item && Equals(item);
 
         /// <summary>
-        /// Returns the hash code of this <see cref="Item" /> instance.
+        /// Returns the hash code of the tile.
         /// </summary>
         /// <returns>The hash code.</returns>
         [Pure]
@@ -93,14 +93,14 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Returns the string representation of this <see cref="Item" /> instance.
+        /// Returns the string representation of the item.
         /// </summary>
         /// <returns>The string representation.</returns>
         [Pure]
         public override string ToString() => $"{Type} x{StackSize}, prefix {Prefix}";
 
         /// <summary>
-        /// Creates a new <see cref="Item" /> instance from this <see cref="Item" /> instance with the specified prefix.
+        /// Creates a new <see cref="Item" /> structure from this <see cref="Item" /> structure with the specified prefix.
         /// </summary>
         /// <param name="prefix">The prefix.</param>
         /// <returns>The item.</returns>
@@ -108,7 +108,7 @@ namespace WorldEdit
         public Item WithPrefix(byte prefix) => new Item(Type, StackSize, prefix);
 
         /// <summary>
-        /// Creates a new <see cref="Item" /> instance from this <see cref="Item" /> instance with the specified stack size.
+        /// Creates a new <see cref="Item" /> structure from this <see cref="Item" /> structure with the specified stack size.
         /// </summary>
         /// <param name="stackSize">The stack size.</param>
         /// <returns>The item.</returns>

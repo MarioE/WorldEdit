@@ -32,13 +32,13 @@ namespace WorldEdit.TileEntities
         }
 
         /// <summary>
-        /// Gets a read-only view of the items of this <see cref="Chest" /> instance.
+        /// Gets a read-only view of the items.
         /// </summary>
         [NotNull]
         public IReadOnlyList<Item> Items { get; }
 
         /// <summary>
-        /// Gets the name of this <see cref="Chest" /> instance.
+        /// Gets the name.
         /// </summary>
         [NotNull]
         public string Name { get; }

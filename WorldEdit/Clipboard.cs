@@ -85,7 +85,7 @@ namespace WorldEdit
         public override IEnumerable<ITileEntity> GetTileEntities() => _tileEntities;
 
         /// <summary>
-        /// Pastes this <see cref="Clipboard" /> instance to the specified extent and position.
+        /// Pastes the clipboard to the specified extent and position.
         /// </summary>
         /// <param name="extent">The extent to paste to, which must not be <c>null</c>.</param>
         /// <param name="position">The position.</param>

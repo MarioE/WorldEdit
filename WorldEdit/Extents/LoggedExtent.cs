@@ -6,7 +6,7 @@ using WorldEdit.TileEntities;
 namespace WorldEdit.Extents
 {
     /// <summary>
-    /// Represents a wrapped extent that logs any changes to a change set.
+    /// Represents an extent that logs changes to a change set.
     /// </summary>
     public sealed class LoggedExtent : WrappedExtent
     {
@@ -24,9 +24,6 @@ namespace WorldEdit.Extents
         }
 
         /// <inheritdoc />
-        /// <remarks>
-        /// This method will add a <see cref="TileEntityAddition" /> instance to the change set.
-        /// </remarks>
         public override bool AddTileEntity(ITileEntity tileEntity)
         {
             if (Extent.AddTileEntity(tileEntity))
@@ -38,9 +35,6 @@ namespace WorldEdit.Extents
         }
 
         /// <inheritdoc />
-        /// <remarks>
-        /// This method will add a <see cref="TileEntityRemoval" /> instance to the change set.
-        /// </remarks>
         public override bool RemoveTileEntity(ITileEntity tileEntity)
         {
             if (Extent.RemoveTileEntity(tileEntity))
@@ -52,9 +46,6 @@ namespace WorldEdit.Extents
         }
 
         /// <inheritdoc />
-        /// <remarks>
-        /// This method will add a <see cref="TileUpdate" /> instance to the change set.
-        /// </remarks>
         public override bool SetTile(Vector position, Tile tile)
         {
             var oldTile = Extent.GetTile(position);

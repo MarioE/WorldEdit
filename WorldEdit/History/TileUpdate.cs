@@ -21,17 +21,17 @@ namespace WorldEdit.History
         }
 
         /// <summary>
-        /// Gets the new tile of this <see cref="TileUpdate" /> instance.
+        /// Gets the new tile.
         /// </summary>
         public Tile NewTile { get; }
 
         /// <summary>
-        /// Gets the old tile of this <see cref="TileUpdate" /> instance.
+        /// Gets the old tile.
         /// </summary>
         public Tile OldTile { get; }
 
         /// <summary>
-        /// Gets the position of this <see cref="TileUpdate" /> instance.
+        /// Gets the position.
         /// </summary>
         public Vector Position { get; }
 

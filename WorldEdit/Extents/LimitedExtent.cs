@@ -3,7 +3,7 @@
 namespace WorldEdit.Extents
 {
     /// <summary>
-    /// Represents a wrapped extent that limits the number of tiles that can be set.
+    /// Represents an extent that limits the number of tiles that can be set.
     /// </summary>
     public sealed class LimitedExtent : WrappedExtent
     {

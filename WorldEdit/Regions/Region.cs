@@ -10,22 +10,22 @@ namespace WorldEdit.Regions
     public abstract class Region : IEnumerable<Vector>
     {
         /// <summary>
-        /// Gets the dimensions of this <see cref="Region" /> instance.
+        /// Gets the dimensions.
         /// </summary>
         public Vector Dimensions => UpperBound - LowerBound;
 
         /// <summary>
-        /// Gets the lower bound position of this <see cref="Region" /> instance.
+        /// Gets the lower bound position.
         /// </summary>
         public abstract Vector LowerBound { get; }
 
         /// <summary>
-        /// Gets the non-inclusive upper bound position of this <see cref="Region" /> instance.
+        /// Gets the non-inclusive upper bound position.
         /// </summary>
         public abstract Vector UpperBound { get; }
 
         /// <summary>
-        /// Determines whether the specified position is contained within this <see cref="Region" /> instance.
+        /// Determines whether the specified position is contained.
         /// </summary>
         /// <param name="position">The position to check.</param>
         /// <returns><c>true</c> if the position is contained; otherwise, <c>false</c>.</returns>
@@ -33,7 +33,7 @@ namespace WorldEdit.Regions
         public abstract bool Contains(Vector position);
 
         /// <summary>
-        /// Returns an enumerator iterating through the positions contained within this <see cref="Region" /> instance.
+        /// Returns an enumerator iterating through the positions contained.
         /// </summary>
         /// <returns>An enumerator.</returns>
         [Pure]
@@ -53,7 +53,7 @@ namespace WorldEdit.Regions
         }
 
         /// <summary>
-        /// Shifts this <see cref="Region" /> instance by the specified displacement.
+        /// Shifts the region by the specified displacement.
         /// </summary>
         /// <param name="displacement">The displacement.</param>
         /// <returns>The resulting region.</returns>

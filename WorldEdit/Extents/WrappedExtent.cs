@@ -24,7 +24,7 @@ namespace WorldEdit.Extents
         public override Vector Dimensions => Extent.Dimensions;
 
         /// <summary>
-        /// Gets the wrapped extent of this <see cref="WrappedExtent" /> instance.
+        /// Gets the wrapped extent.
         /// </summary>
         protected Extent Extent { get; }
 

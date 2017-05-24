@@ -70,7 +70,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Disposes this <see cref="World" /> instance.
+        /// Disposes the world.
         /// </summary>
         public void Dispose()
         {

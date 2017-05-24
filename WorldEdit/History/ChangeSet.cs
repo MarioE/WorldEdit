@@ -14,7 +14,7 @@ namespace WorldEdit.History
         private readonly List<IChange> _changes = new List<IChange>();
 
         /// <summary>
-        /// Adds the specified change to this <see cref="ChangeSet" /> instance.
+        /// Adds the specified change.
         /// </summary>
         /// <param name="change">The change to add, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="change" /> is <c>null</c>.</exception>
@@ -29,14 +29,13 @@ namespace WorldEdit.History
         }
 
         /// <summary>
-        /// Returns an enumerator iterating through the changes in this <see cref="ChangeSet" /> instance.
+        /// Returns an enumerator iterating through the changes.
         /// </summary>
         /// <returns>An enumerator.</returns>
         public IEnumerator<IChange> GetEnumerator() => _changes.GetEnumerator();
 
         /// <summary>
-        /// Redoes the changes in this <see cref="ChangeSet" /> instance onto the specified extent. The changes will be redone in
-        /// forwards order.
+        /// Redoes the changes on the specified extent. The changes will be redone in forwards order.
         /// </summary>
         /// <param name="extent">The extent to modify, which must not be <c>null</c>.</param>
         /// <returns>The number of modifications.</returns>
@@ -60,8 +59,7 @@ namespace WorldEdit.History
         }
 
         /// <summary>
-        /// Undoes the changes in this <see cref="ChangeSet" /> instance onto the specified extent. The changes will be redone in
-        /// backwards order.
+        /// Undoes the changes on the specified extent. The changes will be redone in backwards order.
         /// </summary>
         /// <param name="extent">The extent to modify, which must not be <c>null</c>.</param>
         /// <returns>The number of modifications.</returns>

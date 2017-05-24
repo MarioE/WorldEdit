@@ -8,13 +8,13 @@ namespace WorldEdit.Regions.Selectors
     public abstract class RegionSelector
     {
         /// <summary>
-        /// Gets the primary position of this <see cref="RegionSelector" /> instance, or <c>null</c> if it is not selected.
+        /// Gets the primary position, or <c>null</c> if it is not selected.
         /// </summary>
         [CanBeNull]
         public abstract Vector? PrimaryPosition { get; }
 
         /// <summary>
-        /// Clears the selected positions of this <see cref="RegionSelector" /> instance.
+        /// Clears the selected positions.
         /// </summary>
         /// <returns>The resulting region selector.</returns>
         [NotNull]
@@ -22,7 +22,7 @@ namespace WorldEdit.Regions.Selectors
         public abstract RegionSelector Clear();
 
         /// <summary>
-        /// Gets the region defined by this <see cref="RegionSelector" /> instance.
+        /// Gets the defined region.
         /// </summary>
         /// <returns>The defined region.</returns>
         [NotNull]
@@ -30,7 +30,7 @@ namespace WorldEdit.Regions.Selectors
         public abstract Region GetRegion();
 
         /// <summary>
-        /// Selects the primary position of this <see cref="RegionSelector" /> instance using the specified position.
+        /// Selects the primary position using the specified position.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>The resulting region selector.</returns>
@@ -39,7 +39,7 @@ namespace WorldEdit.Regions.Selectors
         public abstract RegionSelector SelectPrimary(Vector position);
 
         /// <summary>
-        /// Selects the secondary position of this <see cref="RegionSelector" /> instance using the specified position.
+        /// Selects the secondary position using the specified position.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>The resulting region selector.</returns>

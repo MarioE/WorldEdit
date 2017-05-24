@@ -30,12 +30,12 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets the X component of this <see cref="Vector" /> instance.
+        /// Gets the X component.
         /// </summary>
         public int X { get; }
 
         /// <summary>
-        /// Gets the Y component of this <see cref="Vector" /> instance.
+        /// Gets the Y component.
         /// </summary>
         public int Y { get; }
 
@@ -97,7 +97,7 @@ namespace WorldEdit
         public static Vector operator -(Vector vector) => -1 * vector;
 
         /// <summary>
-        /// Determines whether this <see cref="Vector" /> instance equals the specified object.
+        /// Determines whether the vector equals the specified object.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns><c>true</c> if the two are equal; otherwise, <c>false</c>.</returns>
@@ -105,7 +105,7 @@ namespace WorldEdit
         public override bool Equals(object obj) => obj is Vector vector && Equals(vector);
 
         /// <summary>
-        /// Determines whether this <see cref="Vector" /> instance equals the specified vector.
+        /// Determines whether the vector equals the specified vector.
         /// </summary>
         /// <param name="other">The other vector.</param>
         /// <returns><c>true</c> if the two are equal; otherwise <c>false</c>.</returns>
@@ -113,14 +113,14 @@ namespace WorldEdit
         public bool Equals(Vector other) => X == other.X && Y == other.Y;
 
         /// <summary>
-        /// Returns the hash code of this <see cref="Vector" /> instance.
+        /// Returns the hash code of the vector.
         /// </summary>
         /// <returns>The hash code.</returns>
         [Pure]
         public override int GetHashCode() => (X << 16) | (ushort)Y;
 
         /// <summary>
-        /// Returns the string representation of this <see cref="Vector" /> instance.
+        /// Returns the string representation of the vector.
         /// </summary>
         /// <returns>The string representation.</returns>
         [Pure]

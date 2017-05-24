@@ -33,7 +33,7 @@ namespace WorldEdit.Regions.Selectors
         }
 
         /// <summary>
-        /// Gets a read-only view of the positions of this <see cref="PolygonalRegionSelector" /> instance.
+        /// Gets a read-only view of the positions.
         /// </summary>
         [NotNull]
         public IReadOnlyList<Vector> Positions { get; }

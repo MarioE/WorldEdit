@@ -26,13 +26,13 @@ namespace WorldEdit.Templates
         }
 
         /// <summary>
-        /// Gets the template of this <see cref="PatternEntry{T}" /> instance.
+        /// Gets the template.
         /// </summary>
         [NotNull]
         public T Template { get; }
 
         /// <summary>
-        /// Gets the weight of this <see cref="PatternEntry{T}" /> instance.
+        /// Gets the weight.
         /// </summary>
         public int Weight { get; }
 

@@ -9,7 +9,7 @@ namespace WorldEdit.Tools
     public interface ITool
     {
         /// <summary>
-        /// Applies this <see cref="ITool" /> instance to the specified extent at a position.
+        /// Applies the tool to the specified extent at a position.
         /// </summary>
         /// <param name="extent">The extent to modify, which must not be <c>null</c>.</param>
         /// <param name="position">The position.</param>

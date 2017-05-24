@@ -48,13 +48,13 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Redoes the changes of this <see cref="EditSession" /> instance.
+        /// Redoes the edit session.
         /// </summary>
         /// <returns>The number of modifications.</returns>
         public int Redo() => _changeSet.Redo(_world);
 
         /// <summary>
-        /// Undoes the changes of this <see cref="EditSession" /> instance.
+        /// Undoes the edit session.
         /// </summary>
         /// <returns>The number of modifications.</returns>
         public int Undo() => _changeSet.Undo(_world);

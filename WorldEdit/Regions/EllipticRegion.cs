@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        /// Gets the center position of this <see cref="EllipticRegion" /> instance.
+        /// Gets the center position.
         /// </summary>
         public Vector Center { get; }
 
@@ -25,7 +25,7 @@
         public override Vector LowerBound => Center - Radius;
 
         /// <summary>
-        /// Gets the radius of this <see cref="EllipticRegion" /> instance.
+        /// Gets the radius.
         /// </summary>
         public Vector Radius { get; }
 

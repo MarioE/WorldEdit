@@ -37,7 +37,7 @@ namespace WorldEdit.Regions
         public override Vector UpperBound => new Vector(Vertices.Max(v => v.X) + 1, Vertices.Max(v => v.Y) + 1);
 
         /// <summary>
-        /// Gets a read-only view of the vertices of this <see cref="PolygonalRegion" /> instance.
+        /// Gets a read-only view of the vertices.
         /// </summary>
         [NotNull]
         public IReadOnlyList<Vector> Vertices { get; }

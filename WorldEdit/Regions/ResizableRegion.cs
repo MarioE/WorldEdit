@@ -8,8 +8,7 @@ namespace WorldEdit.Regions
     public abstract class ResizableRegion : Region
     {
         /// <summary>
-        /// Contracts this <see cref="ResizableRegion" /> instance by the specified delta. The signs of the delta components
-        /// indicate the directions of contraction.
+        /// Contracts the region by the specified delta. The signs of the delta components indicate the directions of contraction.
         /// </summary>
         /// <param name="delta">The delta.</param>
         /// <returns>The resulting region.</returns>
@@ -18,8 +17,7 @@ namespace WorldEdit.Regions
         public abstract ResizableRegion Contract(Vector delta);
 
         /// <summary>
-        /// Expands this <see cref="ResizableRegion" /> instance by the specified delta. The signs of the delta components indicate
-        /// the directions of expansion.
+        /// Expands the region by the specified delta. The signs of the delta components indicate the directions of expansion.
         /// </summary>
         /// <param name="delta">The delta.</param>
         /// <returns>The resulting region.</returns>
@@ -28,7 +26,7 @@ namespace WorldEdit.Regions
         public abstract ResizableRegion Expand(Vector delta);
 
         /// <summary>
-        /// Insets this <see cref="ResizableRegion" /> instance by the specified delta.
+        /// Insets the region by the specified delta.
         /// </summary>
         /// <param name="delta">The delta.</param>
         /// <returns>The resulting region.</returns>
@@ -37,7 +35,7 @@ namespace WorldEdit.Regions
         public abstract ResizableRegion Inset(int delta);
 
         /// <summary>
-        /// Outsets this <see cref="ResizableRegion" /> instance by the specified delta.
+        /// Outsets the region by the specified delta.
         /// </summary>
         /// <param name="delta">The delta.</param>
         /// <returns>The resulting region.</returns>

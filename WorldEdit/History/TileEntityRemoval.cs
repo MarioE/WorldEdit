@@ -21,7 +21,7 @@ namespace WorldEdit.History
         }
 
         /// <summary>
-        /// Gets the tile entity of this <see cref="TileEntityRemoval" /> instance.
+        /// Gets the tile entity.
         /// </summary>
         [NotNull]
         public ITileEntity TileEntity { get; }

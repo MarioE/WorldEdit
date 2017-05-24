@@ -12,7 +12,7 @@ namespace WorldEdit
     public static class Extensions
     {
         /// <summary>
-        /// Gets the executed command name from this <see cref="CommandArgs" /> instance.
+        /// Gets the executed command name.
         /// </summary>
         /// <param name="args">The command arguments, which must not be <c>null</c>.</param>
         /// <returns>The executed command name.</returns>
@@ -29,7 +29,7 @@ namespace WorldEdit
 
 
         /// <summary>
-        /// Gives the specified item to this <see cref="TSPlayer" /> instance if the player does not already have it.
+        /// Gives the specified item if the player does not already have it.
         /// </summary>
         /// <param name="player">The player, which must not be <c>null</c>.</param>
         /// <param name="item">The item.</param>
@@ -50,7 +50,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Reads a <see cref="Vector" /> instance from this <see cref="BinaryReader" /> instance.
+        /// Reads a <see cref="Vector" /> instance.
         /// </summary>
         /// <param name="reader">The reader, which must not be <c>null</c>.</param>
         /// <returns>The resulting vector.</returns>
@@ -102,7 +102,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Writes the specified vector to this <see cref="BinaryWriter" /> instance.
+        /// Writes the specified vector.
         /// </summary>
         /// <param name="writer">The writer, which must not be <c>null</c>.</param>
         /// <param name="vector">The vector to write.</param>

@@ -38,33 +38,33 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Gets a value indicating whether an edit session can be redone for this <see cref="Session" /> instance.
+        /// Gets a value indicating whether an edit session can be redone.
         /// </summary>
         public bool CanRedo => _historyIndex != _history.Count;
 
         /// <summary>
-        /// Gets a value indicating whether an edit session can be undone for this <see cref="Session" /> instance.
+        /// Gets a value indicating whether an edit session can be undone.
         /// </summary>
         public bool CanUndo => _historyIndex != 0;
 
         /// <summary>
-        /// Gets or sets the clipboard for this <see cref="Session" /> instance, where <c>null</c> means no clipboard.
+        /// Gets or sets the, where <c>null</c> indicates no clipboard.
         /// </summary>
         [CanBeNull]
         public Clipboard Clipboard { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating wand mode for this <see cref="Session" /> instance.
+        /// Gets or sets a value indicating wand mode.
         /// </summary>
         public bool IsWandMode { get; set; }
 
         /// <summary>
-        /// Gets or sets the limit on the number of tiles that can be set for this <see cref="Session" /> instance.
+        /// Gets or sets the limit on the number of tiles that can be set.
         /// </summary>
         public int Limit { get; set; } = -1;
 
         /// <summary>
-        /// Gets or sets the mask for this <see cref="Session" /> instance.
+        /// Gets or sets the mask.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [NotNull]
@@ -75,8 +75,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Gets or sets the region selector for this <see cref="Session" /> instance. Setting the region selector will update the
-        /// selection.
+        /// Gets or sets the region selector. Setting the region selector will update the selection.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [NotNull]
@@ -91,7 +90,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Gets or sets the selection for this <see cref="Session" /> instance.
+        /// Gets or sets the selection.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [NotNull]
@@ -102,7 +101,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Gets or sets the tool for this <see cref="Session" /> instance.
+        /// Gets or sets the tool.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [NotNull]
@@ -113,7 +112,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Clears the history for this <see cref="Session" /> instance.
+        /// Clears the history.
         /// </summary>
         public void ClearHistory()
         {
@@ -122,7 +121,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Creates a new edit session from this <see cref="Session" /> instance, optionally remembering its history.
+        /// Creates a new edit session, optionally remembering its history.
         /// </summary>
         /// <param name="remember"><c>true</c> to remember the edit session; otherwise, <c>false</c>.</param>
         /// <returns>The edit session.</returns>

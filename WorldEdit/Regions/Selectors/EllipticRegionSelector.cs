@@ -19,13 +19,13 @@ namespace WorldEdit.Regions.Selectors
         }
 
         /// <summary>
-        /// Gets the first position of this <see cref="EllipticRegionSelector" /> instance, or <c>null</c> if it is not selected.
+        /// Gets the first position, or <c>null</c> if it is not selected.
         /// </summary>
         [CanBeNull]
         public Vector? Position1 { get; }
 
         /// <summary>
-        /// Gets the second position of this <see cref="EllipticRegionSelector" /> instance, or <c>null</c> if it is not selected.
+        /// Gets the second position, or <c>null</c> if it is not selected.
         /// </summary>
         [CanBeNull]
         public Vector? Position2 { get; }

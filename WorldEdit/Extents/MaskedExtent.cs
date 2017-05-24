@@ -5,7 +5,7 @@ using WorldEdit.Masks;
 namespace WorldEdit.Extents
 {
     /// <summary>
-    /// Represents a wrapped extent that masks the tiles that can be set.
+    /// Represents an extent that masks the tiles that can be set.
     /// </summary>
     public sealed class MaskedExtent : WrappedExtent
     {
@@ -15,7 +15,7 @@ namespace WorldEdit.Extents
         /// Initializes a new instance of the <see cref="MaskedExtent" /> class with the specified extent and mask.
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
-        /// <param name="mask">The mask to test, which must not be <c>null</c>.</param>
+        /// <param name="mask">The mask to use, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="mask" /> is <c>null</c>.</exception>
         public MaskedExtent([NotNull] Extent extent, [NotNull] Mask mask) : base(extent)
         {

@@ -9,17 +9,23 @@ namespace WorldEdit.History
     public interface IChange
     {
         /// <summary>
-        /// Redoes this <see cref="IChange" /> instance on the specified extent.
+        /// Redoes this change on the specified extent.
         /// </summary>
         /// <param name="extent">The extent to modify, which must not be <c>null</c>.</param>
         /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// The redo is not required to succeed.
+        /// </remarks>
         bool Redo([NotNull] Extent extent);
 
         /// <summary>
-        /// Undoes this <see cref="IChange" /> instance on the specified extent.
+        /// Undoes this change on the specified extent.
         /// </summary>
         /// <param name="extent">The extent to modify, which must not be <c>null</c>.</param>
         /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// The undo is not required to succeed.
+        /// </remarks>
         bool Undo([NotNull] Extent extent);
     }
 }

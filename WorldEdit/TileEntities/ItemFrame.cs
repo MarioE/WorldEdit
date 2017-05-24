@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        /// Gets the item of this <see cref="ItemFrame" /> instance.
+        /// Gets the item.
         /// </summary>
         public Item Item { get; }
 

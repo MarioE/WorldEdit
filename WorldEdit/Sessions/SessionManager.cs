@@ -34,7 +34,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Disposes this <see cref="SessionManager" /> instance.
+        /// Disposes the session manager.
         /// </summary>
         public void Dispose()
         {
@@ -42,8 +42,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Gets the session associated with the specified username from this <see cref="SessionManager" /> instance, or creates it
-        /// if it does not exist. This will stop the expiration countdown.
+        /// Gets the session associated with the specified username, or creates it if it does not exist. This will stop the expiration countdown.
         /// </summary>
         /// <param name="username">The username, which must not be <c>null</c>.</param>
         /// <returns>The session associated with the username.</returns>
@@ -71,8 +70,7 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Starts removing the session associated with the specified username from this <see cref="SessionManager" /> instance by
-        /// starting the expiration countdown.
+        /// Starts removing the session associated with the specified username by starting the expiration countdown.
         /// </summary>
         /// <param name="username">The username, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="username" /> is <c>null</c>.</exception>

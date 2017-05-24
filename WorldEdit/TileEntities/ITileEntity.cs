@@ -8,13 +8,12 @@ namespace WorldEdit.TileEntities
     public interface ITileEntity
     {
         /// <summary>
-        /// Gets the position of this <see cref="ITileEntity" /> instance.
+        /// Gets the position.
         /// </summary>
         Vector Position { get; }
 
         /// <summary>
-        /// Creates a new <see cref="ITileEntity" /> instance based on this <see cref="ITileEntity" /> instance but with the
-        /// specified position instead.
+        /// Creates a new <see cref="ITileEntity" /> instance with the specified position.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <returns>The resulting tile entity.</returns>

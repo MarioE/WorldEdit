@@ -24,7 +24,7 @@ namespace WorldEdit.TileEntities
         public Vector Position { get; }
 
         /// <summary>
-        /// Gets the text of this <see cref="Sign" /> instance.
+        /// Gets the text.
         /// </summary>
         [NotNull]
         public string Text { get; }
