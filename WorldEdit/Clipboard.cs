@@ -100,7 +100,7 @@ namespace WorldEdit
             {
                 throw new ArgumentNullException(nameof(extent));
             }
-            
+
             var count = 0;
             for (var x = 0; x < Dimensions.X; ++x)
             {

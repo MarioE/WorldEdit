@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace WorldEdit.Extents
 {
@@ -16,7 +15,6 @@ namespace WorldEdit.Extents
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
         /// <param name="limit">The limit on the number of tiles that can be set. A negative value indicates no limit.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="extent" /> is <c>null</c>.</exception>
         public LimitedExtent([NotNull] Extent extent, int limit) : base(extent)
         {
             _limit = limit;

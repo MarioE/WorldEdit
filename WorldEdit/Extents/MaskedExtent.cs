@@ -16,9 +16,7 @@ namespace WorldEdit.Extents
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
         /// <param name="mask">The mask to test, which must not be <c>null</c>.</param>
-        /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="extent" /> or <paramref name="mask" /> is <c>null</c>.
-        /// </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="mask" /> is <c>null</c>.</exception>
         public MaskedExtent([NotNull] Extent extent, [NotNull] Mask mask) : base(extent)
         {
             _mask = mask ?? throw new ArgumentNullException(nameof(mask));

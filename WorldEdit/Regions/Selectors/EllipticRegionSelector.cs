@@ -10,8 +10,8 @@ namespace WorldEdit.Regions.Selectors
         /// <summary>
         /// Initializes a new instance of the <see cref="EllipticRegionSelector" /> class with the specified positions.
         /// </summary>
-        /// <param name="position1">The first position or <c>null</c> if it is not selected.</param>
-        /// <param name="position2">The second position or <c>null</c> if it is not selected.</param>
+        /// <param name="position1">The first position, or <c>null</c> if it is not selected.</param>
+        /// <param name="position2">The second position, or <c>null</c> if it is not selected.</param>
         public EllipticRegionSelector([CanBeNull] Vector? position1 = null, [CanBeNull] Vector? position2 = null)
         {
             Position1 = position1;

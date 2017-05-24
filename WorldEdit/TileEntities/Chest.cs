@@ -30,7 +30,7 @@ namespace WorldEdit.TileEntities
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Items = items.ToList().AsReadOnly();
         }
-        
+
         /// <summary>
         /// Gets a read-only view of the items of this <see cref="Chest" /> instance.
         /// </summary>

@@ -44,14 +44,7 @@ namespace WorldEdit.Tests.Extents
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => new LoggedExtent(extent, null), Throws.ArgumentNullException);
         }
-
-        [Test]
-        public void Ctor_NullExtent_ThrowsArgumentNullException()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => new LoggedExtent(null, new ChangeSet()), Throws.ArgumentNullException);
-        }
-
+        
         [TestCase(3, 4)]
         public void RemoveTileEntity_Failed_WasNotLogged(int x, int y)
         {

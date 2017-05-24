@@ -17,9 +17,7 @@ namespace WorldEdit.Extents
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
         /// <param name="changeSet">The change set to log to, which must not be <c>null</c>.</param>
-        /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="extent" /> or <paramref name="changeSet" /> is <c>null</c>.
-        /// </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="changeSet" /> is <c>null</c>.</exception>
         public LoggedExtent([NotNull] Extent extent, [NotNull] ChangeSet changeSet) : base(extent)
         {
             _changeSet = changeSet ?? throw new ArgumentNullException(nameof(changeSet));

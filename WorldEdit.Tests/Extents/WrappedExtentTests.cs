@@ -21,6 +21,13 @@ namespace WorldEdit.Tests.Extents
         }
 
         [Test]
+        public void Ctor_NullExtent_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => new WrappedExtent(null), Throws.ArgumentNullException);
+        }
+
+        [Test]
         public void Dimensions()
         {
             var extent = Mock.Of<Extent>(e => e.Dimensions == new Vector(10, 10));

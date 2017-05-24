@@ -57,13 +57,27 @@ namespace WorldEdit.Tests.Templates
         private static readonly object[] ApplyTestCases =
         {
             new object[] {State.RedWire, (byte)1, true},
-            new object[] {State.NotRedWire, (byte)1, false}
+            new object[] {State.NotRedWire, (byte)1, false},
+            new object[] {State.BlueWire, (byte)2, true},
+            new object[] {State.NotBlueWire, (byte)2, false},
+            new object[] {State.GreenWire, (byte)3, true},
+            new object[] {State.NotGreenWire, (byte)3, false},
+            new object[] {State.YellowWire, (byte)4, true},
+            new object[] {State.NotYellowWire, (byte)4, false},
+            new object[] {State.Actuator, (byte)5, true},
+            new object[] {State.NotActuator, (byte)5, false},
+            new object[] {State.Actuated, (byte)6, true},
+            new object[] {State.NotActuated, (byte)6, false}
         };
 
         private static readonly object[] MatchesTestCases =
         {
             new object[] {State.RedWire, (byte)1, true, true},
-            new object[] {State.BlueWire, (byte)2, false, false}
+            new object[] {State.BlueWire, (byte)2, false, false},
+            new object[] {State.GreenWire, (byte)2, true, false},
+            new object[] {State.NotYellowWire, (byte)4, true, false},
+            new object[] {State.Actuator, (byte)5, false, false},
+            new object[] {State.NotActuated, (byte)6, true, false}
         };
 
         [TestCaseSource(nameof(ApplyTestCases))]

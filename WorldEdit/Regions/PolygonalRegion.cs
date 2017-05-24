@@ -13,7 +13,7 @@ namespace WorldEdit.Regions
         /// <summary>
         /// Initializes a new instance of the <see cref="PolygonalRegion" /> class with the specified vertices.
         /// </summary>
-        /// <param name="vertices">The vertices.</param>
+        /// <param name="vertices">The vertices, which must not be <c>null</c> and contain at least three items.</param>
         /// <exception cref="ArgumentException"><paramref name="vertices" /> contains less than three items.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertices" /> is <c>null</c>.</exception>
         public PolygonalRegion([NotNull] IEnumerable<Vector> vertices)
@@ -45,7 +45,7 @@ namespace WorldEdit.Regions
         /// <inheritdoc />
         /// <remarks>
         /// This method uses the ray casting algorithm. A vertical ray is "drawn" from the position, and if the number of edges
-        /// above the position is odd, then the position is considered inside of the polygon.
+        /// above the position is odd, then the position is considered inside the polygon.
         /// </remarks>
         public override bool Contains(Vector position)
         {

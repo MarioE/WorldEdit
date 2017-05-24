@@ -5,6 +5,7 @@ using WorldEdit.Extents;
 using WorldEdit.Masks;
 using WorldEdit.Regions;
 using WorldEdit.Templates;
+using WorldEdit.TileEntities;
 
 namespace WorldEdit.Tests.Extents
 {
@@ -14,14 +15,16 @@ namespace WorldEdit.Tests.Extents
         [Test]
         public void Clear()
         {
+            var tileEntity = Mock.Of<ITileEntity>(e => e.Position == new Vector(0, 0));
+            var extent = Mock.Of<Extent>(e => e.Dimensions == new Vector(10, 10) &&
+                                              e.SetTile(It.IsAny<Vector>(), new Tile()));
+            Mock.Get(extent).Setup(e => e.GetTileEntities()).Returns(new List<ITileEntity> {tileEntity});
             var region = Mock.Of<Region>(r => r.LowerBound == Vector.Zero && r.UpperBound == new Vector(5, 5));
             Mock.Get(region).Setup(r => r.Contains(It.IsAny<Vector>())).Returns((Vector v) => true);
             Mock.Get(region)
                 .As<IEnumerable<Vector>>()
                 .Setup(r => r.GetEnumerator())
                 .Returns(() => region.GetEnumerator());
-            var extent = Mock.Of<Extent>(e => e.Dimensions == new Vector(10, 10) &&
-                                              e.SetTile(It.IsAny<Vector>(), new Tile()));
 
             Assert.That(extent.Clear(region), Is.EqualTo(25));
             for (var x = 0; x < 5; ++x)
@@ -32,6 +35,7 @@ namespace WorldEdit.Tests.Extents
                     Mock.Get(extent).Verify(e => e.SetTile(position, new Tile()), Times.Once);
                 }
             }
+            Mock.Get(extent).Verify(e => e.RemoveTileEntity(tileEntity), Times.Once);
         }
 
         [Test]
@@ -56,7 +60,7 @@ namespace WorldEdit.Tests.Extents
         [Test]
         public void ModifyTilesRegionTemplateMask()
         {
-            var tile = new Tile { Wall = 1 };
+            var tile = new Tile {Wall = 1};
             var region = Mock.Of<Region>(r => r.LowerBound == Vector.Zero && r.UpperBound == new Vector(5, 5));
             Mock.Get(region).Setup(r => r.Contains(It.IsAny<Vector>())).Returns((Vector v) => true);
             Mock.Get(region)
@@ -109,6 +113,5 @@ namespace WorldEdit.Tests.Extents
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => extent.ModifyTiles(region, null, mask), Throws.ArgumentNullException);
         }
-
     }
 }

@@ -1,12 +1,28 @@
 ﻿using System.IO;
 using System.Text;
 using NUnit.Framework;
+using TShockAPI;
 
 namespace WorldEdit.Tests
 {
     [TestFixture]
     public class ExtensionsTests
     {
+        [TestCase("/test abc", "test")]
+        public void GetCommandName(string message, string expected)
+        {
+            var args = new CommandArgs(message, null, null);
+
+            Assert.That(args.GetCommandName(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void GetCommandName_NullArgs_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => ((CommandArgs)null).GetCommandName(), Throws.ArgumentNullException);
+        }
+
         [TestCase(3, 4)]
         public void ReadVector(int x, int y)
         {

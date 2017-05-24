@@ -17,16 +17,7 @@ namespace WorldEdit.Tests.Extents
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => new MaskedExtent(extent, null), Throws.ArgumentNullException);
         }
-
-        [Test]
-        public void Ctor_NullExtent_ThrowsArgumentNullException()
-        {
-            var mask = Mock.Of<Mask>();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => new MaskedExtent(null, mask), Throws.ArgumentNullException);
-        }
-
+        
         [TestCase(3, 4)]
         public void SetTile_MaskFailed(int x, int y)
         {

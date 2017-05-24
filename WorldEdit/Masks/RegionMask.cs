@@ -15,7 +15,7 @@ namespace WorldEdit.Masks
         /// <summary>
         /// Initializes a new instance of the <see cref="RegionMask" /> class with the specified region.
         /// </summary>
-        /// <param name="region">The region to test with, which must not be <c>null</c>.</param>
+        /// <param name="region">The region to check, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="region" /> is <c>null</c>.</exception>
         public RegionMask([NotNull] Region region)
         {

@@ -25,9 +25,9 @@ namespace WorldEdit.Extents
         /// <param name="tileEntity">The tile entity to add, which must not be <c>null</c>.</param>
         /// <returns><c>true</c> if the operation succeeded; otherwise, <c>false</c>.</returns>
         public abstract bool AddTileEntity([NotNull] ITileEntity tileEntity);
-        
+
         /// <summary>
-        /// Clears everything within the specified region from this <see cref="Extent"/> instance.
+        /// Clears everything within the specified region from this <see cref="Extent" /> instance.
         /// </summary>
         /// <param name="region">The region, which must not be <c>null</c>.</param>
         /// <returns>The number of modifications.</returns>
@@ -97,7 +97,7 @@ namespace WorldEdit.Extents
         /// <param name="mask">The mask to test, which must not be <c>null</c>.</param>
         /// <returns>The number of modifications.</returns>
         /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="region"/>, <paramref name="template"/>, or <paramref name="mask"/> is <c>null</c>.
+        /// Either <paramref name="region" />, <paramref name="template" />, or <paramref name="mask" /> is <c>null</c>.
         /// </exception>
         public int ModifyTiles([NotNull] Region region, [NotNull] ITemplate template, [NotNull] Mask mask)
         {

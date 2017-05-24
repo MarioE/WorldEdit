@@ -24,7 +24,7 @@ namespace WorldEdit
                 throw new ArgumentNullException(nameof(args));
             }
 
-            return args.Message.Split(' ')[0].Substring(Commands.Specifier.Length);
+            return args.Message.Split(' ')[0].Substring(1);
         }
 
 

@@ -10,6 +10,7 @@ namespace WorldEdit.Templates
     /// </summary>
     public sealed class Block : ITemplate
     {
+        private const ushort MaxType = 470;
         public static readonly Block ActiveStone = new Block(130);
         public static readonly Block AdamantiteBeam = new Block(150);
         public static readonly Block AdamantiteOre = new Block(111);
@@ -261,8 +262,6 @@ namespace WorldEdit.Templates
         public static readonly Block YellowStucco = new Block(154);
         public static readonly Block YellowTeam = new Block(432);
         public static readonly Block YellowTeamPlatform = new Block(437);
-
-        private const ushort MaxType = 470;
 
         private readonly short _frameX;
         private readonly short _frameY;

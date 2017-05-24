@@ -31,7 +31,7 @@ namespace WorldEdit.History
         /// <summary>
         /// Returns an enumerator iterating through the changes in this <see cref="ChangeSet" /> instance.
         /// </summary>
-        /// <returns>An enumerator</returns>
+        /// <returns>An enumerator.</returns>
         public IEnumerator<IChange> GetEnumerator() => _changes.GetEnumerator();
 
         /// <summary>

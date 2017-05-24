@@ -10,6 +10,7 @@ namespace WorldEdit.Templates
     /// </summary>
     public sealed class Wall : ITemplate
     {
+        private const byte MaxType = 231;
         public static readonly Wall AdamantiteBeam = new Wall(32);
         public static readonly Wall Air = new Wall(0);
         public static readonly Wall AmberGemspark = new Wall(153);
@@ -158,8 +159,6 @@ namespace WorldEdit.Templates
         public static readonly Wall WoodenFence = new Wall(106);
         public static readonly Wall YellowStainedGlass = new Wall(89);
         public static readonly Wall YellowStucco = new Wall(37);
-
-        private const byte MaxType = 231;
 
         private readonly byte _type;
 

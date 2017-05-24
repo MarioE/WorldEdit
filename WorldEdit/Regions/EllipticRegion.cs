@@ -36,7 +36,6 @@
         public override bool Contains(Vector position)
         {
             // Add 0.5 to radius for a smoother ellipse.
-            // TODO: check if precomputing a^2 and b^2 is useful.
             var aSquared = (Radius.X + 0.5) * (Radius.X + 0.5);
             var bSquared = (Radius.Y + 0.5) * (Radius.Y + 0.5);
             var offset = position - Center;
@@ -64,10 +63,7 @@
         /// <inheritdoc />
         public override Region Shift(Vector displacement) => new EllipticRegion(Center + displacement, Radius);
 
-        private ResizableRegion Change(Vector delta, bool isExpansion)
-        {
-            var multiplier = isExpansion ? 1 : -1;
-            return new EllipticRegion(Center, Radius + multiplier * Vector.Abs(delta));
-        }
+        private ResizableRegion Change(Vector delta, bool isExpansion) =>
+            new EllipticRegion(Center, Radius + (isExpansion ? 1 : -1) * Vector.Abs(delta));
     }
 }

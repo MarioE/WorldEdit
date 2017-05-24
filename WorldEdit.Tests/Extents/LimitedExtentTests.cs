@@ -8,13 +8,6 @@ namespace WorldEdit.Tests.Extents
     [TestFixture]
     public class LimitedExtentTests
     {
-        [Test]
-        public void Ctor_NullExtent_ThrowsArgumentNullException()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => new LimitedExtent(null, 0), Throws.ArgumentNullException);
-        }
-
         [TestCase(3, 4)]
         public void SetTile_LimitOkay_Succeeded(int x, int y)
         {
