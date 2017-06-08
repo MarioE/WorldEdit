@@ -20,7 +20,7 @@ namespace WorldEdit.Tests.Masks
         [TestCase(4, 5, false)]
         public void Test(int x, int y, bool expected)
         {
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile();
             var template = Mock.Of<ITemplate>(t => t.Matches(tile) == expected);
             var mask = new TemplateMask(template);
             var position = new Vector(x, y);

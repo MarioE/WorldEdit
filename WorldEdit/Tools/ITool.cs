@@ -4,12 +4,12 @@ using WorldEdit.Extents;
 namespace WorldEdit.Tools
 {
     /// <summary>
-    /// Specifies a tool that can be applied to extents at positions.
+    ///     Specifies a tool that can be applied to extents at positions.
     /// </summary>
     public interface ITool
     {
         /// <summary>
-        /// Applies the tool to the specified extent at a position.
+        ///     Applies the tool to the specified extent at a position.
         /// </summary>
         /// <param name="extent">The extent to modify, which must not be <c>null</c>.</param>
         /// <param name="position">The position.</param>

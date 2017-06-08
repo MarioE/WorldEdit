@@ -17,12 +17,12 @@ namespace WorldEdit.Tests.Extents
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => new MaskedExtent(extent, null), Throws.ArgumentNullException);
         }
-        
+
         [TestCase(3, 4)]
         public void SetTile_MaskFailed(int x, int y)
         {
             var position = new Vector(x, y);
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile();
             var extent = Mock.Of<Extent>();
             Mock.Get(extent).Setup(e => e.SetTile(position, tile)).Throws(new InvalidOperationException());
             var mask = Mock.Of<Mask>(m => !m.Test(extent, It.IsAny<Vector>()));
@@ -35,7 +35,7 @@ namespace WorldEdit.Tests.Extents
         public void SetTile_MaskPassed(int x, int y)
         {
             var position = new Vector(x, y);
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile();
             var extent = Mock.Of<Extent>(e => e.SetTile(position, tile));
             var mask = Mock.Of<Mask>(m => m.Test(extent, It.IsAny<Vector>()));
             var maskedExtent = new MaskedExtent(extent, mask);

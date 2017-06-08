@@ -14,7 +14,7 @@ using Module = WorldEdit.Modules.Module;
 namespace WorldEdit
 {
     /// <summary>
-    /// Represents the WorldEdit plugin.
+    ///     Represents the WorldEdit plugin.
     /// </summary>
     [ApiVersion(2, 1)]
     [UsedImplicitly]
@@ -24,12 +24,13 @@ namespace WorldEdit
 
         private readonly List<Command> _commands = new List<Command>();
         private readonly List<Module> _modules = new List<Module>();
+
         private Config _config = new Config();
         private SessionManager _sessionManager;
-        private OTAPIWorld _world;
+        private World _world;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorldEditPlugin" /> class with the specified Main instance.
+        ///     Initializes a new instance of the <see cref="WorldEditPlugin" /> class with the specified Main instance.
         /// </summary>
         /// <param name="game">The Main instance.</param>
         public WorldEditPlugin(Main game) : base(game)
@@ -37,46 +38,25 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets the plugin's author.
+        ///     Gets the session associated with a player, or creates it if it does not exist.
         /// </summary>
-        public override string Author => "MarioE";
-
-        /// <summary>
-        /// Gets the plugin's description.
-        /// </summary>
-        public override string Description => "Provides mass editing of tiles.";
-
-        /// <summary>
-        /// Gets the plugin's name.
-        /// </summary>
-        public override string Name => "WorldEdit";
-
-        /// <summary>
-        /// Gets the plugin's version.
-        /// </summary>
-        public override Version Version => new Version(1, 0);
-
-        /// <summary>
-        /// Gets the session associated with a player, or creates it if it does not exist.
-        /// </summary>
-        /// <param name="player">The player.</param>
+        /// <param name="player">The player, which must not be <c>null</c>.</param>
         /// <returns>The session associated with the player.</returns>
-        /// <exception cref="ArgumentException"><paramref name="player" /> has no username.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="player" /> is <c>null</c>.</exception>
-        public Session GetOrCreateSession(TSPlayer player)
+        [NotNull]
+        public Session GetOrCreateSession([NotNull] TSPlayer player)
         {
             if (player == null)
             {
                 throw new ArgumentNullException(nameof(player));
             }
 
-            var username = player.User?.Name ??
-                           throw new ArgumentException("Player must have username.", nameof(player));
+            var username = player.User?.Name ?? player.Name;
             return _sessionManager.GetOrCreate(username);
         }
 
         /// <summary>
-        /// Initializes the plugin.
+        ///     Initializes the plugin.
         /// </summary>
         public override void Initialize()
         {
@@ -102,16 +82,18 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Registers and returns a command with the specified attributes. The command will automatically be deregistered.
+        ///     Registers and returns a command with the specified attributes. The command will automatically be deregistered.
         /// </summary>
-        /// <param name="name">The command name.</param>
-        /// <param name="callback">The command callback.</param>
+        /// <param name="name">The command name, which must not be <c>null</c>.</param>
+        /// <param name="callback">The command callback, which must not be <c>null</c>.</param>
         /// <param name="permission">The command permission.</param>
         /// <returns>The resulting command.</returns>
         /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="name" /> or <paramref name="callback" /> is <c>null</c>.
+        ///     Either <paramref name="name" /> or <paramref name="callback" /> is <c>null</c>.
         /// </exception>
-        public Command RegisterCommand(string name, CommandDelegate callback, string permission)
+        [NotNull]
+        public Command RegisterCommand([NotNull] string name, [NotNull] CommandDelegate callback,
+            [CanBeNull] string permission)
         {
             if (name == null)
             {
@@ -129,16 +111,13 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Disposes the plugin.
+        ///     Disposes the plugin.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release managed resources; otherwise, <c>false</c>.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _sessionManager.Dispose();
-                _world.Dispose();
-
                 File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
 
                 ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave);
@@ -154,13 +133,16 @@ namespace WorldEdit
             base.Dispose(disposing);
         }
 
-        private void OnLeave(LeaveEventArgs args)
+        private async void OnLeave(LeaveEventArgs args)
         {
-            var username = TShock.Players[args.Who]?.User?.Name;
-            if (username != null)
+            var player = TShock.Players[args.Who];
+            if (player == null)
             {
-                _sessionManager.StartRemoving(username);
+                return;
             }
+
+            var username = player.User?.Name ?? player.Name;
+            await _sessionManager.RemoveAsync(username);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using TShockAPI;
 
@@ -21,6 +22,13 @@ namespace WorldEdit.Tests
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => ((CommandArgs)null).GetCommandName(), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void ReadTile_NullReader_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => ((BinaryReader)null).ReadTile(), Throws.ArgumentNullException);
         }
 
         [TestCase(3, 4)]
@@ -46,18 +54,12 @@ namespace WorldEdit.Tests
             Assert.That(() => ((BinaryReader)null).ReadVector(), Throws.ArgumentNullException);
         }
 
-        [TestCase("       a   ab", "aab")]
-        [TestCase("     \n\n\n\t a  \t\r\n ab", "aab")]
-        public void RemoveWhiteSpace(string s, string expected)
-        {
-            Assert.That(s.RemoveWhiteSpace(), Is.EqualTo(expected));
-        }
-
         [Test]
-        public void RemoveWhiteSpace_NullS_ThrowsArgumentNullException()
+        public void SendExceptions_NullPlayer_ThrowsArgumentNullException()
         {
+            var task = Task.Run(() => { });
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => ((string)null).RemoveWhiteSpace(), Throws.ArgumentNullException);
+            Assert.That(() => task.SendExceptions(null), Throws.ArgumentNullException);
         }
 
         [TestCase("asdf", "Asdf")]
@@ -72,6 +74,30 @@ namespace WorldEdit.Tests
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => ((string)null).ToPascalCase(), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void WriteReadTile()
+        {
+            var tile = new Tile {BlockId = 1, BTileHeader = 2, FrameX = 3, FrameY = 4, Liquid = 5, STileHeader = 6};
+
+            using (var writer = new BinaryWriter(new MemoryStream()))
+            {
+                writer.Write(tile);
+                writer.BaseStream.Position = 0;
+
+                using (var reader = new BinaryReader(writer.BaseStream, Encoding.Default, true))
+                {
+                    Assert.That(reader.ReadTile(), Is.EqualTo(tile));
+                }
+            }
+        }
+
+        [Test]
+        public void WriteTile_NullWriter_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => ((BinaryWriter)null).Write(new Tile()), Throws.ArgumentNullException);
         }
 
         [TestCase(3, 4)]

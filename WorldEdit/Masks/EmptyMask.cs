@@ -3,7 +3,7 @@
 namespace WorldEdit.Masks
 {
     /// <summary>
-    /// Represents an empty mask.
+    ///     Represents an empty mask.
     /// </summary>
     public sealed class EmptyMask : Mask
     {

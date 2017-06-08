@@ -3,12 +3,12 @@
 namespace WorldEdit.Regions.Selectors
 {
     /// <summary>
-    /// Represents a rectangular region selector.
+    ///     Represents a rectangular region selector.
     /// </summary>
     public sealed class RectangularRegionSelector : RegionSelector
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RectangularRegionSelector" /> class with the specified positions.
+        ///     Initializes a new instance of the <see cref="RectangularRegionSelector" /> class with the specified positions.
         /// </summary>
         /// <param name="position1">The first position, or <c>null</c> if it is not selected.</param>
         /// <param name="position2">The second position, or <c>null</c> if it is not selected.</param>
@@ -19,13 +19,13 @@ namespace WorldEdit.Regions.Selectors
         }
 
         /// <summary>
-        /// Gets the first position, or <c>null</c> if it is not selected.
+        ///     Gets the first position, or <c>null</c> if it is not selected.
         /// </summary>
         [CanBeNull]
         public Vector? Position1 { get; }
 
         /// <summary>
-        /// Gets the second position, or <c>null</c> if it is not selected.
+        ///     Gets the second position, or <c>null</c> if it is not selected.
         /// </summary>
         [CanBeNull]
         public Vector? Position2 { get; }
@@ -47,11 +47,11 @@ namespace WorldEdit.Regions.Selectors
         }
 
         /// <inheritdoc />
-        public override RegionSelector SelectPrimary(Vector position)
+        public override RegionSelector WithPrimary(Vector position)
             => new RectangularRegionSelector(position, Position2);
 
         /// <inheritdoc />
-        public override RegionSelector SelectSecondary(Vector position)
+        public override RegionSelector WithSecondary(Vector position)
             => new RectangularRegionSelector(Position1, position);
     }
 }

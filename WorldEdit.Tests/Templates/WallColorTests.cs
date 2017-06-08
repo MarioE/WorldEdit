@@ -36,32 +36,5 @@ namespace WorldEdit.Tests.Templates
             };
             Assert.That(WallColor.Black.Matches(tile), Is.EqualTo(expected));
         }
-
-        [TestCase("blank", (byte)0)]
-        [TestCase("red", (byte)1)]
-        public void TryParse(string s, byte expectedColor)
-        {
-            var tile = new Tile();
-
-            var wallColor = WallColor.TryParse(s);
-
-            Assert.That(wallColor, Is.Not.Null);
-            tile = wallColor.Apply(tile);
-            Assert.That(tile.WallColor, Is.EqualTo(expectedColor));
-        }
-
-        [TestCase("")]
-        [TestCase("ston")]
-        public void TryParse_InvalidWallColor_ReturnsNull(string s)
-        {
-            Assert.That(WallColor.TryParse(s), Is.Null);
-        }
-
-        [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => WallColor.TryParse(null), Throws.ArgumentNullException);
-        }
     }
 }

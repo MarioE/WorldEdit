@@ -40,51 +40,57 @@ namespace WorldEdit.Tests.Sessions
                 .Setup(w => w.GetTile(Vector.Zero))
                 .Returns((Vector v) => tileAtZeroZero);
             var mask = Mock.Of<Mask>(m => m.Test(It.IsAny<Extent>(), It.IsAny<Vector>()));
-            var editSession = EditSession.Create(world, -1, mask);
-            var tile = new Tile {Wall = 1};
-            editSession.SetTile(Vector.Zero, tile);
-            editSession.Undo();
+            using (var editSession = EditSession.Create(world, -1, mask))
+            {
+                var tile = new Tile {WallId = 1};
+                editSession.SetTile(Vector.Zero, tile);
+                editSession.Undo();
 
-            Assert.That(editSession.Redo(), Is.EqualTo(1));
-            Assert.That(editSession.GetTile(Vector.Zero), Is.EqualTo(tile));
+                Assert.That(editSession.Redo(), Is.EqualTo(1));
+                Assert.That(editSession.GetTile(Vector.Zero), Is.EqualTo(tile));
+            }
         }
 
         [TestCase(3, 4)]
         public void SetTile_LimitObeyed(int x, int y)
         {
-            var tileAtXY = new Tile();
+            var tileAtXy = new Tile();
             var position = new Vector(x, y);
             var world = Mock.Of<World>();
-            Mock.Get(world).Setup(w => w.GetTile(position)).Returns((Vector v) => tileAtXY);
+            Mock.Get(world).Setup(w => w.GetTile(position)).Returns((Vector v) => tileAtXy);
             Mock.Get(world)
                 .Setup(w => w.SetTile(position, It.IsAny<Tile>()))
-                .Callback((Vector v, Tile t) => tileAtXY = t)
+                .Callback((Vector v, Tile t) => tileAtXy = t)
                 .Returns(true);
             var mask = Mock.Of<Mask>(m => m.Test(It.IsAny<Extent>(), It.IsAny<Vector>()));
-            var editSession = EditSession.Create(world, 0, mask);
-            var tile = new Tile {Wall = 1};
+            using (var editSession = EditSession.Create(world, 0, mask))
+            {
+                var tile = new Tile {WallId = 1};
 
-            Assert.That(!editSession.SetTile(position, tile));
-            Assert.That(editSession.GetTile(position) != tile);
+                Assert.That(!editSession.SetTile(position, tile));
+                Assert.That(editSession.GetTile(position) != tile);
+            }
         }
 
         [TestCase(3, 4)]
         public void SetTile_MaskObeyed(int x, int y)
         {
-            var tileAtXY = new Tile();
+            var tileAtXy = new Tile();
             var position = new Vector(x, y);
             var world = Mock.Of<World>();
-            Mock.Get(world).Setup(w => w.GetTile(position)).Returns((Vector v) => tileAtXY);
+            Mock.Get(world).Setup(w => w.GetTile(position)).Returns((Vector v) => tileAtXy);
             Mock.Get(world)
                 .Setup(w => w.SetTile(position, It.IsAny<Tile>()))
-                .Callback((Vector v, Tile t) => tileAtXY = t)
+                .Callback((Vector v, Tile t) => tileAtXy = t)
                 .Returns(true);
             var mask = Mock.Of<Mask>(m => !m.Test(It.IsAny<Extent>(), It.IsAny<Vector>()));
-            var editSession = EditSession.Create(world, -1, mask);
-            var tile = new Tile {Wall = 1};
+            using (var editSession = EditSession.Create(world, -1, mask))
+            {
+                var tile = new Tile {WallId = 1};
 
-            Assert.That(!editSession.SetTile(position, tile));
-            Assert.That(editSession.GetTile(position) != tile);
+                Assert.That(!editSession.SetTile(position, tile));
+                Assert.That(editSession.GetTile(position) != tile);
+            }
         }
 
         [Test]
@@ -99,13 +105,15 @@ namespace WorldEdit.Tests.Sessions
             Mock.Get(world)
                 .Setup(w => w.GetTile(Vector.Zero))
                 .Returns((Vector v) => tileAtZeroZero);
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile {WallId = 1};
             var mask = Mock.Of<Mask>(m => m.Test(It.IsAny<Extent>(), It.IsAny<Vector>()));
-            var editSession = EditSession.Create(world, -1, mask);
-            editSession.SetTile(Vector.Zero, tile);
+            using (var editSession = EditSession.Create(world, -1, mask))
+            {
+                editSession.SetTile(Vector.Zero, tile);
 
-            Assert.That(editSession.Undo(), Is.EqualTo(1));
-            Assert.That(editSession.GetTile(Vector.Zero), Is.Not.EqualTo(tile));
+                Assert.That(editSession.Undo(), Is.EqualTo(1));
+                Assert.That(editSession.GetTile(Vector.Zero), Is.Not.EqualTo(tile));
+            }
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿namespace WorldEdit.TileEntities
 {
     /// <summary>
-    /// Represents an item frame tile entity.
+    ///     Represents an item frame tile entity.
     /// </summary>
     public sealed class ItemFrame : ITileEntity
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ItemFrame" /> class with the specified position and item.
+        ///     Initializes a new instance of the <see cref="ItemFrame" /> class with the specified position and item.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="item">The item.</param>
@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        /// Gets the item.
+        ///     Gets the item.
         /// </summary>
         public Item Item { get; }
 

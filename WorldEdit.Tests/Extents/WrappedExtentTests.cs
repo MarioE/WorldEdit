@@ -41,7 +41,7 @@ namespace WorldEdit.Tests.Extents
         public void GetTile(int x, int y)
         {
             var position = new Vector(x, y);
-            var extent = Mock.Of<Extent>(e => e.GetTile(position) == new Tile {Wall = 1});
+            var extent = Mock.Of<Extent>(e => e.GetTile(position) == new Tile());
             var wrappedExtent = new WrappedExtent(extent);
 
             Assert.That(wrappedExtent.GetTile(position), Is.EqualTo(extent.GetTile(position)));
@@ -74,7 +74,7 @@ namespace WorldEdit.Tests.Extents
         public void SetTile(int x, int y)
         {
             var position = new Vector(x, y);
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile();
             var extent = Mock.Of<Extent>(e => e.SetTile(position, tile));
             var wrappedExtent = new WrappedExtent(extent);
 

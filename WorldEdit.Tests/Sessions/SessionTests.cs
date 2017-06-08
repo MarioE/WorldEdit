@@ -13,35 +13,87 @@ namespace WorldEdit.Tests.Sessions
     public class SessionTests
     {
         [Test]
-        public void ClearHistory()
+        public void CanRedo()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 1);
-            session.CreateEditSession(true);
+            using (var session = new Session(world, 1))
+            {
+                session.CreateEditSession();
 
-            session.ClearHistory();
+                session.Undo();
 
-            Assert.That(!session.CanRedo);
-            Assert.That(!session.CanUndo);
-        }
-
-        [TestCase(false)]
-        [TestCase(true)]
-        public void CreateEditSession(bool remember)
-        {
-            var world = Mock.Of<World>();
-            var session = new Session(world, 1);
-            session.CreateEditSession(remember);
-
-            Assert.That(session.CanUndo, Is.EqualTo(remember));
+                Assert.That(session.CanRedo);
+            }
         }
 
         [Test]
-        public void Ctor_HistoryLimitNegative_ThrowsArgumentOutOfRangeException()
+        public void ClearHistory()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                session.CreateEditSession();
+
+                session.ClearHistory();
+
+                Assert.That(!session.CanRedo);
+                Assert.That(!session.CanUndo);
+            }
+        }
+
+        [Test]
+        public void CreateEditSession_KeepsLimit()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 3))
+            {
+                session.CreateEditSession();
+                session.CreateEditSession();
+                session.CreateEditSession();
+                session.CreateEditSession();
+                session.Undo();
+                session.Undo();
+                session.Undo();
+
+                Assert.That(!session.CanUndo);
+            }
+        }
+
+        [Test]
+        public void CreateEditSession_OverwritesUndone()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 5))
+            {
+                session.CreateEditSession();
+                session.CreateEditSession();
+                session.Undo();
+
+                session.CreateEditSession();
+
+                Assert.That(!session.CanRedo);
+            }
+        }
+
+        [Test]
+        public void CreateEditSessionCanUndo()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                session.CreateEditSession();
+
+                Assert.That(session.CanUndo);
+            }
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        public void Ctor_NonPositiveHistoryLimit_ThrowsArgumentOutOfRangeException(int historyLimit)
         {
             var world = Mock.Of<World>();
 
-            Assert.That(() => new Session(world, -1), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => new Session(world, historyLimit), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -55,12 +107,14 @@ namespace WorldEdit.Tests.Sessions
         public void GetSetClipboard()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-            var clipboard = new Clipboard(new Tile?[0, 0]);
+            using (var session = new Session(world, 1))
+            {
+                var clipboard = new Clipboard(new Tile?[0, 0]);
 
-            session.Clipboard = clipboard;
+                session.Clipboard = clipboard;
 
-            Assert.That(session.Clipboard, Is.EqualTo(clipboard));
+                Assert.That(session.Clipboard, Is.EqualTo(clipboard));
+            }
         }
 
         [TestCase(true)]
@@ -68,58 +122,110 @@ namespace WorldEdit.Tests.Sessions
         public void GetSetIsWandMode(bool isWandMode)
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0) {IsWandMode = isWandMode};
+            using (var session = new Session(world, 1))
+            {
+                session.IsWandMode = isWandMode;
 
-            Assert.That(session.IsWandMode, Is.EqualTo(isWandMode));
+                Assert.That(session.IsWandMode, Is.EqualTo(isWandMode));
+            }
+        }
+
+        [Test]
+        public void GetSetLastToolUse()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                var lastToolUse = DateTime.UtcNow;
+
+                session.LastToolUse = lastToolUse;
+
+                Assert.That(session.LastToolUse, Is.EqualTo(lastToolUse));
+            }
+        }
+
+        [TestCase(37)]
+        public void GetSetLimit(int limit)
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                session.Limit = limit;
+
+                Assert.That(session.Limit, Is.EqualTo(limit));
+            }
         }
 
         [Test]
         public void GetSetMask()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-            var mask = Mock.Of<Mask>();
+            using (var session = new Session(world, 1))
+            {
+                var mask = Mock.Of<Mask>();
 
-            session.Mask = mask;
+                session.Mask = mask;
 
-            Assert.That(session.Mask, Is.EqualTo(mask));
-        }
-
-        [Test]
-        public void GetSetRegionSelector()
-        {
-            var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-            var regionSelector = Mock.Of<RegionSelector>(r => r.GetRegion() == Mock.Of<Region>());
-
-            session.RegionSelector = regionSelector;
-
-            Assert.That(session.RegionSelector, Is.EqualTo(regionSelector));
-            Assert.That(session.Selection, Is.InstanceOf<Region>());
+                Assert.That(session.Mask, Is.EqualTo(mask));
+            }
         }
 
         [Test]
         public void GetSetSelection()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-            var selection = Mock.Of<Region>();
+            using (var session = new Session(world, 1))
+            {
+                var selection = Mock.Of<Region>();
 
-            session.Selection = selection;
+                session.Selection = selection;
 
-            Assert.That(session.Selection, Is.EqualTo(selection));
+                Assert.That(session.Selection, Is.EqualTo(selection));
+            }
+        }
+
+        [Test]
+        public void GetSetSelector()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                var selection = Mock.Of<Region>();
+                var selector = Mock.Of<RegionSelector>(r => r.GetRegion() == selection);
+
+                session.Selector = selector;
+
+                Assert.That(session.Selector, Is.EqualTo(selector));
+                Assert.That(session.Selection, Is.EqualTo(selection));
+            }
         }
 
         [Test]
         public void GetSetTool()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-            var tool = Mock.Of<ITool>();
+            using (var session = new Session(world, 1))
+            {
+                var tool = Mock.Of<ITool>();
 
-            session.Tool = tool;
+                session.Tool = tool;
 
-            Assert.That(session.Tool, Is.EqualTo(tool));
+                Assert.That(session.Tool, Is.EqualTo(tool));
+            }
+        }
+
+        [Test]
+        public void GetSetToolSession()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                var editSession = session.CreateEditSession();
+
+                session.ToolSession = editSession;
+
+                Assert.That(session.ToolSession, Is.EqualTo(editSession));
+            }
         }
 
         [Test]
@@ -134,63 +240,95 @@ namespace WorldEdit.Tests.Sessions
             Mock.Get(world)
                 .Setup(w => w.GetTile(Vector.Zero))
                 .Returns((Vector v) => tileAtZeroZero);
-            var session = new Session(world, 1);
-            var editSession = session.CreateEditSession(true);
-            var tile = new Tile {Wall = 1};
-            editSession.SetTile(Vector.Zero, tile);
-            session.Undo();
+            using (var session = new Session(world, 1))
+            {
+                var editSession = session.CreateEditSession();
+                var tile = new Tile {WallId = 1};
+                editSession.SetTile(Vector.Zero, tile);
+                session.Undo();
 
-            Assert.That(session.Redo(), Is.EqualTo(1));
-            Assert.That(editSession.GetTile(Vector.Zero), Is.EqualTo(tile));
+                Assert.That(session.Redo(), Is.EqualTo(1));
+                Assert.That(editSession.GetTile(Vector.Zero), Is.EqualTo(tile));
+            }
         }
 
         [Test]
         public void Redo_CannotRedo_ThrowsInvalidOperationException()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-
-            Assert.That(() => session.Redo(), Throws.InvalidOperationException);
+            using (var session = new Session(world, 1))
+            {
+                Assert.That(() => session.Redo(), Throws.InvalidOperationException);
+            }
         }
 
         [Test]
         public void SetMask_NullValue_ThrowsArgumentNullException()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => session.Mask = null, Throws.ArgumentNullException);
-        }
-
-        [Test]
-        public void SetRegionSelector_NullValue_ThrowsArgumentNullException()
-        {
-            var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => session.RegionSelector = null, Throws.ArgumentNullException);
+            using (var session = new Session(world, 1))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => session.Mask = null, Throws.ArgumentNullException);
+            }
         }
 
         [Test]
         public void SetSelection_NullValue_ThrowsArgumentNullException()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
+            using (var session = new Session(world, 1))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => session.Selection = null, Throws.ArgumentNullException);
+            }
+        }
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => session.Selection = null, Throws.ArgumentNullException);
+        [Test]
+        public void SetSelector_NullValue_ThrowsArgumentNullException()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => session.Selector = null, Throws.ArgumentNullException);
+            }
         }
 
         [Test]
         public void SetTool_NullValue_ThrowsArgumentNullException()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
+            using (var session = new Session(world, 1))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => session.Tool = null, Throws.ArgumentNullException);
+            }
+        }
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => session.Tool = null, Throws.ArgumentNullException);
+        [Test]
+        public void Submit()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                var x = 0;
+
+                session.Submit(() => x = 1);
+
+                Assert.That(x, Is.EqualTo(1));
+            }
+        }
+
+        [Test]
+        public void Submit_NullAction_ThrowsArgumentNullException()
+        {
+            var world = Mock.Of<World>();
+            using (var session = new Session(world, 1))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => session.Submit(null), Throws.ArgumentNullException);
+            }
         }
 
         [Test]
@@ -205,22 +343,25 @@ namespace WorldEdit.Tests.Sessions
             Mock.Get(world)
                 .Setup(w => w.GetTile(Vector.Zero))
                 .Returns((Vector v) => tileAtZeroZero);
-            var session = new Session(world, 1);
-            var editSession = session.CreateEditSession(true);
-            var tile = new Tile {Wall = 1};
-            editSession.SetTile(Vector.Zero, tile);
+            using (var session = new Session(world, 1))
+            {
+                var editSession = session.CreateEditSession();
+                var tile = new Tile {WallId = 1};
+                editSession.SetTile(Vector.Zero, tile);
 
-            Assert.That(session.Undo(), Is.EqualTo(1));
-            Assert.That(editSession.GetTile(Vector.Zero), Is.Not.EqualTo(tile));
+                Assert.That(session.Undo(), Is.EqualTo(1));
+                Assert.That(editSession.GetTile(Vector.Zero), Is.Not.EqualTo(tile));
+            }
         }
 
         [Test]
         public void Undo_CannotUndo_ThrowsInvalidOperationException()
         {
             var world = Mock.Of<World>();
-            var session = new Session(world, 0);
-
-            Assert.That(() => session.Undo(), Throws.InvalidOperationException);
+            using (var session = new Session(world, 1))
+            {
+                Assert.That(() => session.Undo(), Throws.InvalidOperationException);
+            }
         }
     }
 }

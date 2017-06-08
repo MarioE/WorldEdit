@@ -12,8 +12,8 @@ namespace WorldEdit.Tests.Regions.Selectors
         public void Clear()
         {
             RegionSelector selector = new EllipticRegionSelector();
-            selector = selector.SelectPrimary(Vector.Zero);
-            selector = selector.SelectSecondary(Vector.One);
+            selector = selector.WithPrimary(Vector.Zero);
+            selector = selector.WithSecondary(Vector.One);
 
             var selector2 = (EllipticRegionSelector)selector.Clear();
 
@@ -25,8 +25,8 @@ namespace WorldEdit.Tests.Regions.Selectors
         public void GetRegion(int x, int y, int x2, int y2)
         {
             RegionSelector selector = new EllipticRegionSelector();
-            selector = selector.SelectPrimary(new Vector(x, y));
-            selector = selector.SelectSecondary(new Vector(x2, y2));
+            selector = selector.WithPrimary(new Vector(x, y));
+            selector = selector.WithSecondary(new Vector(x2, y2));
 
             var region = (EllipticRegion)selector.GetRegion();
 
@@ -38,7 +38,7 @@ namespace WorldEdit.Tests.Regions.Selectors
         public void GetRegion_NoPrimary_NullRegion()
         {
             RegionSelector selector = new EllipticRegionSelector();
-            selector = selector.SelectSecondary(Vector.Zero);
+            selector = selector.WithSecondary(Vector.Zero);
 
             Assert.That(selector.GetRegion(), Is.InstanceOf<EmptyRegion>());
         }
@@ -47,7 +47,7 @@ namespace WorldEdit.Tests.Regions.Selectors
         public void GetRegion_NoSecondary_NullRegion()
         {
             RegionSelector selector = new EllipticRegionSelector();
-            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.WithPrimary(Vector.Zero);
 
             Assert.That(selector.GetRegion(), Is.InstanceOf<EmptyRegion>());
         }
@@ -55,7 +55,7 @@ namespace WorldEdit.Tests.Regions.Selectors
         [TestCase(1, 5)]
         public void Position1(int x, int y)
         {
-            var selector = new EllipticRegionSelector(new Vector(x, y), null);
+            var selector = new EllipticRegionSelector(new Vector(x, y));
 
             Assert.That(selector.Position1, Is.EqualTo(new Vector(x, y)));
         }
@@ -73,27 +73,27 @@ namespace WorldEdit.Tests.Regions.Selectors
         {
             var selector = new EllipticRegionSelector();
 
-            var selector2 = (EllipticRegionSelector)selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (EllipticRegionSelector)selector.WithPrimary(new Vector(x, y));
 
             Assert.That(selector2.PrimaryPosition, Is.EqualTo(new Vector(x, y)));
         }
 
         [TestCase(1, 5)]
-        public void SelectPrimary(int x, int y)
+        public void WithPrimary(int x, int y)
         {
             var selector = new EllipticRegionSelector();
 
-            var selector2 = (EllipticRegionSelector)selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (EllipticRegionSelector)selector.WithPrimary(new Vector(x, y));
 
             Assert.That(selector2.Position1, Is.EqualTo(new Vector(x, y)));
         }
 
         [TestCase(1, 5)]
-        public void SelectSecondary(int x, int y)
+        public void WithSecondary(int x, int y)
         {
             var selector = new EllipticRegionSelector();
 
-            var selector2 = (EllipticRegionSelector)selector.SelectSecondary(new Vector(x, y));
+            var selector2 = (EllipticRegionSelector)selector.WithSecondary(new Vector(x, y));
 
             Assert.That(selector2.Position2, Is.EqualTo(new Vector(x, y)));
         }

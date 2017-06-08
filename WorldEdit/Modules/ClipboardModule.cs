@@ -1,15 +1,16 @@
-﻿using JetBrains.Annotations;
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TShockAPI;
 
 namespace WorldEdit.Modules
 {
     /// <summary>
-    /// Represents a module that encapsulates the clipboard functionality.
+    ///     Represents a module that encapsulates the clipboard functionality.
     /// </summary>
     public sealed class ClipboardModule : Module
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClipboardModule" /> class with the specified WorldEdit plugin.
+        ///     Initializes a new instance of the <see cref="ClipboardModule" /> class with the specified WorldEdit plugin.
         /// </summary>
         /// <param name="plugin">The WorldEdit plugin, which must not be <c>null</c>.</param>
         public ClipboardModule([NotNull] WorldEditPlugin plugin) : base(plugin)
@@ -41,54 +42,69 @@ namespace WorldEdit.Modules
                                "Pastes your clipboard to your primary position.";
         }
 
-        private void ClearClipboard(CommandArgs args)
+        private async void ClearClipboard(CommandArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            session.Clipboard = null;
-            player.SendSuccessMessage("Cleared clipboard.");
+
+            // This operation must be submitted, as clipboard modifications must be synchronized.
+            await Task.Run(() => session.Submit(() =>
+            {
+                session.Clipboard = null;
+                player.SendSuccessMessage("Cleared clipboard.");
+            })).SendExceptions(player);
         }
 
-        private void Copy(CommandArgs args)
+        private async void Copy(CommandArgs args)
+        {
+            var player = args.Player;
+            var session = Plugin.GetOrCreateSession(player);
+            var region = session.Selection;
+            await Task.Run(() => session.Submit(() =>
+            {
+                session.Clipboard = Clipboard.CopyFrom(session.World, region);
+                player.SendSuccessMessage("Copied clipboard from selection.");
+            })).SendExceptions(player);
+        }
+
+        private async void Cut(CommandArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
             var editSession = session.CreateEditSession();
-            session.Clipboard = Clipboard.CopyFrom(editSession, session.Selection);
-            player.SendSuccessMessage("Copied clipboard from selection.");
+            var region = session.Selection;
+            await Task.Run(() => session.Submit(() =>
+            {
+                session.Clipboard = Clipboard.CopyFrom(editSession, region);
+                editSession.Clear(region);
+                player.SendSuccessMessage("Copied clipboard from selection.");
+            })).SendExceptions(player);
         }
 
-        private void Cut(CommandArgs args)
+        private async void Paste(CommandArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            var editSession = session.CreateEditSession(true);
-            session.Clipboard = Clipboard.CopyFrom(editSession, session.Selection);
-            editSession.Clear(session.Selection);
-            player.SendSuccessMessage("Cut clipboard from selection.");
-        }
-
-        private void Paste(CommandArgs args)
-        {
-            var player = args.Player;
-            var session = Plugin.GetOrCreateSession(player);
-            var position = session.RegionSelector.PrimaryPosition;
+            var position = session.Selector.PrimaryPosition;
             if (position == null)
             {
                 player.SendErrorMessage("Invalid primary position.");
                 return;
             }
 
-            var clipboard = session.Clipboard;
-            if (clipboard == null)
+            var editSession = session.CreateEditSession();
+            await Task.Run(() => session.Submit(() =>
             {
-                player.SendErrorMessage("Invalid clipboard.");
-                return;
-            }
+                var clipboard = session.Clipboard;
+                if (clipboard == null)
+                {
+                    player.SendErrorMessage("Invalid clipboard.");
+                    return;
+                }
 
-            var editSession = session.CreateEditSession(true);
-            clipboard.PasteTo(editSession, position.Value);
-            player.SendSuccessMessage("Pasted clipboard to primary position.");
+                clipboard.PasteTo(editSession, position.Value);
+                player.SendSuccessMessage("Pasted clipboard to primary position.");
+            })).SendExceptions(player);
         }
     }
 }

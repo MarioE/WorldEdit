@@ -6,14 +6,14 @@ using WorldEdit.Templates;
 namespace WorldEdit.Masks
 {
     /// <summary>
-    /// Represents a mask that tests for a template.
+    ///     Represents a mask that tests for a template.
     /// </summary>
     public sealed class TemplateMask : Mask
     {
         private readonly ITemplate _template;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TemplateMask" /> class with the specified template.
+        ///     Initializes a new instance of the <see cref="TemplateMask" /> class with the specified template.
         /// </summary>
         /// <param name="template">The template to test, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="template" /> is <c>null</c>.</exception>

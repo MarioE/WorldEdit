@@ -8,8 +8,8 @@ namespace WorldEdit.Tests
         [Test]
         public void Equals_False()
         {
-            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
-            var tile2 = new Tile {FrameX = 0, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
+            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
+            var tile2 = new Tile {FrameX = 0, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
 
             Assert.That(!tile.Equals(tile2));
         }
@@ -34,13 +34,14 @@ namespace WorldEdit.Tests
         [Test]
         public void Equals_True()
         {
-            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
+            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
             var tile2 = tile;
 
             Assert.That(tile.Equals(tile2));
         }
 
-        [TestCase(nameof(Tile.Color), (byte)1)]
+        [TestCase(nameof(Tile.BlockColor), (byte)1)]
+        [TestCase(nameof(Tile.BlockId), (ushort)1)]
         [TestCase(nameof(Tile.FrameX), (short)1)]
         [TestCase(nameof(Tile.FrameY), (short)1)]
         [TestCase(nameof(Tile.HasActuator), true)]
@@ -66,9 +67,8 @@ namespace WorldEdit.Tests
         [TestCase(nameof(Tile.Liquid), (byte)1)]
         [TestCase(nameof(Tile.LiquidType), 1)]
         [TestCase(nameof(Tile.Slope), (byte)1)]
-        [TestCase(nameof(Tile.Type), (ushort)1)]
-        [TestCase(nameof(Tile.Wall), (byte)1)]
         [TestCase(nameof(Tile.WallColor), (byte)1)]
+        [TestCase(nameof(Tile.WallId), (byte)1)]
         public void GetSetProperty(string propertyName, object value)
         {
             object tile = new Tile();
@@ -83,8 +83,8 @@ namespace WorldEdit.Tests
         [Test]
         public void OpEquality_False()
         {
-            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
-            var tile2 = new Tile {FrameX = 0, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
+            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
+            var tile2 = new Tile {FrameX = 0, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
 
             Assert.That(!(tile == tile2));
         }
@@ -92,7 +92,7 @@ namespace WorldEdit.Tests
         [Test]
         public void OpEquality_True()
         {
-            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
+            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
             var tile2 = tile;
 
             Assert.That(tile == tile2);
@@ -101,7 +101,7 @@ namespace WorldEdit.Tests
         [Test]
         public void OpInequality_False()
         {
-            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
+            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
             var tile2 = tile;
 
             Assert.That(!(tile != tile2));
@@ -110,8 +110,8 @@ namespace WorldEdit.Tests
         [Test]
         public void OpInequality_True()
         {
-            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
-            var tile2 = new Tile {FrameX = 0, FrameY = 2, Liquid = 3, Type = 4, Wall = 5};
+            var tile = new Tile {FrameX = 1, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
+            var tile2 = new Tile {FrameX = 0, FrameY = 2, Liquid = 3, BlockId = 4, WallId = 5};
 
             Assert.That(tile != tile2);
         }

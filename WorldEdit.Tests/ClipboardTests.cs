@@ -39,7 +39,7 @@ namespace WorldEdit.Tests
             Mock.Get(tileEntity)
                 .Setup(e => e.WithPosition(Vector.Zero))
                 .Returns((Vector v) => Mock.Of<ITileEntity>(e => e.Position == v));
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile {WallId = 1};
             var extent = Mock.Of<Extent>(e => e.Dimensions == new Vector(5, 5) &&
                                               e.GetTileEntities() == new[] {tileEntity} &&
                                               e.GetTile(It.IsAny<Vector>()) == tile);
@@ -100,7 +100,7 @@ namespace WorldEdit.Tests
         [TestCase(1, 1)]
         public void GetTileIntInt(int x, int y)
         {
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile {WallId = 1};
             var tiles = new Tile?[10, 10];
             tiles[x, y] = tile;
             var clipboard = new Clipboard(tiles);
@@ -111,7 +111,7 @@ namespace WorldEdit.Tests
         [Test]
         public void PasteTo()
         {
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile {WallId = 1};
             var tiles = new Tile?[4, 4];
             for (var x = 0; x < 3; ++x)
             {
@@ -131,12 +131,14 @@ namespace WorldEdit.Tests
                                                   Match.Create<ITileEntity>(n => n.Position == Vector.One)) &&
                                               e.SetTile(It.IsAny<Vector>(), It.IsAny<Tile>()));
 
-            Assert.That(clipboard.PasteTo(extent, Vector.One), Is.EqualTo(9));
+            Assert.That(clipboard.PasteTo(extent, Vector.One), Is.EqualTo(10));
             for (var x = 1; x < 4; ++x)
             {
                 for (var y = 1; y < 4; ++y)
                 {
-                    Mock.Get(extent).Verify(e => e.SetTile(new Vector(x, y), tile));
+                    var x1 = x;
+                    var y1 = y;
+                    Mock.Get(extent).Verify(e => e.SetTile(new Vector(x1, y1), tile));
                 }
             }
             Mock.Get(extent).Verify(e => e.AddTileEntity(Match.Create<ITileEntity>(n => n.Position == Vector.One)));
@@ -167,7 +169,7 @@ namespace WorldEdit.Tests
         {
             var tiles = new Tile?[10, 10];
             var clipboard = new Clipboard(tiles);
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile {WallId = 1};
 
             Assert.That(clipboard.SetTile(new Vector(x, y), tile));
             Assert.That(tiles[x, y], Is.EqualTo(tile));

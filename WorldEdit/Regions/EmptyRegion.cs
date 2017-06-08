@@ -1,7 +1,7 @@
 ﻿namespace WorldEdit.Regions
 {
     /// <summary>
-    /// Represents an empty region.
+    ///     Represents an empty region.
     /// </summary>
     public sealed class EmptyRegion : Region
     {

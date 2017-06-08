@@ -4,12 +4,12 @@ using WorldEdit.Extents;
 namespace WorldEdit.Masks
 {
     /// <summary>
-    /// Specifies a test for whether an extent and position meet certain conditions.
+    ///     Specifies a test for whether an extent and position meet certain conditions.
     /// </summary>
     public abstract class Mask
     {
         /// <summary>
-        /// Tests the specified extent and position.
+        ///     Tests the specified extent and position.
         /// </summary>
         /// <param name="extent">The extent to test, which must not be <c>null</c>.</param>
         /// <param name="position">The position, which must be within the bounds of the extent.</param>

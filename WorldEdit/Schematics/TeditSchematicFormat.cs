@@ -11,100 +11,16 @@ using Sign = WorldEdit.TileEntities.Sign;
 namespace WorldEdit.Schematics
 {
     /// <summary>
-    /// Represents the TEdit schematic format.
+    ///     Represents the TEdit schematic format.
     /// </summary>
+    /// <remarks>
+    ///     The TEdit schematic format is only capable of saving rectangles, and does not have support for tile entities
+    ///     besides chests and signs.
+    /// </remarks>
     public sealed class TeditSchematicFormat : SchematicFormat
     {
         private const short ItemsPerChest = 40;
         private const uint Version = 192;
-
-        /// <inheritdoc />
-        public override Clipboard Read(Stream stream)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            if (!stream.CanRead)
-            {
-                throw new ArgumentException("Stream must support reading.", nameof(stream));
-            }
-
-            var reader = new BinaryReader(stream, Encoding.Default, true);
-            try
-            {
-                var name = reader.ReadString();
-                var version = reader.ReadUInt32();
-                var width = reader.ReadInt32();
-                var height = reader.ReadInt32();
-
-                var clipboard = new Clipboard(DeserializeTiles(reader, width, height));
-                foreach (var chest in DeserializeChests(reader))
-                {
-                    clipboard.AddTileEntity(chest);
-                }
-                foreach (var sign in DeserializeSigns(reader))
-                {
-                    clipboard.AddTileEntity(sign);
-                }
-
-                var name2 = reader.ReadString();
-                var version2 = reader.ReadUInt32();
-                var width2 = reader.ReadInt32();
-                var height2 = reader.ReadInt32();
-                if (name != name2 || version != version2 || width != width2 || height != height2)
-                {
-                    return null;
-                }
-
-                return clipboard;
-            }
-            catch (Exception e) when (e is EndOfStreamException || e is IndexOutOfRangeException || e is IOException)
-            {
-                return null;
-            }
-            finally
-            {
-                reader.Dispose();
-            }
-        }
-
-        /// <inheritdoc />
-        public override void Write(Clipboard clipboard, Stream stream)
-        {
-            if (clipboard == null)
-            {
-                throw new ArgumentNullException(nameof(clipboard));
-            }
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            if (!stream.CanWrite)
-            {
-                throw new ArgumentException("Stream must support writing.", nameof(stream));
-            }
-
-            using (var writer = new BinaryWriter(stream, Encoding.Default, true))
-            {
-                var dimensions = clipboard.Dimensions;
-                writer.Write("Schematic");
-                writer.Write(Version);
-                writer.Write(dimensions.X);
-                writer.Write(dimensions.Y);
-
-                SerializeTiles(writer, clipboard);
-                var chests = clipboard.GetTileEntities().OfType<Chest>().ToList();
-                SerializeChests(writer, chests);
-                var signs = clipboard.GetTileEntities().OfType<Sign>().ToList();
-                SerializeSigns(writer, signs);
-
-                writer.Write("Schematic");
-                writer.Write(Version);
-                writer.Write(dimensions.X);
-                writer.Write(dimensions.Y);
-            }
-        }
 
         private static IEnumerable<Chest> DeserializeChests(BinaryReader reader)
         {
@@ -194,9 +110,9 @@ namespace WorldEdit.Schematics
             if ((header & 0x2) != 0)
             {
                 tile.IsActive = true;
-                tile.Type = (header & 0x20) != 0 ? reader.ReadUInt16() : reader.ReadByte();
+                tile.BlockId = (header & 0x20) != 0 ? reader.ReadUInt16() : reader.ReadByte();
 
-                if (Main.tileFrameImportant[tile.Type])
+                if (Main.tileFrameImportant[tile.BlockId])
                 {
                     tile.FrameX = reader.ReadInt16();
                     tile.FrameY = reader.ReadInt16();
@@ -209,13 +125,13 @@ namespace WorldEdit.Schematics
 
                 if ((header3 & 0x8) != 0)
                 {
-                    tile.Color = reader.ReadByte();
+                    tile.BlockColor = reader.ReadByte();
                 }
             }
 
             if ((header & 0x4) != 0)
             {
-                tile.Wall = reader.ReadByte();
+                tile.WallId = reader.ReadByte();
 
                 if ((header3 & 0x10) != 0)
                 {
@@ -359,14 +275,14 @@ namespace WorldEdit.Schematics
             if (tile.IsActive)
             {
                 header |= 0x2;
-                data[dataIndex++] = (byte)tile.Type;
-                if (tile.Type > 255)
+                data[dataIndex++] = (byte)tile.BlockId;
+                if (tile.BlockId > 255)
                 {
                     header |= 0x20;
-                    data[dataIndex++] = (byte)(tile.Type >> 8);
+                    data[dataIndex++] = (byte)(tile.BlockId >> 8);
                 }
 
-                if (Main.tileFrameImportant[tile.Type])
+                if (Main.tileFrameImportant[tile.BlockId])
                 {
                     data[dataIndex++] = (byte)tile.FrameX;
                     data[dataIndex++] = (byte)(tile.FrameX >> 8);
@@ -374,17 +290,17 @@ namespace WorldEdit.Schematics
                     data[dataIndex++] = (byte)(tile.FrameY >> 8);
                 }
 
-                if (tile.Color != 0)
+                if (tile.BlockColor != 0)
                 {
                     header3 |= 0x8;
-                    data[dataIndex++] = tile.Color;
+                    data[dataIndex++] = tile.BlockColor;
                 }
             }
 
-            if (tile.Wall != 0)
+            if (tile.WallId != 0)
             {
                 header |= 0x4;
-                data[dataIndex++] = tile.Wall;
+                data[dataIndex++] = tile.WallId;
 
                 if (tile.WallColor != 0)
                 {
@@ -461,6 +377,94 @@ namespace WorldEdit.Schematics
 
                     writer.Write(data, headerIndex, dataIndex - headerIndex);
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public override Clipboard Read(Stream stream)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (!stream.CanRead)
+            {
+                throw new ArgumentException("Stream must support reading.", nameof(stream));
+            }
+
+            var reader = new BinaryReader(stream, Encoding.Default, true);
+            try
+            {
+                var name = reader.ReadString();
+                var version = reader.ReadUInt32();
+                var width = reader.ReadInt32();
+                var height = reader.ReadInt32();
+
+                var clipboard = new Clipboard(DeserializeTiles(reader, width, height));
+                foreach (var chest in DeserializeChests(reader))
+                {
+                    clipboard.AddTileEntity(chest);
+                }
+                foreach (var sign in DeserializeSigns(reader))
+                {
+                    clipboard.AddTileEntity(sign);
+                }
+
+                var name2 = reader.ReadString();
+                var version2 = reader.ReadUInt32();
+                var width2 = reader.ReadInt32();
+                var height2 = reader.ReadInt32();
+                if (name != name2 || version != version2 || width != width2 || height != height2)
+                {
+                    return null;
+                }
+
+                return clipboard;
+            }
+            catch (Exception e) when (e is EndOfStreamException || e is IndexOutOfRangeException || e is IOException)
+            {
+                return null;
+            }
+            finally
+            {
+                reader.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Write(Clipboard clipboard, Stream stream)
+        {
+            if (clipboard == null)
+            {
+                throw new ArgumentNullException(nameof(clipboard));
+            }
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (!stream.CanWrite)
+            {
+                throw new ArgumentException("Stream must support writing.", nameof(stream));
+            }
+
+            using (var writer = new BinaryWriter(stream, Encoding.Default, true))
+            {
+                var dimensions = clipboard.Dimensions;
+                writer.Write("Schematic");
+                writer.Write(Version);
+                writer.Write(dimensions.X);
+                writer.Write(dimensions.Y);
+
+                SerializeTiles(writer, clipboard);
+                var chests = clipboard.GetTileEntities().OfType<Chest>().ToList();
+                SerializeChests(writer, chests);
+                var signs = clipboard.GetTileEntities().OfType<Sign>().ToList();
+                SerializeSigns(writer, signs);
+
+                writer.Write("Schematic");
+                writer.Write(Version);
+                writer.Write(dimensions.X);
+                writer.Write(dimensions.Y);
             }
         }
     }

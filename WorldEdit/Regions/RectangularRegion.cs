@@ -3,12 +3,12 @@
 namespace WorldEdit.Regions
 {
     /// <summary>
-    /// Represents a rectangular region.
+    ///     Represents a rectangular region.
     /// </summary>
     public sealed class RectangularRegion : ResizableRegion
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RectangularRegion" /> class with the specified positions.
+        ///     Initializes a new instance of the <see cref="RectangularRegion" /> class with the specified positions.
         /// </summary>
         /// <param name="position1">The first position.</param>
         /// <param name="position2">The second position.</param>
@@ -24,12 +24,12 @@ namespace WorldEdit.Regions
         public override Vector LowerBound { get; }
 
         /// <summary>
-        /// Gets the first position.
+        ///     Gets the first position.
         /// </summary>
         public Vector Position1 { get; }
 
         /// <summary>
-        /// Gets the second position.
+        ///     Gets the second position.
         /// </summary>
         public Vector Position2 { get; }
 
@@ -48,22 +48,16 @@ namespace WorldEdit.Regions
         public override ResizableRegion Expand(Vector delta) => Change(delta, true);
 
         /// <inheritdoc />
-        /// <remarks>
-        /// Insetting is equivalent to contracting on all four sides by the delta.
-        /// </remarks>
         public override ResizableRegion Inset(int delta) => Contract(delta * Vector.One).Contract(-delta * Vector.One);
 
         /// <inheritdoc />
-        /// <remarks>
-        /// Outsetting is equivalent to expanding on all four sides by the delta.
-        /// </remarks>
         public override ResizableRegion Outset(int delta) => Expand(delta * Vector.One).Expand(-delta * Vector.One);
 
         /// <inheritdoc />
         public override Region Shift(Vector displacement) =>
             new RectangularRegion(Position1 + displacement, Position2 + displacement);
 
-        private ResizableRegion Change(Vector delta, bool isExpansion)
+        private RectangularRegion Change(Vector delta, bool isExpansion)
         {
             var position1 = Position1;
             var position2 = Position2;

@@ -1,36 +1,37 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using WorldEdit.Templates;
 
 namespace WorldEdit.Tests.Templates
 {
     [TestFixture]
-    public class BlockTests
+    public class BlockTypeTypeTests
     {
         private static readonly object[] ApplyTestCases =
         {
-            new object[] {Block.Dirt, (ushort)0, (short)-1, (short)-1},
-            new object[] {Block.EbonwoodPlatform, (ushort)19, (short)-1, (short)18}
+            new object[] {BlockType.Dirt, (ushort)0, (short)-1, (short)-1},
+            new object[] {BlockType.EbonwoodPlatform, (ushort)19, (short)-1, (short)18}
         };
 
         private static readonly object[] MatchesTestCases =
         {
-            new object[] {Block.Dirt, (ushort)0, (short)-1, (short)-1, true},
-            new object[] {Block.Dirt, (ushort)0, (short)111, (short)-1, true},
-            new object[] {Block.Dirt, (ushort)0, (short)-1, (short)111, true},
-            new object[] {Block.Dirt, (ushort)1, (short)-1, (short)-1, false},
-            new object[] {Block.EbonwoodPlatform, (ushort)19, (short)-1, (short)18, true},
-            new object[] {Block.EbonwoodPlatform, (ushort)19, (short)-1, (short)-1, false}
+            new object[] {BlockType.Dirt, (ushort)0, (short)-1, (short)-1, true},
+            new object[] {BlockType.Dirt, (ushort)0, (short)111, (short)-1, true},
+            new object[] {BlockType.Dirt, (ushort)0, (short)-1, (short)111, true},
+            new object[] {BlockType.Dirt, (ushort)1, (short)-1, (short)-1, false},
+            new object[] {BlockType.EbonwoodPlatform, (ushort)19, (short)-1, (short)18, true},
+            new object[] {BlockType.EbonwoodPlatform, (ushort)19, (short)-1, (short)-1, false}
         };
 
         [TestCaseSource(nameof(ApplyTestCases))]
-        public void Apply(Block block, ushort expectedType, short expectedFrameX, short expectedFrameY)
+        public void Apply(BlockType blockType, ushort expectedBlockId, short expectedFrameX, short expectedFrameY)
         {
             var tile = new Tile();
 
-            tile = block.Apply(tile);
+            tile = blockType.Apply(tile);
 
             Assert.That(tile.IsActive);
-            Assert.That(tile.Type, Is.EqualTo(expectedType));
+            Assert.That(tile.BlockId, Is.EqualTo(expectedBlockId));
             Assert.That(tile.FrameX, Is.EqualTo(expectedFrameX));
             Assert.That(tile.FrameY, Is.EqualTo(expectedFrameY));
         }
@@ -40,7 +41,7 @@ namespace WorldEdit.Tests.Templates
         {
             var tile = new Tile();
 
-            tile = Block.Air.Apply(tile);
+            tile = BlockType.Air.Apply(tile);
 
             Assert.That(!tile.IsActive);
         }
@@ -50,7 +51,7 @@ namespace WorldEdit.Tests.Templates
         {
             var tile = new Tile();
 
-            tile = Block.Honey.Apply(tile);
+            tile = BlockType.Honey.Apply(tile);
 
             Assert.That(!tile.IsActive);
             Assert.That(tile.Liquid, Is.EqualTo(255));
@@ -62,7 +63,7 @@ namespace WorldEdit.Tests.Templates
         {
             var tile = new Tile();
 
-            tile = Block.Lava.Apply(tile);
+            tile = BlockType.Lava.Apply(tile);
 
             Assert.That(!tile.IsActive);
             Assert.That(tile.Liquid, Is.EqualTo(255));
@@ -74,25 +75,43 @@ namespace WorldEdit.Tests.Templates
         {
             var tile = new Tile();
 
-            tile = Block.Water.Apply(tile);
+            tile = BlockType.Water.Apply(tile);
 
             Assert.That(!tile.IsActive);
             Assert.That(tile.Liquid, Is.EqualTo(255));
             Assert.That(tile.LiquidType, Is.Zero);
         }
 
+        [TestCase(2)]
+        public void FromId(int id)
+        {
+            var blockType = BlockType.FromId((ushort)id);
+            var tile = new Tile();
+
+            tile = blockType.Apply(tile);
+
+            Assert.That(tile.BlockId, Is.EqualTo(id));
+        }
+
+        [TestCase(10000)]
+        public void FromId_IdTooLarge_ThrowsOutOfRangeException(int id)
+        {
+            Assert.That(() => BlockType.FromId((ushort)id), Throws.InstanceOf<ArgumentOutOfRangeException>());
+        }
+
         [TestCaseSource(nameof(MatchesTestCases))]
-        public void Matches(Block block, ushort actualType, short actualFrameX, short actualFrameY, bool expected)
+        public void Matches(BlockType blockType, ushort actualBlockId, short actualFrameX, short actualFrameY,
+            bool expected)
         {
             var tile = new Tile
             {
-                Type = actualType,
+                BlockId = actualBlockId,
                 FrameX = actualFrameX,
                 FrameY = actualFrameY,
                 IsActive = true
             };
 
-            Assert.That(block.Matches(tile), Is.EqualTo(expected));
+            Assert.That(blockType.Matches(tile), Is.EqualTo(expected));
         }
 
         [TestCase(true, false)]
@@ -101,7 +120,7 @@ namespace WorldEdit.Tests.Templates
         {
             var tile = new Tile {IsActive = active};
 
-            Assert.That(Block.Air.Matches(tile), Is.EqualTo(expected));
+            Assert.That(BlockType.Air.Matches(tile), Is.EqualTo(expected));
         }
 
         [TestCase(0, 0, false)]
@@ -116,7 +135,7 @@ namespace WorldEdit.Tests.Templates
                 LiquidType = liquidType
             };
 
-            Assert.That(Block.Honey.Matches(tile), Is.EqualTo(expected));
+            Assert.That(BlockType.Honey.Matches(tile), Is.EqualTo(expected));
         }
 
         [TestCase(0, 0, false)]
@@ -131,7 +150,7 @@ namespace WorldEdit.Tests.Templates
                 LiquidType = liquidType
             };
 
-            Assert.That(Block.Lava.Matches(tile), Is.EqualTo(expected));
+            Assert.That(BlockType.Lava.Matches(tile), Is.EqualTo(expected));
         }
 
         [TestCase(0, 0, false)]
@@ -146,39 +165,19 @@ namespace WorldEdit.Tests.Templates
                 LiquidType = liquidType
             };
 
-            Assert.That(Block.Water.Matches(tile), Is.EqualTo(expected));
+            Assert.That(BlockType.Water.Matches(tile), Is.EqualTo(expected));
         }
 
-        [TestCase("STONE", 1, -1, -1)]
-        [TestCase("spooky platform", 19, -1, 288)]
-        [TestCase("67", 67, -1, -1)]
-        [TestCase("67:7:14", 67, 7, 14)]
-        [TestCase("wood platform:-1:18", 19, -1, 18)]
-        public void TryParse(string s, int expectedType, short expectedFrameX, short expectedFrameY)
+        [TestCase(4, 6)]
+        public void WithFrames(short frameX, short frameY)
         {
             var tile = new Tile();
 
-            var block = Block.TryParse(s);
+            var block2 = BlockType.Dirt.WithFrames(frameX, frameY);
 
-            Assert.That(block, Is.Not.Null);
-            tile = block.Apply(tile);
-            Assert.That(tile.Type, Is.EqualTo(expectedType));
-            Assert.That(tile.FrameX, Is.EqualTo(expectedFrameX));
-            Assert.That(tile.FrameY, Is.EqualTo(expectedFrameY));
-        }
-
-        [TestCase("")]
-        [TestCase("ston")]
-        public void TryParse_InvalidBlock_ReturnsNull(string s)
-        {
-            Assert.That(Block.TryParse(s), Is.Null);
-        }
-
-        [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => Block.TryParse(null), Throws.ArgumentNullException);
+            tile = block2.Apply(tile);
+            Assert.That(tile.FrameX, Is.EqualTo(frameX));
+            Assert.That(tile.FrameY, Is.EqualTo(frameY));
         }
     }
 }

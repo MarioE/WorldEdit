@@ -3,12 +3,12 @@
 namespace WorldEdit.History
 {
     /// <summary>
-    /// Represents a tile update at a certain position.
+    ///     Represents a tile update.
     /// </summary>
     public sealed class TileUpdate : IChange
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TileUpdate" /> class with the specified position and tiles.
+        ///     Initializes a new instance of the <see cref="TileUpdate" /> class with the specified position and tiles.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="oldTile">The old tile.</param>
@@ -21,17 +21,17 @@ namespace WorldEdit.History
         }
 
         /// <summary>
-        /// Gets the new tile.
+        ///     Gets the new tile.
         /// </summary>
         public Tile NewTile { get; }
 
         /// <summary>
-        /// Gets the old tile.
+        ///     Gets the old tile.
         /// </summary>
         public Tile OldTile { get; }
 
         /// <summary>
-        /// Gets the position.
+        ///     Gets the position.
         /// </summary>
         public Vector Position { get; }
 

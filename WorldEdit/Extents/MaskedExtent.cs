@@ -5,14 +5,14 @@ using WorldEdit.Masks;
 namespace WorldEdit.Extents
 {
     /// <summary>
-    /// Represents an extent that masks the tiles that can be set.
+    ///     Represents an extent that masks the tiles that can be set.
     /// </summary>
     public sealed class MaskedExtent : WrappedExtent
     {
         private readonly Mask _mask;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MaskedExtent" /> class with the specified extent and mask.
+        ///     Initializes a new instance of the <see cref="MaskedExtent" /> class with the specified extent and mask.
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
         /// <param name="mask">The mask to use, which must not be <c>null</c>.</param>

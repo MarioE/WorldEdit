@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
+using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace WorldEdit.Sessions
 {
     /// <summary>
-    /// Manages sessions, allowing them to expire automatically.
+    ///     Manages sessions, allowing them to expire automatically. This class is thread-safe.
     /// </summary>
-    public sealed class SessionManager : IDisposable
+    public sealed class SessionManager
     {
+        private readonly Dictionary<string, CancellationTokenSource> _cancels =
+            new Dictionary<string, CancellationTokenSource>();
+
         private readonly TimeSpan _gracePeriod;
         private readonly object _lock = new object();
         private readonly Func<Session> _sessionCreator;
-        private readonly Dictionary<string, SessionHolder> _sessionHolders = new Dictionary<string, SessionHolder>();
-        private readonly Timer _timer = new Timer(1000);
+        private readonly Dictionary<string, Session> _sessions = new Dictionary<string, Session>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SessionManager" /> class with the specified session creator and grace
-        /// period.
+        ///     Initializes a new instance of the <see cref="SessionManager" /> class with the specified session creator and grace
+        ///     period.
         /// </summary>
         /// <param name="sessionCreator">The session creator, which must not be <c>null</c>.</param>
         /// <param name="gracePeriod">The grace period.</param>
@@ -28,21 +30,11 @@ namespace WorldEdit.Sessions
         {
             _sessionCreator = sessionCreator ?? throw new ArgumentNullException(nameof(sessionCreator));
             _gracePeriod = gracePeriod;
-
-            _timer.Elapsed += FlushSessions;
-            _timer.Start();
         }
 
         /// <summary>
-        /// Disposes the session manager.
-        /// </summary>
-        public void Dispose()
-        {
-            _timer.Dispose();
-        }
-
-        /// <summary>
-        /// Gets the session associated with the specified username, or creates it if it does not exist. This will stop the expiration countdown.
+        ///     Gets the session associated with the specified username, or creates it if it does not exist. This will prevent the
+        ///     session from being removed.
         /// </summary>
         /// <param name="username">The username, which must not be <c>null</c>.</param>
         /// <returns>The session associated with the username.</returns>
@@ -57,60 +49,71 @@ namespace WorldEdit.Sessions
 
             lock (_lock)
             {
-                if (_sessionHolders.TryGetValue(username, out var sessionHolder))
+                if (!_sessions.TryGetValue(username, out var session))
                 {
-                    sessionHolder.IsExpiring = false;
-                    return sessionHolder.Session;
+                    session = _sessionCreator();
+                    _sessions[username] = session;
                 }
-
-                var session = _sessionCreator();
-                _sessionHolders[username] = new SessionHolder {Session = session};
+                else if (_cancels.TryGetValue(username, out var cancel))
+                {
+                    cancel.Cancel();
+                    cancel.Dispose();
+                    _cancels.Remove(username);
+                }
                 return session;
             }
         }
 
         /// <summary>
-        /// Starts removing the session associated with the specified username by starting the expiration countdown.
+        ///     Removes the session associated with the specified username after the grace period has expired.
         /// </summary>
         /// <param name="username">The username, which must not be <c>null</c>.</param>
+        /// <returns>A task that will complete when the session is removed.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="username" /> is <c>null</c>.</exception>
-        public void StartRemoving([NotNull] string username)
+        public async Task RemoveAsync([NotNull] string username)
         {
             if (username == null)
             {
                 throw new ArgumentNullException(nameof(username));
             }
 
+            CancellationTokenSource cancel;
             lock (_lock)
             {
-                if (_sessionHolders.TryGetValue(username, out var sessionHolder))
+                // Check to make sure that there even is a session associated with the username.
+                if (!_sessions.ContainsKey(username))
                 {
-                    sessionHolder.IsExpiring = true;
-                    sessionHolder.ExpirationTime = DateTime.UtcNow + _gracePeriod;
+                    return;
                 }
-            }
-        }
 
-        private void FlushSessions(object sender, ElapsedEventArgs args)
-        {
+                cancel = new CancellationTokenSource();
+                _cancels[username] = cancel;
+            }
+
+            try
+            {
+                await Task.Delay(_gracePeriod, cancel.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+
             lock (_lock)
             {
-                var expiredUsernames = from s in _sessionHolders
-                                       let v = s.Value
-                                       where v.IsExpiring && DateTime.UtcNow > v.ExpirationTime
-                                       select s.Key;
-                foreach (var username in expiredUsernames.ToList())
+                // A cancel may have occurred after the delay task finished but before the lock was taken.
+                if (cancel.IsCancellationRequested)
                 {
-                    _sessionHolders.Remove(username);
+                    return;
                 }
-            }
-        }
 
-        private class SessionHolder
-        {
-            public DateTime ExpirationTime;
-            public bool IsExpiring;
-            public Session Session;
+                cancel.Dispose();
+                _cancels.Remove(username);
+
+                var session = _sessions[username];
+                session.Dispose();
+                _sessions.Remove(username);
+            }
         }
     }
 }

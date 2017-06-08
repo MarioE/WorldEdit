@@ -1,50 +1,57 @@
 ﻿using System;
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WorldEdit
 {
     /// <summary>
-    /// Represents a tile.
+    ///     Represents a tile.
     /// </summary>
     /// <remarks>
-    /// This is a mutable struct for the following reasons:
-    /// <para>
-    /// - Value semantics are important, and if this were a class instead, then many copies would have to be made, leading to
-    /// far too much GC pressure.
-    /// </para>
-    /// <para>
-    /// - Tiles can be thought of as a collection of variables, and each variable should be indepdendently modifiable. As long
-    /// as this is understood, then mutability should be okay.
-    /// </para>
+    ///     This is a mutable struct for the following reasons:
+    ///     <para>
+    ///         - Value semantics are important, and if this were a class instead, then many copies would have to be made,
+    ///         leading to
+    ///         far too much GC pressure.
+    ///     </para>
+    ///     <para>
+    ///         - Tiles can be thought of as a collection of variables, and each variable should be indepdendently modifiable.
+    ///         As long
+    ///         as this is understood, then mutability should be okay.
+    ///     </para>
     /// </remarks>
     public struct Tile : IEquatable<Tile>
     {
         /// <summary>
-        /// Gets or sets the byte tile header.
+        ///     Gets or sets the block color.
         /// </summary>
-        public byte BTileHeader { get; set; }
-
-        /// <summary>
-        /// Gets or sets the color.
-        /// </summary>
-        public byte Color
+        public byte BlockColor
         {
             get => (byte)(STileHeader & 0x1f);
             set => STileHeader = (short)((STileHeader & ~0x1f) | value);
         }
 
         /// <summary>
-        /// Gets or sets the X frame.
+        ///     Gets or sets the block ID.
+        /// </summary>
+        public ushort BlockId { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the byte tile header.
+        /// </summary>
+        public byte BTileHeader { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the X frame.
         /// </summary>
         public short FrameX { get; set; }
 
         /// <summary>
-        /// Gets or sets the Y frame.
+        ///     Gets or sets the Y frame.
         /// </summary>
         public short FrameY { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile has an actuator.
+        ///     Gets or sets a value indicating whether the tile has an actuator.
         /// </summary>
         public bool HasActuator
         {
@@ -53,7 +60,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile has blue wire.
+        ///     Gets or sets a value indicating whether the tile has blue wire.
         /// </summary>
         public bool HasBlueWire
         {
@@ -62,7 +69,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile has green wire.
+        ///     Gets or sets a value indicating whether the tile has green wire.
         /// </summary>
         public bool HasGreenWire
         {
@@ -71,7 +78,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile has red wire.
+        ///     Gets or sets a value indicating whether the tile has red wire.
         /// </summary>
         public bool HasRedWire
         {
@@ -80,7 +87,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile has yellow wire.
+        ///     Gets or sets a value indicating whether the tile has yellow wire.
         /// </summary>
         public bool HasYellowWire
         {
@@ -89,7 +96,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile is active.
+        ///     Gets or sets a value indicating whether the tile is active.
         /// </summary>
         public bool IsActive
         {
@@ -98,7 +105,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile is actuated.
+        ///     Gets or sets a value indicating whether the tile is actuated.
         /// </summary>
         public bool IsActuated
         {
@@ -107,7 +114,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile is a half block.
+        ///     Gets or sets a value indicating whether the tile is a half block.
         /// </summary>
         public bool IsHalfBlock
         {
@@ -116,7 +123,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile is honey.
+        ///     Gets or sets a value indicating whether the tile is honey.
         /// </summary>
         public bool IsHoney
         {
@@ -125,7 +132,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tile is lava.
+        ///     Gets or sets a value indicating whether the tile is lava.
         /// </summary>
         public bool IsLava
         {
@@ -134,12 +141,12 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets the liquid amount.
+        ///     Gets or sets the liquid amount.
         /// </summary>
         public byte Liquid { get; set; }
 
         /// <summary>
-        /// Gets or sets the liquid type.
+        ///     Gets or sets the liquid type.
         /// </summary>
         public int LiquidType
         {
@@ -148,7 +155,7 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets or sets the slope.
+        ///     Gets or sets the slope.
         /// </summary>
         public int Slope
         {
@@ -157,22 +164,12 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Gets the short tile header.
+        ///     Gets the short tile header.
         /// </summary>
         public short STileHeader { get; set; }
 
         /// <summary>
-        /// Gets or sets the block type.
-        /// </summary>
-        public ushort Type { get; set; }
-
-        /// <summary>
-        /// Gets or sets the wall type.
-        /// </summary>
-        public byte Wall { get; set; }
-
-        /// <summary>
-        /// Gets or sets the wall color.
+        ///     Gets or sets the wall color.
         /// </summary>
         public byte WallColor
         {
@@ -181,7 +178,12 @@ namespace WorldEdit
         }
 
         /// <summary>
-        /// Tests the two specified tiles for equality.
+        ///     Gets or sets the wall ID.
+        /// </summary>
+        public byte WallId { get; set; }
+
+        /// <summary>
+        ///     Tests the two specified tiles for equality.
         /// </summary>
         /// <param name="tile">The first tile.</param>
         /// <param name="tile2">The second tile.</param>
@@ -189,7 +191,7 @@ namespace WorldEdit
         public static bool operator ==(Tile tile, Tile tile2) => tile.Equals(tile2);
 
         /// <summary>
-        /// Tests the two specified tiles for inequality.
+        ///     Tests the two specified tiles for inequality.
         /// </summary>
         /// <param name="tile">The first tile.</param>
         /// <param name="tile2">The second tile.</param>
@@ -197,28 +199,28 @@ namespace WorldEdit
         public static bool operator !=(Tile tile, Tile tile2) => !tile.Equals(tile2);
 
         /// <summary>
-        /// Determines whether the tile equals the specified tile.
+        ///     Determines whether the tile equals the specified tile.
         /// </summary>
         /// <param name="other">The other tile.</param>
         /// <returns><c>true</c> if the two are equal; otherwise <c>false</c>.</returns>
-        [Pure]
         public bool Equals(Tile other) =>
             BTileHeader == other.BTileHeader && FrameX == other.FrameX && FrameY == other.FrameY &&
-            Liquid == other.Liquid && STileHeader == other.STileHeader && Type == other.Type && Wall == other.Wall;
+            Liquid == other.Liquid && STileHeader == other.STileHeader && BlockId == other.BlockId &&
+            WallId == other.WallId;
 
         /// <summary>
-        /// Determines whether the tile equals the specified object.
+        ///     Determines whether the tile equals the specified object.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns><c>true</c> if the two are equal; otherwise, <c>false</c>.</returns>
-        [Pure]
         public override bool Equals(object obj) => obj is Tile tile && Equals(tile);
 
         /// <summary>
-        /// Returns the hash code for the tile.
+        ///     Returns the hash code for the tile.
         /// </summary>
         /// <returns>The hash code.</returns>
-        [Pure]
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification =
+            "Tiles will not be used as keys for collections.")]
         public override int GetHashCode()
         {
             unchecked
@@ -228,16 +230,16 @@ namespace WorldEdit
                 hashCode = (hashCode * 397) ^ FrameY.GetHashCode();
                 hashCode = (hashCode * 397) ^ Liquid.GetHashCode();
                 hashCode = (hashCode * 397) ^ STileHeader.GetHashCode();
-                hashCode = (hashCode * 397) ^ Type.GetHashCode();
-                hashCode = (hashCode * 397) ^ Wall.GetHashCode();
+                hashCode = (hashCode * 397) ^ BlockId.GetHashCode();
+                hashCode = (hashCode * 397) ^ WallId.GetHashCode();
                 return hashCode;
             }
         }
 
         /// <summary>
-        /// Returns the string representation of the tile.
+        ///     Returns the string representation of the tile.
         /// </summary>
         /// <returns>The string representation.</returns>
-        public override string ToString() => $"Block: {Type} ({FrameX}, {FrameY}), Wall: {Wall}";
+        public override string ToString() => $"Block: {BlockId} ({FrameX}, {FrameY}), Wall: {WallId}";
     }
 }

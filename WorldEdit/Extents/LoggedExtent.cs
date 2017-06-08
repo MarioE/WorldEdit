@@ -6,14 +6,14 @@ using WorldEdit.TileEntities;
 namespace WorldEdit.Extents
 {
     /// <summary>
-    /// Represents an extent that logs changes to a change set.
+    ///     Represents an extent that logs changes to a change set.
     /// </summary>
     public sealed class LoggedExtent : WrappedExtent
     {
         private readonly ChangeSet _changeSet;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LoggedExtent" /> class with the specified extent and change set.
+        ///     Initializes a new instance of the <see cref="LoggedExtent" /> class with the specified extent and change set.
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
         /// <param name="changeSet">The change set to log to, which must not be <c>null</c>.</param>

@@ -7,9 +7,9 @@ using WorldEdit.Masks;
 namespace WorldEdit.Sessions
 {
     /// <summary>
-    /// Represents an edit session whose changes may be considered collectively.
+    ///     Represents an edit session whose changes may be considered collectively.
     /// </summary>
-    public sealed class EditSession : WrappedExtent
+    public sealed class EditSession : WrappedExtent, IDisposable
     {
         private readonly ChangeSet _changeSet;
         private readonly World _world;
@@ -21,13 +21,21 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="EditSession" /> class with the specified world, limit, and mask.
+        ///     Disposes the edit session.
+        /// </summary>
+        public void Dispose()
+        {
+            _changeSet.Dispose();
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the <see cref="EditSession" /> class with the specified world, limit, and mask.
         /// </summary>
         /// <param name="world">The world to modify, which must not be <c>null</c>.</param>
         /// <param name="limit">The limit on the number of tiles that can be set.</param>
         /// <param name="mask">The mask to test, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="world" /> or <paramref name="mask" /> is <c>null</c>.
+        ///     Either <paramref name="world" /> or <paramref name="mask" /> is <c>null</c>.
         /// </exception>
         public static EditSession Create([NotNull] World world, int limit, [NotNull] Mask mask)
         {
@@ -48,13 +56,13 @@ namespace WorldEdit.Sessions
         }
 
         /// <summary>
-        /// Redoes the edit session.
+        ///     Redoes the edit session.
         /// </summary>
         /// <returns>The number of modifications.</returns>
         public int Redo() => _changeSet.Redo(_world);
 
         /// <summary>
-        /// Undoes the edit session.
+        ///     Undoes the edit session.
         /// </summary>
         /// <returns>The number of modifications.</returns>
         public int Undo() => _changeSet.Undo(_world);

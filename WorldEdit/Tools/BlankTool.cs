@@ -3,7 +3,7 @@
 namespace WorldEdit.Tools
 {
     /// <summary>
-    /// Represents a blank tool that does nothing.
+    ///     Represents a blank tool that does nothing.
     /// </summary>
     public sealed class BlankTool : ITool
     {

@@ -11,7 +11,7 @@ namespace WorldEdit.Tests.History
         [Test]
         public void GetNewTile()
         {
-            var newTile = new Tile {Wall = 1};
+            var newTile = new Tile {WallId = 1};
             var change = new TileUpdate(Vector.Zero, new Tile(), newTile);
 
             Assert.That(change.NewTile, Is.EqualTo(newTile));
@@ -20,7 +20,7 @@ namespace WorldEdit.Tests.History
         [Test]
         public void GetOldTile()
         {
-            var oldTile = new Tile {Wall = 1};
+            var oldTile = new Tile {WallId = 1};
             var change = new TileUpdate(Vector.Zero, oldTile, new Tile());
 
             Assert.That(change.OldTile, Is.EqualTo(oldTile));
@@ -38,7 +38,7 @@ namespace WorldEdit.Tests.History
         public void Redo(int x, int y)
         {
             var position = new Vector(x, y);
-            var newTile = new Tile {Wall = 1};
+            var newTile = new Tile {WallId = 1};
             var change = new TileUpdate(position, new Tile(), newTile);
             var extent = Mock.Of<Extent>(e => e.SetTile(position, It.IsAny<Tile>()));
 
@@ -50,7 +50,7 @@ namespace WorldEdit.Tests.History
         public void Undo(int x, int y)
         {
             var position = new Vector(x, y);
-            var oldTile = new Tile {Wall = 1};
+            var oldTile = new Tile {WallId = 1};
             var change = new TileUpdate(position, oldTile, new Tile());
             var extent = Mock.Of<Extent>(e => e.SetTile(position, It.IsAny<Tile>()));
 

@@ -60,7 +60,7 @@ namespace WorldEdit.Tests.Extents
         [Test]
         public void ModifyTilesRegionTemplateMask()
         {
-            var tile = new Tile {Wall = 1};
+            var tile = new Tile {WallId = 1};
             var region = Mock.Of<Region>(r => r.LowerBound == Vector.Zero && r.UpperBound == new Vector(5, 5));
             Mock.Get(region).Setup(r => r.Contains(It.IsAny<Vector>())).Returns((Vector v) => true);
             Mock.Get(region)

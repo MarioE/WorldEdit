@@ -17,28 +17,35 @@ using TerrariaTile = Terraria.Tile;
 namespace WorldEdit
 {
     /// <summary>
-    /// Represents a world backed by an OTAPI tile collection. Players will be periodically notified of changes.
+    ///     Represents a world backed by an OTAPI tile collection. Players will be periodically notified of changes.
     /// </summary>
+    /// <remarks>
+    ///     Tile accesses are not synchronized, but this is likely not to be an issue, since concurrent modification of the
+    ///     same tiles is quite rare and unlikely to matter.
+    /// </remarks>
     public sealed class OTAPIWorld : World, IDisposable
     {
         private const int SectionHeight = 150;
         private const int SectionWidth = 200;
 
+        private readonly object _chestLock = new object();
         private readonly HashSet<Vector> _dirtySections = new HashSet<Vector>();
         private readonly object _sectionLock = new object();
         private readonly Timer _sectionTimer = new Timer(100);
+        private readonly object _signLock = new object();
         private readonly TerrariaChest[] _terrariaChests;
         private readonly TerrariaSign[] _terrariaSigns;
         private readonly ITileCollection _terrariaTiles;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="World" /> class wrapping the specified Terraria tiles, chests, and signs.
+        ///     Initializes a new instance of the <see cref="World" /> class wrapping the specified Terraria tiles, chests, and
+        ///     signs.
         /// </summary>
         /// <param name="tiles">The tiles, which must not be <c>null</c>.</param>
         /// <param name="chests">The chests, which must not be <c>null</c>.</param>
         /// <param name="signs">The signs, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="tiles" />, <paramref name="chests" />, or <paramref name="signs" /> is <c>null</c>.
+        ///     Either <paramref name="tiles" />, <paramref name="chests" />, or <paramref name="signs" /> is <c>null</c>.
         /// </exception>
         public OTAPIWorld([NotNull] ITileCollection tiles, [NotNull] TerrariaChest[] chests,
             [NotNull] TerrariaSign[] signs)
@@ -53,6 +60,40 @@ namespace WorldEdit
 
         /// <inheritdoc />
         public override Vector Dimensions => new Vector(_terrariaTiles.Width, _terrariaTiles.Height);
+
+        /// <summary>
+        ///     Disposes the world.
+        /// </summary>
+        public void Dispose()
+        {
+            _sectionTimer.Dispose();
+        }
+
+        private static TerrariaItem Adapt(Item item) =>
+            new TerrariaItem {netID = item.Type, stack = item.StackSize, prefix = item.Prefix};
+
+        private static Item Adapt(TerrariaItem terrariaItem) =>
+            new Item(terrariaItem.type, terrariaItem.stack, terrariaItem.prefix);
+
+        private static TerrariaChest Adapt(Chest chest) =>
+            new TerrariaChest
+            {
+                x = chest.Position.X,
+                y = chest.Position.Y,
+                name = chest.Name,
+                item = chest.Items.Select(Adapt).ToArray()
+            };
+
+        private static Chest Adapt(TerrariaChest terrariaChest) =>
+            new Chest(new Vector(terrariaChest.x, terrariaChest.y),
+                terrariaChest.name,
+                terrariaChest.item.Select(Adapt));
+
+        private static TerrariaSign Adapt(Sign sign) =>
+            new TerrariaSign {x = sign.Position.X, y = sign.Position.Y, text = sign.Text};
+
+        private static Sign Adapt(TerrariaSign terrariaSign) =>
+            new Sign(new Vector(terrariaSign.x, terrariaSign.y), terrariaSign.text);
 
         /// <inheritdoc />
         // TODO: Handle tile entities: item frame, training dummy, and logic sensor
@@ -69,14 +110,6 @@ namespace WorldEdit
             }
         }
 
-        /// <summary>
-        /// Disposes the world.
-        /// </summary>
-        public void Dispose()
-        {
-            _sectionTimer.Dispose();
-        }
-
         /// <inheritdoc />
         public override Tile GetTile(Vector position)
         {
@@ -88,22 +121,26 @@ namespace WorldEdit
 
             return new Tile
             {
+                BlockId = terrariaTile.type,
                 BTileHeader = terrariaTile.bTileHeader,
                 FrameX = terrariaTile.frameX,
                 FrameY = terrariaTile.frameY,
                 Liquid = terrariaTile.liquid,
                 STileHeader = terrariaTile.sTileHeader,
-                Type = terrariaTile.type,
-                Wall = terrariaTile.wall
+                WallId = terrariaTile.wall
             };
         }
 
         /// <inheritdoc />
         public override IEnumerable<ITileEntity> GetTileEntities()
         {
-            return Enumerable.Empty<ITileEntity>()
-                .Concat(_terrariaChests.Where(tc => tc != null).Select(Adapt))
-                .Concat(_terrariaSigns.Where(ts => ts != null).Select(Adapt));
+            lock (_chestLock)
+            lock (_signLock)
+            {
+                return Enumerable.Empty<ITileEntity>()
+                    .Concat(_terrariaChests.Where(tc => tc != null).Select(Adapt))
+                    .Concat(_terrariaSigns.Where(ts => ts != null).Select(Adapt)).ToList();
+            }
         }
 
         /// <inheritdoc />
@@ -134,13 +171,13 @@ namespace WorldEdit
             }
 
             // Avoid constructing a TerrariaTile whenever possible. This reduces GC pressure.
+            terrariaTile.type = tile.BlockId;
             terrariaTile.bTileHeader = tile.BTileHeader;
             terrariaTile.frameX = tile.FrameX;
             terrariaTile.frameY = tile.FrameY;
             terrariaTile.liquid = tile.Liquid;
             terrariaTile.sTileHeader = tile.STileHeader;
-            terrariaTile.type = tile.Type;
-            terrariaTile.wall = tile.Wall;
+            terrariaTile.wall = tile.WallId;
 
             lock (_sectionLock)
             {
@@ -149,57 +186,34 @@ namespace WorldEdit
             return true;
         }
 
-        private TerrariaItem Adapt(Item item) =>
-            new TerrariaItem {netID = item.Type, stack = item.StackSize, prefix = item.Prefix};
-
-        private Item Adapt(TerrariaItem terrariaItem) =>
-            new Item(terrariaItem.type, terrariaItem.stack, terrariaItem.prefix);
-
-        private TerrariaChest Adapt(Chest chest) =>
-            new TerrariaChest
-            {
-                x = chest.Position.X,
-                y = chest.Position.Y,
-                name = chest.Name,
-                item = chest.Items.Select(Adapt).ToArray()
-            };
-
-        private Chest Adapt(TerrariaChest terrariaChest) =>
-            new Chest(new Vector(terrariaChest.x, terrariaChest.y),
-                terrariaChest.name,
-                terrariaChest.item.Select(Adapt));
-
-        private TerrariaSign Adapt(Sign sign) =>
-            new TerrariaSign {x = sign.Position.X, y = sign.Position.Y, text = sign.Text};
-
-        private Sign Adapt(TerrariaSign terrariaSign) =>
-            new Sign(new Vector(terrariaSign.x, terrariaSign.y), terrariaSign.text);
-
         private bool AddChest(Chest chest)
         {
             var index = -1;
-            for (var i = 0; i < _terrariaChests.Length; ++i)
+            lock (_chestLock)
             {
-                var terrariaChest = _terrariaChests[i];
-                if (terrariaChest == null)
+                for (var i = 0; i < _terrariaChests.Length; ++i)
                 {
-                    index = i;
-                    break;
+                    var terrariaChest = _terrariaChests[i];
+                    if (terrariaChest == null)
+                    {
+                        index = i;
+                        break;
+                    }
+
+                    var type = _terrariaTiles[terrariaChest.x, terrariaChest.y].type;
+                    if (type != TileID.Containers && type != TileID.Dressers && type != TileID.Containers2)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index < 0)
+                {
+                    return false;
                 }
 
-                var type = _terrariaTiles[terrariaChest.x, terrariaChest.y].type;
-                if (type != TileID.Containers && type != TileID.Dressers && type != TileID.Containers2)
-                {
-                    index = i;
-                    break;
-                }
+                _terrariaChests[index] = Adapt(chest);
             }
-            if (index < 0)
-            {
-                return false;
-            }
-
-            _terrariaChests[index] = Adapt(chest);
             var x = chest.Position.X;
             var y = chest.Position.Y;
             var tile = _terrariaTiles[x, y];
@@ -223,28 +237,31 @@ namespace WorldEdit
         private bool AddSign(Sign sign)
         {
             var index = -1;
-            for (var i = 0; i < _terrariaSigns.Length; ++i)
+            lock (_signLock)
             {
-                var terrariaSign = _terrariaSigns[i];
-                if (terrariaSign == null)
+                for (var i = 0; i < _terrariaSigns.Length; ++i)
                 {
-                    index = i;
-                    break;
+                    var terrariaSign = _terrariaSigns[i];
+                    if (terrariaSign == null)
+                    {
+                        index = i;
+                        break;
+                    }
+
+                    var type = _terrariaTiles[terrariaSign.x, terrariaSign.y].type;
+                    if (type != TileID.Signs && type != TileID.Tombstones && type != TileID.AnnouncementBox)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index < 0)
+                {
+                    return false;
                 }
 
-                var type = _terrariaTiles[terrariaSign.x, terrariaSign.y].type;
-                if (type != TileID.Signs && type != TileID.Tombstones && type != TileID.AnnouncementBox)
-                {
-                    index = i;
-                    break;
-                }
+                _terrariaSigns[index] = Adapt(sign);
             }
-            if (index < 0)
-            {
-                return false;
-            }
-
-            _terrariaSigns[index] = Adapt(sign);
             return true;
         }
 
@@ -266,21 +283,25 @@ namespace WorldEdit
         private bool RemoveChest(Chest chest)
         {
             var index = -1;
-            for (var i = _terrariaChests.Length - 1; i >= 0; --i)
+            lock (_chestLock)
             {
-                var terrariaChest = _terrariaChests[i];
-                if (terrariaChest != null && terrariaChest.x == chest.Position.X && terrariaChest.y == chest.Position.Y)
+                for (var i = _terrariaChests.Length - 1; i >= 0; --i)
                 {
-                    index = i;
-                    break;
+                    var terrariaChest = _terrariaChests[i];
+                    if (terrariaChest != null && terrariaChest.x == chest.Position.X &&
+                        terrariaChest.y == chest.Position.Y)
+                    {
+                        index = i;
+                        break;
+                    }
                 }
-            }
-            if (index < 0)
-            {
-                return false;
-            }
+                if (index < 0)
+                {
+                    return false;
+                }
 
-            _terrariaChests[index] = null;
+                _terrariaChests[index] = null;
+            }
             var x = chest.Position.X;
             var y = chest.Position.Y;
             var type = _terrariaTiles[x, y].type;
@@ -301,22 +322,25 @@ namespace WorldEdit
 
         private bool RemoveSign(Sign sign)
         {
-            var index = -1;
-            for (var i = _terrariaSigns.Length - 1; i >= 0; --i)
+            lock (_signLock)
             {
-                var terrariaSign = _terrariaSigns[i];
-                if (terrariaSign != null && terrariaSign.x == sign.Position.X && terrariaSign.y == sign.Position.Y)
+                var index = -1;
+                for (var i = _terrariaSigns.Length - 1; i >= 0; --i)
                 {
-                    index = i;
-                    break;
+                    var terrariaSign = _terrariaSigns[i];
+                    if (terrariaSign != null && terrariaSign.x == sign.Position.X && terrariaSign.y == sign.Position.Y)
+                    {
+                        index = i;
+                        break;
+                    }
                 }
-            }
-            if (index < 0)
-            {
-                return false;
-            }
+                if (index < 0)
+                {
+                    return false;
+                }
 
-            _terrariaSigns[index] = null;
+                _terrariaSigns[index] = null;
+            }
             return true;
         }
     }

@@ -9,7 +9,7 @@ using WorldEdit.TileEntities;
 namespace WorldEdit
 {
     /// <summary>
-    /// Represents a clipboard that can be copied and pasted.
+    ///     Represents a clipboard that can be copied and pasted.
     /// </summary>
     public sealed class Clipboard : Extent
     {
@@ -17,7 +17,7 @@ namespace WorldEdit
         private readonly Tile?[,] _tiles;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Clipboard" /> class with the specified tiles.
+        ///     Initializes a new instance of the <see cref="Clipboard" /> class with the specified tiles.
         /// </summary>
         /// <param name="tiles">The tiles, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="tiles" /> is <c>null</c>.</exception>
@@ -30,13 +30,13 @@ namespace WorldEdit
         public override Vector Dimensions => new Vector(_tiles.GetLength(0), _tiles.GetLength(1));
 
         /// <summary>
-        /// Creates a <see cref="Clipboard" /> instance copied from the specified extent and region.
+        ///     Creates a <see cref="Clipboard" /> instance copied from the specified extent and region.
         /// </summary>
         /// <param name="extent">The extent to copy from, which must not be <c>null</c>.</param>
         /// <param name="region">The region,  which must not be <c>null</c>.</param>
         /// <returns>The clipboard.</returns>
         /// <exception cref="ArgumentNullException">
-        /// Either <paramref name="extent" /> or <paramref name="region" /> is <c>null</c>.
+        ///     Either <paramref name="extent" /> or <paramref name="region" /> is <c>null</c>.
         /// </exception>
         [NotNull]
         [Pure]
@@ -85,14 +85,14 @@ namespace WorldEdit
         public override IEnumerable<ITileEntity> GetTileEntities() => _tileEntities;
 
         /// <summary>
-        /// Pastes the clipboard to the specified extent and position.
+        ///     Pastes the clipboard to the specified extent and position.
         /// </summary>
         /// <param name="extent">The extent to paste to, which must not be <c>null</c>.</param>
         /// <param name="position">The position.</param>
         /// <returns>The number of modifications.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="extent" /> is <c>null</c>.</exception>
         /// <remarks>
-        /// Null tiles in the array will be ignored when pasting.
+        ///     Null tiles in the array will be ignored when pasting.
         /// </remarks>
         public int PasteTo([NotNull] Extent extent, Vector position)
         {
@@ -110,20 +110,20 @@ namespace WorldEdit
                     if (tile != null)
                     {
                         var offsetPosition = new Vector(x, y) + position;
-                        if (extent.IsInBounds(offsetPosition))
+                        if (extent.IsInBounds(offsetPosition) && extent.SetTile(offsetPosition, tile.Value))
                         {
-                            extent.SetTile(offsetPosition, tile.Value);
                             ++count;
                         }
                     }
                 }
             }
+
             foreach (var tileEntity in _tileEntities)
             {
                 var offsetPosition = tileEntity.Position + position;
-                if (extent.IsInBounds(offsetPosition))
+                if (extent.IsInBounds(offsetPosition) && extent.AddTileEntity(tileEntity.WithPosition(offsetPosition)))
                 {
-                    extent.AddTileEntity(tileEntity.WithPosition(offsetPosition));
+                    ++count;
                 }
             }
             return count;

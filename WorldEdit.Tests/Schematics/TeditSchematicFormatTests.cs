@@ -71,7 +71,7 @@ namespace WorldEdit.Tests.Schematics
         {
             var tiles = new Tile?[10, 10];
             Main.tileFrameImportant[1] = true;
-            var tile = new Tile {IsActive = true, Color = 1, WallColor = 1, Type = 1, Wall = 1, Liquid = 255};
+            var tile = new Tile {IsActive = true, BlockColor = 1, WallColor = 1, BlockId = 1, WallId = 1, Liquid = 255};
             for (var x = 0; x < 10; ++x)
             {
                 for (var y = 0; y < 10; ++y)

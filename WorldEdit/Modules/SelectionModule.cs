@@ -8,8 +8,9 @@ using WorldEdit.Regions.Selectors;
 namespace WorldEdit.Modules
 {
     /// <summary>
-    /// Represents a module that encapsulates the selection functionality.
+    ///     Represents a module that encapsulates the selection functionality.
     /// </summary>
+    [UsedImplicitly]
     public sealed class SelectionModule : Module
     {
         private static readonly Dictionary<string, Vector> Directions =
@@ -30,7 +31,7 @@ namespace WorldEdit.Modules
             };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectionModule" /> class with the specified WorldEdit plugin.
+        ///     Initializes a new instance of the <see cref="SelectionModule" /> class with the specified WorldEdit plugin.
         /// </summary>
         /// <param name="plugin">The WorldEdit plugin, which must not be <c>null</c>.</param>
         public SelectionModule([NotNull] WorldEditPlugin plugin) : base(plugin)
@@ -97,7 +98,7 @@ namespace WorldEdit.Modules
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            session.RegionSelector = session.RegionSelector.Clear();
+            session.Selector = session.Selector.Clear();
             player.SendSuccessMessage("Cleared selection.");
         }
 
@@ -214,14 +215,14 @@ namespace WorldEdit.Modules
             var position = new Vector(x, y);
             if (action == GetDataHandlers.EditAction.PlaceWire)
             {
-                session.RegionSelector = session.RegionSelector.SelectPrimary(position);
+                session.Selector = session.Selector.WithPrimary(position);
                 player.SendSuccessMessage($"Set primary position to {position}.");
                 args.Handled = true;
                 player.SendTileSquare(x, y, 1);
             }
             else if (action == GetDataHandlers.EditAction.PlaceWire2)
             {
-                session.RegionSelector = session.RegionSelector.SelectSecondary(position);
+                session.Selector = session.Selector.WithSecondary(position);
                 player.SendSuccessMessage($"Set secondary position to {position}.");
                 args.Handled = true;
                 player.SendTileSquare(x, y, 1);
@@ -257,12 +258,12 @@ namespace WorldEdit.Modules
             var position = new Vector(x, y);
             if (commandName.Equals("pos1", StringComparison.OrdinalIgnoreCase))
             {
-                session.RegionSelector = session.RegionSelector.SelectPrimary(position);
+                session.Selector = session.Selector.WithPrimary(position);
                 player.SendSuccessMessage($"Set primary position to {position}.");
             }
             else if (commandName.Equals("pos2", StringComparison.OrdinalIgnoreCase))
             {
-                session.RegionSelector = session.RegionSelector.SelectSecondary(position);
+                session.Selector = session.Selector.WithSecondary(position);
                 player.SendSuccessMessage($"Set secondary position to {position}.");
             }
         }
@@ -285,7 +286,7 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            session.RegionSelector = selector;
+            session.Selector = selector;
             player.SendSuccessMessage($"Set selector to {inputSelector.ToLowerInvariant()}.");
         }
 

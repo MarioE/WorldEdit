@@ -4,27 +4,27 @@ using System.Linq;
 using JetBrains.Annotations;
 using TShockAPI;
 using WorldEdit.Masks;
-using WorldEdit.Templates;
+using WorldEdit.Templates.Parsers;
 
 namespace WorldEdit.Modules
 {
     /// <summary>
-    /// Represents a module that encapsulates the utility functionality.
+    ///     Represents a module that encapsulates the utility functionality.
     /// </summary>
+    [UsedImplicitly]
     public sealed class UtilityModule : Module
     {
-        private readonly Dictionary<string, Func<string, ITemplate>> _maskParsers =
-            new Dictionary<string, Func<string, ITemplate>>(StringComparer.OrdinalIgnoreCase)
-            {
-                ["block"] = Pattern<Block>.TryParse,
-                ["color"] = Pattern<Color>.TryParse,
-                ["shape"] = Pattern<Shape>.TryParse,
-                ["wall"] = Pattern<Wall>.TryParse,
-                ["wallcolor"] = Pattern<WallColor>.TryParse
-            };
+        private static readonly Dictionary<string, TemplateParser> Parsers = new Dictionary<string, TemplateParser>
+        {
+            ["block"] = new BlockTypeParser(),
+            ["color"] = new BlockColorParser(),
+            ["shape"] = new BlockShapeParser(),
+            ["wall"] = new WallTypeParser(),
+            ["wallcolor"] = new WallColorParser()
+        };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UtilityModule" /> class with the specified WorldEdit plugin.
+        ///     Initializes a new instance of the <see cref="UtilityModule" /> class with the specified WorldEdit plugin.
         /// </summary>
         /// <param name="plugin">The WorldEdit plugin, which must not be <c>null</c>.</param>
         public UtilityModule([NotNull] WorldEditPlugin plugin) : base(plugin)
@@ -101,7 +101,7 @@ namespace WorldEdit.Modules
                 }
                 else
                 {
-                    var state = State.TryParse(inputMask);
+                    var state = new TileStateParser().Parse(inputMask);
                     if (state == null)
                     {
                         player.SendErrorMessage($"Invalid state '{inputMask}'.");
@@ -114,7 +114,7 @@ namespace WorldEdit.Modules
             else
             {
                 var inputType = parameters[0];
-                if (!_maskParsers.TryGetValue(inputType, out var parser))
+                if (!Parsers.TryGetValue(inputType, out var parser))
                 {
                     player.SendErrorMessage($"Invalid mask type '{inputType}'.");
                     return;
@@ -133,7 +133,7 @@ namespace WorldEdit.Modules
                 }
 
                 var inputPattern = string.Join(" ", parameters.Skip(2));
-                var pattern = parser(inputPattern);
+                var pattern = parser.Parse(inputPattern);
                 if (pattern == null)
                 {
                     player.SendErrorMessage($"Invalid pattern '{inputPattern}'.");

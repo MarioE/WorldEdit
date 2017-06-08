@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -16,8 +15,9 @@ namespace WorldEdit.Tests.Tools
         [TestCase(5, 5, 2)]
         public void Apply(int x, int y, int radius)
         {
-            var pattern = new Pattern<Block>(new List<PatternEntry<Block>> {new PatternEntry<Block>(Block.Water, 1)});
-            var tool = new BrushTool<Block>(radius, pattern);
+            var tile = new Tile {WallId = 1};
+            var template = Mock.Of<ITemplate>(t => t.Apply(It.IsAny<Tile>()) == tile);
+            var tool = new BrushTool(radius, template);
             var extent = Mock.Of<Extent>(e => e.Dimensions == new Vector(10, 10) &&
                                               e.SetTile(It.IsAny<Vector>(), It.IsAny<Tile>()));
 
@@ -26,23 +26,23 @@ namespace WorldEdit.Tests.Tools
             var region = new EllipticRegion(new Vector(x, y), radius * Vector.One);
             foreach (var position in region.Where(extent.IsInBounds))
             {
-                Mock.Get(extent).Verify(e => e.SetTile(position, Match.Create<Tile>(pattern.Matches)), Times.Once);
+                Mock.Get(extent).Verify(e => e.SetTile(position, tile), Times.Once);
             }
         }
 
         [Test]
-        public void Ctor_NullPattern_ThrowsArgumentNullException()
+        public void Ctor_NullTemplate_ThrowsArgumentNullException()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => new BrushTool<Block>(1, null), Throws.ArgumentNullException);
+            Assert.That(() => new BrushTool(1, null), Throws.ArgumentNullException);
         }
 
         [Test]
         public void Ctor_RadiusNegative_ThrowsArgumentOutOfRangeException()
         {
-            var pattern = new Pattern<Block>(new PatternEntry<Block>[0]);
+            var template = Mock.Of<ITemplate>();
 
-            Assert.That(() => new BrushTool<Block>(-1, pattern), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => new BrushTool(-1, template), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
     }
 }

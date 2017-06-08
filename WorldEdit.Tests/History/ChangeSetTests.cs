@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using Moq;
 using NUnit.Framework;
 using WorldEdit.Extents;
@@ -10,72 +10,98 @@ namespace WorldEdit.Tests.History
     public class ChangeSetTests
     {
         [Test]
-        public void AddChange()
+        public void Add_NullChange_ThrowsArgumentNullException()
         {
-            var change = Mock.Of<IChange>();
-            var changeSet = new ChangeSet();
-
-            changeSet.Add(change);
-
-            var changes = changeSet.ToList();
-            Assert.That(changes, Has.Count.EqualTo(1));
+            using (var changeSet = new ChangeSet())
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => changeSet.Add(null), Throws.ArgumentNullException);
+            }
         }
 
-        [Test]
-        public void AddChange_NullChange_ThrowsArgumentNullException()
+        [TestCase(-1)]
+        [TestCase(0)]
+        public void Ctor_TileUpdateCapacityNotPositive_ThrowsArgumentOutOfRangeException(int tileUpdateCapacity)
         {
-            var changeSet = new ChangeSet();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => changeSet.Add(null), Throws.ArgumentNullException);
+            Assert.That(() => new ChangeSet(tileUpdateCapacity), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Redo()
         {
-            var test = 0;
-            var extent = Mock.Of<Extent>();
-            var change = Mock.Of<IChange>();
-            Mock.Get(change).Setup(c => c.Redo(extent)).Callback((Extent e) => test = 1).Returns(true);
-            var change2 = Mock.Of<IChange>();
-            Mock.Get(change2).Setup(c => c.Redo(extent)).Callback((Extent e) => test = 2).Returns(true);
-            var changeSet = new ChangeSet {change, change2};
+            using (var changeSet = new ChangeSet())
+            {
+                var newTile = new Tile {WallId = 1};
+                changeSet.Add(new TileUpdate(Vector.Zero, new Tile(), newTile));
+                var extent = Mock.Of<Extent>(e => e.SetTile(Vector.Zero, newTile));
 
-            Assert.That(changeSet.Redo(extent), Is.EqualTo(2));
-            Assert.That(test, Is.EqualTo(2));
+                Assert.That(changeSet.Redo(extent), Is.EqualTo(1));
+                Mock.Get(extent).Verify(e => e.SetTile(Vector.Zero, newTile), Times.Once);
+            }
+        }
+
+        [Test]
+        public void Redo_Files()
+        {
+            using (var changeSet = new ChangeSet(1))
+            {
+                var newTile = new Tile {WallId = 1};
+                changeSet.Add(new TileUpdate(Vector.Zero, new Tile(), newTile));
+                changeSet.Add(new TileUpdate(Vector.Zero, new Tile(), newTile));
+                var extent = Mock.Of<Extent>(e => e.SetTile(Vector.Zero, newTile));
+
+                Assert.That(changeSet.Redo(extent), Is.EqualTo(2));
+                Mock.Get(extent).Verify(e => e.SetTile(Vector.Zero, newTile), Times.Exactly(2));
+            }
         }
 
         [Test]
         public void Redo_NullExtent_ThrowsArgumentNullException()
         {
-            var changeSet = new ChangeSet();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => changeSet.Redo(null), Throws.ArgumentNullException);
+            using (var changeSet = new ChangeSet())
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => changeSet.Redo(null), Throws.ArgumentNullException);
+            }
         }
 
         [Test]
         public void Undo()
         {
-            var test = 0;
-            var extent = Mock.Of<Extent>();
-            var change = Mock.Of<IChange>();
-            Mock.Get(change).Setup(c => c.Undo(extent)).Callback((Extent e) => test = 1).Returns(true);
-            var change2 = Mock.Of<IChange>();
-            Mock.Get(change2).Setup(c => c.Undo(extent)).Callback((Extent e) => test = 2).Returns(true);
-            var changeSet = new ChangeSet {change, change2};
+            using (var changeSet = new ChangeSet())
+            {
+                var oldTile = new Tile {WallId = 1};
+                changeSet.Add(new TileUpdate(Vector.Zero, oldTile, new Tile()));
+                var extent = Mock.Of<Extent>(e => e.SetTile(Vector.Zero, oldTile));
 
-            Assert.That(changeSet.Undo(extent), Is.EqualTo(2));
-            Assert.That(test, Is.EqualTo(1));
+                Assert.That(changeSet.Undo(extent), Is.EqualTo(1));
+                Mock.Get(extent).Verify(e => e.SetTile(Vector.Zero, oldTile), Times.Once);
+            }
+        }
+
+        [Test]
+        public void Undo_Files()
+        {
+            using (var changeSet = new ChangeSet(1))
+            {
+                var oldTile = new Tile {WallId = 1};
+                changeSet.Add(new TileUpdate(Vector.Zero, oldTile, new Tile()));
+                changeSet.Add(new TileUpdate(Vector.Zero, oldTile, new Tile()));
+                var extent = Mock.Of<Extent>(e => e.SetTile(Vector.Zero, oldTile));
+
+                Assert.That(changeSet.Undo(extent), Is.EqualTo(2));
+                Mock.Get(extent).Verify(e => e.SetTile(Vector.Zero, oldTile), Times.Exactly(2));
+            }
         }
 
         [Test]
         public void Undo_NullExtent_ThrowsArgumentNullException()
         {
-            var changeSet = new ChangeSet();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => changeSet.Undo(null), Throws.ArgumentNullException);
+            using (var changeSet = new ChangeSet())
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Assert.That(() => changeSet.Undo(null), Throws.ArgumentNullException);
+            }
         }
     }
 }

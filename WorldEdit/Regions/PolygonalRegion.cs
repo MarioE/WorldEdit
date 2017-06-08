@@ -6,12 +6,12 @@ using JetBrains.Annotations;
 namespace WorldEdit.Regions
 {
     /// <summary>
-    /// Represents a polygonal region.
+    ///     Represents a polygonal region.
     /// </summary>
     public sealed class PolygonalRegion : Region
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonalRegion" /> class with the specified vertices.
+        ///     Initializes a new instance of the <see cref="PolygonalRegion" /> class with the specified vertices.
         /// </summary>
         /// <param name="vertices">The vertices, which must not be <c>null</c> and contain at least three items.</param>
         /// <exception cref="ArgumentException"><paramref name="vertices" /> contains less than three items.</exception>
@@ -37,15 +37,15 @@ namespace WorldEdit.Regions
         public override Vector UpperBound => new Vector(Vertices.Max(v => v.X) + 1, Vertices.Max(v => v.Y) + 1);
 
         /// <summary>
-        /// Gets a read-only view of the vertices.
+        ///     Gets a read-only view of the vertices.
         /// </summary>
         [NotNull]
         public IReadOnlyList<Vector> Vertices { get; }
 
         /// <inheritdoc />
         /// <remarks>
-        /// This method uses the ray casting algorithm. A vertical ray is "drawn" from the position, and if the number of edges
-        /// above the position is odd, then the position is considered inside the polygon.
+        ///     This method uses the ray casting algorithm. A vertical ray is "drawn" from the position, and if the number of edges
+        ///     above the position is odd, then the position is considered inside the polygon.
         /// </remarks>
         public override bool Contains(Vector position)
         {

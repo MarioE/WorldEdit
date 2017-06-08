@@ -11,30 +11,30 @@ namespace WorldEdit.Tests.Templates
         public void Ctor_NullTemplate_ThrowsArgumenNullException()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => new PatternEntry<Block>(null, 1), Throws.ArgumentNullException);
+            Assert.That(() => new PatternEntry(null, 1), Throws.ArgumentNullException);
         }
 
         [TestCase(-1)]
         [TestCase(0)]
         public void Ctor_WeightNotPositive_ThrowsArgumentOutOfRangeException(int weight)
         {
-            Assert.That(() => new PatternEntry<Block>(Block.Water, weight),
+            Assert.That(() => new PatternEntry(BlockType.Water, weight),
                 Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
-        public void GetTemplate()
+        public void Template()
         {
-            var template = Block.Water;
-            var patternEntry = new PatternEntry<Block>(template, 1);
+            var template = BlockType.Water;
+            var patternEntry = new PatternEntry(template, 1);
 
             Assert.That(patternEntry.Template, Is.EqualTo(template));
         }
 
         [TestCase(2)]
-        public void GetWeight(int weight)
+        public void Weight(int weight)
         {
-            var patternEntry = new PatternEntry<Block>(Block.Water, weight);
+            var patternEntry = new PatternEntry(BlockType.Water, weight);
 
             Assert.That(patternEntry.Weight, Is.EqualTo(weight));
         }

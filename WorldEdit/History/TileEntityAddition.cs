@@ -6,12 +6,12 @@ using WorldEdit.TileEntities;
 namespace WorldEdit.History
 {
     /// <summary>
-    /// Represents a tile entity addition.
+    ///     Represents a tile entity addition.
     /// </summary>
     public sealed class TileEntityAddition : IChange
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TileEntityAddition" /> class with the specified tile entity.
+        ///     Initializes a new instance of the <see cref="TileEntityAddition" /> class with the specified tile entity.
         /// </summary>
         /// <param name="tileEntity">The tile entity, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="tileEntity" /> is <c>null</c>.</exception>
@@ -21,7 +21,7 @@ namespace WorldEdit.History
         }
 
         /// <summary>
-        /// Gets the tile entity.
+        ///     Gets the tile entity.
         /// </summary>
         [NotNull]
         public ITileEntity TileEntity { get; }

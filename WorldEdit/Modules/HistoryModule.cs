@@ -1,15 +1,17 @@
-﻿using JetBrains.Annotations;
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TShockAPI;
 
 namespace WorldEdit.Modules
 {
     /// <summary>
-    /// Represents a module that encapsulates the history functionality.
+    ///     Represents a module that encapsulates the history functionality.
     /// </summary>
+    [UsedImplicitly]
     public sealed class HistoryModule : Module
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HistoryModule" /> class with the specified WorldEdit plugin.
+        ///     Initializes a new instance of the <see cref="HistoryModule" /> class with the specified WorldEdit plugin.
         /// </summary>
         /// <param name="plugin">The WorldEdit plugin, which must not be <c>null</c>.</param>
         public HistoryModule([NotNull] WorldEditPlugin plugin) : base(plugin)
@@ -37,40 +39,53 @@ namespace WorldEdit.Modules
                                "Undoes your most recent action.";
         }
 
-        private void ClearHistory(CommandArgs args)
+        private async void ClearHistory(CommandArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            session.ClearHistory();
-            player.SendSuccessMessage("Cleared history.");
+
+            // This operation must be submitted, as history modifications must be synchronized.
+            await Task.Run(() => session.Submit(() =>
+            {
+                session.ClearHistory();
+                player.SendSuccessMessage("Cleared history.");
+            })).SendExceptions(player);
         }
 
-        private void Redo(CommandArgs args)
+        private async void Redo(CommandArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            if (!session.CanRedo)
-            {
-                player.SendErrorMessage("Cannot redo anything.");
-                return;
-            }
 
-            var count = session.Redo();
-            player.SendSuccessMessage($"Redone {count} changes.");
+            await Task.Run(() => session.Submit(() =>
+            {
+                if (!session.CanRedo)
+                {
+                    player.SendErrorMessage("Cannot redo anything.");
+                    return;
+                }
+
+                var count = session.Redo();
+                player.SendSuccessMessage($"Redone {count} changes.");
+            })).SendExceptions(player);
         }
 
-        private void Undo(CommandArgs args)
+        private async void Undo(CommandArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
-            if (!session.CanUndo)
-            {
-                player.SendErrorMessage("Cannot undo anything.");
-                return;
-            }
 
-            var count = session.Undo();
-            player.SendSuccessMessage($"Undone {count} changes.");
+            await Task.Run(() => session.Submit(() =>
+            {
+                if (!session.CanUndo)
+                {
+                    player.SendErrorMessage("Cannot undo anything.");
+                    return;
+                }
+
+                var count = session.Undo();
+                player.SendSuccessMessage($"Undone {count} changes.");
+            })).SendExceptions(player);
         }
     }
 }

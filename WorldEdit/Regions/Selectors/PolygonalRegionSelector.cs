@@ -6,19 +6,19 @@ using JetBrains.Annotations;
 namespace WorldEdit.Regions.Selectors
 {
     /// <summary>
-    /// Represents a polygonal region selector.
+    ///     Represents a polygonal region selector.
     /// </summary>
     public sealed class PolygonalRegionSelector : RegionSelector
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonalRegionSelector" /> class with no selected positions.
+        ///     Initializes a new instance of the <see cref="PolygonalRegionSelector" /> class with no selected positions.
         /// </summary>
         public PolygonalRegionSelector() : this(Enumerable.Empty<Vector>())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonalRegionSelector" /> class with the specified positions.
+        ///     Initializes a new instance of the <see cref="PolygonalRegionSelector" /> class with the specified positions.
         /// </summary>
         /// <param name="positions">The positions, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="positions" /> is <c>null</c>.</exception>
@@ -33,7 +33,7 @@ namespace WorldEdit.Regions.Selectors
         }
 
         /// <summary>
-        /// Gets a read-only view of the positions.
+        ///     Gets a read-only view of the positions.
         /// </summary>
         [NotNull]
         public IReadOnlyList<Vector> Positions { get; }
@@ -49,10 +49,10 @@ namespace WorldEdit.Regions.Selectors
             Positions.Count >= 3 ? (Region)new PolygonalRegion(Positions) : new EmptyRegion();
 
         /// <inheritdoc />
-        public override RegionSelector SelectPrimary(Vector position) => new PolygonalRegionSelector(new[] {position});
+        public override RegionSelector WithPrimary(Vector position) => new PolygonalRegionSelector(new[] {position});
 
         /// <inheritdoc />
-        public override RegionSelector SelectSecondary(Vector position)
+        public override RegionSelector WithSecondary(Vector position)
         {
             var newPositions = new List<Vector>(Positions);
             if (newPositions.Count > 0)

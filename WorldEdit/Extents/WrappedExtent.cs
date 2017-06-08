@@ -6,12 +6,12 @@ using WorldEdit.TileEntities;
 namespace WorldEdit.Extents
 {
     /// <summary>
-    /// Represents a wrapped extent.
+    ///     Represents a wrapped extent.
     /// </summary>
     public class WrappedExtent : Extent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WrappedExtent" /> class wrapping the specified extent.
+        ///     Initializes a new instance of the <see cref="WrappedExtent" /> class wrapping the specified extent.
         /// </summary>
         /// <param name="extent">The extent to wrap, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="extent" /> is <c>null</c>.</exception>
@@ -24,7 +24,7 @@ namespace WorldEdit.Extents
         public override Vector Dimensions => Extent.Dimensions;
 
         /// <summary>
-        /// Gets the wrapped extent.
+        ///     Gets the wrapped extent.
         /// </summary>
         protected Extent Extent { get; }
 

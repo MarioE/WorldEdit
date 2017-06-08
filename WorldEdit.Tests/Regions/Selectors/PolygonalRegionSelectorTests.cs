@@ -11,9 +11,9 @@ namespace WorldEdit.Tests.Regions.Selectors
         public void Clear()
         {
             RegionSelector selector = new PolygonalRegionSelector();
-            selector = selector.SelectPrimary(Vector.Zero);
-            selector = selector.SelectSecondary(Vector.One);
-            selector = selector.SelectSecondary(Vector.One);
+            selector = selector.WithPrimary(Vector.Zero);
+            selector = selector.WithSecondary(Vector.One);
+            selector = selector.WithSecondary(Vector.One);
 
             var selector2 = (PolygonalRegionSelector)selector.Clear();
 
@@ -31,9 +31,9 @@ namespace WorldEdit.Tests.Regions.Selectors
         public void GetRegion()
         {
             RegionSelector selector = new PolygonalRegionSelector();
-            selector = selector.SelectPrimary(Vector.Zero);
-            selector = selector.SelectSecondary(Vector.One);
-            selector = selector.SelectSecondary(Vector.One);
+            selector = selector.WithPrimary(Vector.Zero);
+            selector = selector.WithSecondary(Vector.One);
+            selector = selector.WithSecondary(Vector.One);
 
             var region = (PolygonalRegion)selector.GetRegion();
 
@@ -51,11 +51,11 @@ namespace WorldEdit.Tests.Regions.Selectors
             RegionSelector selector = new PolygonalRegionSelector();
             if (count-- > 0)
             {
-                selector = selector.SelectPrimary(Vector.Zero);
+                selector = selector.WithPrimary(Vector.Zero);
             }
             while (count-- > 0)
             {
-                selector = selector.SelectSecondary(Vector.Zero);
+                selector = selector.WithSecondary(Vector.Zero);
             }
 
             Assert.That(selector.GetRegion(), Is.InstanceOf<EmptyRegion>());
@@ -77,40 +77,40 @@ namespace WorldEdit.Tests.Regions.Selectors
         {
             var selector = new PolygonalRegionSelector();
 
-            var selector2 = (PolygonalRegionSelector)selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (PolygonalRegionSelector)selector.WithPrimary(new Vector(x, y));
 
             Assert.That(selector2.PrimaryPosition, Is.EqualTo(new Vector(x, y)));
         }
 
         [TestCase(1, 5)]
-        public void SelectPrimary(int x, int y)
+        public void WithPrimary(int x, int y)
         {
             var selector = new PolygonalRegionSelector();
 
-            var selector2 = (PolygonalRegionSelector)selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (PolygonalRegionSelector)selector.WithPrimary(new Vector(x, y));
 
             Assert.That(selector2.PrimaryPosition, Is.EqualTo(new Vector(x, y)));
         }
 
         [TestCase(1, 5)]
-        public void SelectPrimary_PreviousSelected(int x, int y)
+        public void WithPrimary_PreviousSelected(int x, int y)
         {
             RegionSelector selector = new PolygonalRegionSelector();
-            selector = selector.SelectPrimary(Vector.Zero);
-            selector = selector.SelectSecondary(Vector.One);
+            selector = selector.WithPrimary(Vector.Zero);
+            selector = selector.WithSecondary(Vector.One);
 
-            var selector2 = (PolygonalRegionSelector)selector.SelectPrimary(new Vector(x, y));
+            var selector2 = (PolygonalRegionSelector)selector.WithPrimary(new Vector(x, y));
 
             Assert.That(selector2.PrimaryPosition, Is.EqualTo(new Vector(x, y)));
         }
 
         [TestCase(1, 5)]
-        public void SelectSecondary(int x, int y)
+        public void WithSecondary(int x, int y)
         {
             RegionSelector selector = new PolygonalRegionSelector();
-            selector = selector.SelectPrimary(Vector.Zero);
+            selector = selector.WithPrimary(Vector.Zero);
 
-            var selector2 = (PolygonalRegionSelector)selector.SelectSecondary(new Vector(x, y));
+            var selector2 = (PolygonalRegionSelector)selector.WithSecondary(new Vector(x, y));
 
             Assert.That(selector2.Positions, Has.Count.EqualTo(2));
             Assert.That(selector2.Positions[1], Is.EqualTo(new Vector(x, y)));

@@ -1,18 +1,33 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using TShockAPI;
 using WorldEdit.Templates;
+using WorldEdit.Templates.Parsers;
 using WorldEdit.Tools;
 
 namespace WorldEdit.Modules
 {
     /// <summary>
-    /// Represents a module that encapsulates the tool functionality.
+    ///     Represents a module that encapsulates the tool functionality.
     /// </summary>
+    [UsedImplicitly]
     public sealed class ToolModule : Module
     {
+        private static readonly Dictionary<Type, TemplateParser> Parsers = new Dictionary<Type, TemplateParser>
+        {
+            [typeof(BlockColor)] = new BlockColorParser(),
+            [typeof(BlockType)] = new BlockTypeParser(),
+            [typeof(WallColor)] = new WallColorParser(),
+            [typeof(WallType)] = new WallTypeParser()
+        };
+
+        private static readonly TimeSpan ToolInactivityTime = TimeSpan.FromSeconds(5);
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolModule" /> class with the specified WorldEdit plugin.
+        ///     Initializes a new instance of the <see cref="ToolModule" /> class with the specified WorldEdit plugin.
         /// </summary>
         /// <param name="plugin">The WorldEdit plugin, which must not be <c>null</c>.</param>
         public ToolModule([NotNull] WorldEditPlugin plugin) : base(plugin)
@@ -30,15 +45,15 @@ namespace WorldEdit.Modules
         {
             GetDataHandlers.TileEdit += OnTileEdit;
 
-            var command = Plugin.RegisterCommand("/brush", Brush<Block>, "worldedit.tool.brush");
+            var command = Plugin.RegisterCommand("/brush", Brush<BlockType>, "worldedit.tool.brush");
             command.HelpText = "Syntax: //brush <size> <pattern>\n" +
                                "Changes your tool to a brush tool that changes blocks.";
 
-            command = Plugin.RegisterCommand("/brushwall", Brush<Wall>, "worldedit.tool.brushwall");
+            command = Plugin.RegisterCommand("/brushwall", Brush<WallType>, "worldedit.tool.brushwall");
             command.HelpText = "Syntax: //brushwall <size> <pattern>\n" +
                                "Changes your tool to a brush tool that changes walls.";
 
-            command = Plugin.RegisterCommand("/paintbrush", Brush<Color>, "worldedit.tool.paintbrush");
+            command = Plugin.RegisterCommand("/paintbrush", Brush<BlockColor>, "worldedit.tool.paintbrush");
             command.HelpText = "Syntax: //paintbrush <size> <pattern>\n" +
                                "Changes your tool to a brush tool that paints blocks.";
 
@@ -66,7 +81,8 @@ namespace WorldEdit.Modules
             }
 
             var inputPattern = string.Join(" ", parameters.Skip(1));
-            var pattern = Pattern<T>.TryParse(inputPattern);
+            var parser = Parsers[typeof(T)];
+            var pattern = parser.Parse(inputPattern);
             if (pattern == null)
             {
                 player.SendErrorMessage($"Invalid pattern '{inputPattern}'.");
@@ -74,11 +90,11 @@ namespace WorldEdit.Modules
             }
 
             var session = Plugin.GetOrCreateSession(player);
-            session.Tool = new BrushTool<T>(size, pattern);
+            session.Tool = new BrushTool(size, pattern);
             player.SendSuccessMessage("Set brush.");
         }
 
-        private void OnTileEdit(object sender, GetDataHandlers.TileEditEventArgs args)
+        private async void OnTileEdit(object sender, GetDataHandlers.TileEditEventArgs args)
         {
             var player = args.Player;
             var session = Plugin.GetOrCreateSession(player);
@@ -95,9 +111,15 @@ namespace WorldEdit.Modules
                 player.SendTileSquare(x, y, 1);
                 args.Handled = true;
 
-                // TODO: implement tool undo. Create new EditSession every 500 blocks?
-                var editSession = session.CreateEditSession();
-                session.Tool.Apply(editSession, position);
+                var editSession = session.ToolSession;
+                if (editSession == null || DateTime.UtcNow - session.LastToolUse > ToolInactivityTime)
+                {
+                    editSession = session.CreateEditSession();
+                    session.ToolSession = editSession;
+                }
+
+                session.LastToolUse = DateTime.UtcNow;
+                await Task.Run(() => session.Tool.Apply(editSession, position)).SendExceptions(player);
             }
         }
     }

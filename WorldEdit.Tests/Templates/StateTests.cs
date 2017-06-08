@@ -4,7 +4,7 @@ using WorldEdit.Templates;
 namespace WorldEdit.Tests.Templates
 {
     [TestFixture]
-    public class StateTests
+    public class TileStateTests
     {
         private static bool GetValue(Tile tile, byte type)
         {
@@ -56,74 +56,47 @@ namespace WorldEdit.Tests.Templates
 
         private static readonly object[] ApplyTestCases =
         {
-            new object[] {State.RedWire, (byte)1, true},
-            new object[] {State.NotRedWire, (byte)1, false},
-            new object[] {State.BlueWire, (byte)2, true},
-            new object[] {State.NotBlueWire, (byte)2, false},
-            new object[] {State.GreenWire, (byte)3, true},
-            new object[] {State.NotGreenWire, (byte)3, false},
-            new object[] {State.YellowWire, (byte)4, true},
-            new object[] {State.NotYellowWire, (byte)4, false},
-            new object[] {State.Actuator, (byte)5, true},
-            new object[] {State.NotActuator, (byte)5, false},
-            new object[] {State.Actuated, (byte)6, true},
-            new object[] {State.NotActuated, (byte)6, false}
+            new object[] {TileState.RedWire, (byte)1, true},
+            new object[] {TileState.NotRedWire, (byte)1, false},
+            new object[] {TileState.BlueWire, (byte)2, true},
+            new object[] {TileState.NotBlueWire, (byte)2, false},
+            new object[] {TileState.GreenWire, (byte)3, true},
+            new object[] {TileState.NotGreenWire, (byte)3, false},
+            new object[] {TileState.YellowWire, (byte)4, true},
+            new object[] {TileState.NotYellowWire, (byte)4, false},
+            new object[] {TileState.Actuator, (byte)5, true},
+            new object[] {TileState.NotActuator, (byte)5, false},
+            new object[] {TileState.Actuated, (byte)6, true},
+            new object[] {TileState.NotActuated, (byte)6, false}
         };
 
         private static readonly object[] MatchesTestCases =
         {
-            new object[] {State.RedWire, (byte)1, true, true},
-            new object[] {State.BlueWire, (byte)2, false, false},
-            new object[] {State.GreenWire, (byte)2, true, false},
-            new object[] {State.NotYellowWire, (byte)4, true, false},
-            new object[] {State.Actuator, (byte)5, false, false},
-            new object[] {State.NotActuated, (byte)6, true, false}
+            new object[] {TileState.RedWire, (byte)1, true, true},
+            new object[] {TileState.BlueWire, (byte)2, false, false},
+            new object[] {TileState.GreenWire, (byte)2, true, false},
+            new object[] {TileState.NotYellowWire, (byte)4, true, false},
+            new object[] {TileState.Actuator, (byte)5, false, false},
+            new object[] {TileState.NotActuated, (byte)6, true, false}
         };
 
         [TestCaseSource(nameof(ApplyTestCases))]
-        public void Apply(State state, byte expectedType, bool expectedValue)
+        public void Apply(TileState tileState, byte expectedType, bool expectedValue)
         {
             var tile = new Tile();
 
-            tile = state.Apply(tile);
+            tile = tileState.Apply(tile);
 
             Assert.That(GetValue(tile, expectedType), Is.EqualTo(expectedValue));
         }
 
         [TestCaseSource(nameof(MatchesTestCases))]
-        public void Matches(State state, byte actualType, bool actualValue, bool expected)
+        public void Matches(TileState tileState, byte actualType, bool actualValue, bool expected)
         {
             var tile = new Tile();
             tile = SetValue(tile, actualType, actualValue);
 
-            Assert.That(state.Matches(tile), Is.EqualTo(expected));
-        }
-
-        [TestCase("red wire", 1, true)]
-        [TestCase("!red wire", 1, false)]
-        public void TryParse(string s, byte expectedType, bool expectedValue)
-        {
-            var tile = new Tile();
-
-            var state = State.TryParse(s);
-
-            Assert.That(state, Is.Not.Null);
-            tile = state.Apply(tile);
-            Assert.That(GetValue(tile, expectedType), Is.EqualTo(expectedValue));
-        }
-
-        [TestCase("")]
-        [TestCase("ston")]
-        public void TryParse_InvalidState_ReturnsNull(string s)
-        {
-            Assert.That(State.TryParse(s), Is.Null);
-        }
-
-        [Test]
-        public void TryParse_NullS_ThrowsArgumentNullException()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.That(() => State.TryParse(null), Throws.ArgumentNullException);
+            Assert.That(tileState.Matches(tile), Is.EqualTo(expected));
         }
     }
 }

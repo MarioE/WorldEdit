@@ -3,26 +3,26 @@
 namespace WorldEdit.Regions.Selectors
 {
     /// <summary>
-    /// Holds selected positions, creating regions from them.
+    ///     Specifies a region selector which creates regions from selected positions.
     /// </summary>
     public abstract class RegionSelector
     {
         /// <summary>
-        /// Gets the primary position, or <c>null</c> if it is not selected.
+        ///     Gets the primary position, or <c>null</c> if it is not selected.
         /// </summary>
         [CanBeNull]
         public abstract Vector? PrimaryPosition { get; }
 
         /// <summary>
-        /// Clears the selected positions.
+        ///     Creates a new <see cref="RegionSelector" /> instance from this region selector with no selected positions.
         /// </summary>
-        /// <returns>The resulting region selector.</returns>
+        /// <returns>The region selector.</returns>
         [NotNull]
         [Pure]
         public abstract RegionSelector Clear();
 
         /// <summary>
-        /// Gets the defined region.
+        ///     Gets the defined region.
         /// </summary>
         /// <returns>The defined region.</returns>
         [NotNull]
@@ -30,21 +30,23 @@ namespace WorldEdit.Regions.Selectors
         public abstract Region GetRegion();
 
         /// <summary>
-        /// Selects the primary position using the specified position.
+        ///     Creates a new <see cref="RegionSelector" /> instance from this region selector with the specified position as the
+        ///     primary position.
         /// </summary>
         /// <param name="position">The position.</param>
-        /// <returns>The resulting region selector.</returns>
+        /// <returns>The region selector.</returns>
         [NotNull]
         [Pure]
-        public abstract RegionSelector SelectPrimary(Vector position);
+        public abstract RegionSelector WithPrimary(Vector position);
 
         /// <summary>
-        /// Selects the secondary position using the specified position.
+        ///     Creates a new <see cref="RegionSelector" /> instance from this region selector with the specified position as a
+        ///     secondary position.
         /// </summary>
         /// <param name="position">The position.</param>
-        /// <returns>The resulting region selector.</returns>
+        /// <returns>The region selector.</returns>
         [NotNull]
         [Pure]
-        public abstract RegionSelector SelectSecondary(Vector position);
+        public abstract RegionSelector WithSecondary(Vector position);
     }
 }
