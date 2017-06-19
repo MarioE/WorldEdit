@@ -5,6 +5,8 @@ using System.Timers;
 using JetBrains.Annotations;
 using OTAPI.Tile;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using WorldEdit.TileEntities;
 using Chest = WorldEdit.TileEntities.Chest;
@@ -36,6 +38,7 @@ namespace WorldEdit
         private readonly TerrariaChest[] _terrariaChests;
         private readonly TerrariaSign[] _terrariaSigns;
         private readonly ITileCollection _terrariaTiles;
+        private readonly object _tileEntityLock = new object();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="World" /> class wrapping the specified Terraria tiles, chests, and
@@ -69,6 +72,23 @@ namespace WorldEdit
             _sectionTimer.Dispose();
         }
 
+        private static ITileEntity Adapt(TileEntity terrariaTileEntity)
+        {
+            var position = new Vector(terrariaTileEntity.Position.X, terrariaTileEntity.Position.Y);
+            switch (terrariaTileEntity)
+            {
+                case TEItemFrame terrariaItemFrame:
+                    return new ItemFrame(position, Adapt(terrariaItemFrame.item));
+                case TELogicSensor terrariaLogicSensor:
+                    return new LogicSensor(position, (LogicSensorType)terrariaLogicSensor.logicCheck,
+                        terrariaLogicSensor.On, terrariaLogicSensor.CountedData);
+                case TETrainingDummy terrariaTrainingDummy:
+                    return new TrainingDummy(position, terrariaTrainingDummy.npc);
+                default:
+                    return null;
+            }
+        }
+
         private static TerrariaItem Adapt(Item item) =>
             new TerrariaItem {netID = item.Type, stack = item.StackSize, prefix = item.Prefix};
 
@@ -96,7 +116,6 @@ namespace WorldEdit
             new Sign(new Vector(terrariaSign.x, terrariaSign.y), terrariaSign.text);
 
         /// <inheritdoc />
-        // TODO: Handle tile entities: item frame, training dummy, and logic sensor
         public override bool AddTileEntity(ITileEntity tileEntity)
         {
             switch (tileEntity)
@@ -106,7 +125,14 @@ namespace WorldEdit
                 case Sign sign:
                     return AddSign(sign);
                 default:
-                    return false;
+                    var point16 = new Point16(tileEntity.Position.X, tileEntity.Position.Y);
+                    if (TileEntity.ByPosition.ContainsKey(point16))
+                    {
+                        return false;
+                    }
+
+                    AddTerrariaTileEntity(tileEntity);
+                    return true;
             }
         }
 
@@ -136,15 +162,16 @@ namespace WorldEdit
         {
             lock (_chestLock)
             lock (_signLock)
+            lock (_tileEntityLock)
             {
                 return Enumerable.Empty<ITileEntity>()
                     .Concat(_terrariaChests.Where(tc => tc != null).Select(Adapt))
-                    .Concat(_terrariaSigns.Where(ts => ts != null).Select(Adapt)).ToList();
+                    .Concat(_terrariaSigns.Where(ts => ts != null).Select(Adapt))
+                    .Concat(TileEntity.ByID.Values.Where(te => te != null).Select(Adapt)).ToList();
             }
         }
 
         /// <inheritdoc />
-        // TODO: Handle tile entities: item frame, training dummy, and logic sensor
         public override bool RemoveTileEntity(ITileEntity tileEntity)
         {
             switch (tileEntity)
@@ -154,7 +181,18 @@ namespace WorldEdit
                 case Sign sign:
                     return RemoveSign(sign);
                 default:
-                    return false;
+                    lock (_tileEntityLock)
+                    {
+                        var point16 = new Point16(tileEntity.Position.X, tileEntity.Position.Y);
+                        if (!TileEntity.ByPosition.TryGetValue(point16, out var ttileEntity))
+                        {
+                            return false;
+                        }
+
+                        TileEntity.ByID.Remove(ttileEntity.ID);
+                        TileEntity.ByPosition.Remove(point16);
+                    }
+                    return true;
             }
         }
 
@@ -263,6 +301,39 @@ namespace WorldEdit
                 _terrariaSigns[index] = Adapt(sign);
             }
             return true;
+        }
+
+        private void AddTerrariaTileEntity(ITileEntity tileEntity)
+        {
+            int id;
+            var x = tileEntity.Position.X;
+            var y = tileEntity.Position.Y;
+
+            lock (_tileEntityLock)
+            {
+                switch (tileEntity)
+                {
+                    case ItemFrame itemFrame:
+                        var item = itemFrame.Item;
+                        id = TEItemFrame.Place(x, y);
+                        TEItemFrame.TryPlacing(x, y, item.Type, item.Prefix, item.StackSize);
+                        break;
+                    case LogicSensor logicSensor:
+                        id = TELogicSensor.Place(x, y);
+                        var terrariaLogicSensor = (TELogicSensor)TileEntity.ByID[id];
+                        terrariaLogicSensor.CountedData = logicSensor.Data;
+                        terrariaLogicSensor.logicCheck = (TELogicSensor.LogicCheckType)logicSensor.Type;
+                        terrariaLogicSensor.On = logicSensor.IsEnabled;
+                        break;
+                    case TrainingDummy _:
+                        id = TETrainingDummy.Place(x, y);
+                        ((TETrainingDummy)TileEntity.ByID[id]).Activate();
+                        break;
+                    default:
+                        return;
+                }
+            }
+            NetMessage.SendData(86, -1, -1, null, id, x, y);
         }
 
         private void NotifySections(object sender, ElapsedEventArgs args)

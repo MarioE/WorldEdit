@@ -12,7 +12,7 @@ namespace WorldEdit.History
     ///     Specifies a set of changes that can be undone and redone collectively.
     /// </summary>
     // TODO: Optimize this
-    public class ChangeSet : IDisposable
+    public sealed class ChangeSet : IDisposable
     {
         private const int TileSize = 11;
         private const int TileUpdateSize = VectorSize + 2 * TileSize;
@@ -48,6 +48,7 @@ namespace WorldEdit.History
             {
                 file.Dispose();
             }
+            _stream.Dispose();
             _writer.Dispose();
         }
 

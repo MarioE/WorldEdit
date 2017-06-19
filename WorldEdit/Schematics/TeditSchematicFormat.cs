@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -381,6 +382,7 @@ namespace WorldEdit.Schematics
         }
 
         /// <inheritdoc />
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public override Clipboard Read(Stream stream)
         {
             if (stream == null)
