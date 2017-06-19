@@ -18,10 +18,10 @@ namespace WorldEdit.Modules
     {
         private static readonly Dictionary<Type, TemplateParser> Parsers = new Dictionary<Type, TemplateParser>
         {
-            [typeof(BlockColor)] = new BlockColorParser(),
-            [typeof(BlockType)] = new BlockTypeParser(),
-            [typeof(WallColor)] = new WallColorParser(),
-            [typeof(WallType)] = new WallTypeParser()
+            [typeof(BlockColor)] = new PatternParser(new BlockColorParser()),
+            [typeof(BlockType)] = new PatternParser(new BlockTypeParser()),
+            [typeof(WallColor)] = new PatternParser(new WallColorParser()),
+            [typeof(WallType)] = new PatternParser(new WallTypeParser())
         };
 
         private static readonly TimeSpan ToolInactivityTime = TimeSpan.FromSeconds(5);
