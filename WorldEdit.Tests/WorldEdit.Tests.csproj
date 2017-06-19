@@ -95,6 +95,7 @@
     <Compile Include="Regions\Selectors\EllipticRegionSelectorTests.cs" />
     <Compile Include="Regions\Selectors\PolygonalRegionSelectorTests.cs" />
     <Compile Include="Regions\Selectors\RectangularRegionSelectorTests.cs" />
+    <Compile Include="Schematics\DefaultSchematicFormatTests.cs" />
     <Compile Include="Schematics\TeditSchematicFormatTests.cs" />
     <Compile Include="Sessions\EditSessionTests.cs" />
     <Compile Include="Sessions\SessionManagerTests.cs" />

@@ -25,6 +25,13 @@ namespace WorldEdit.Tests
         }
 
         [Test]
+        public void ReadItem_NullReader_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => ((BinaryReader)null).ReadItem(), Throws.ArgumentNullException);
+        }
+
+        [Test]
         public void ReadTile_NullReader_ThrowsArgumentNullException()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -74,6 +81,30 @@ namespace WorldEdit.Tests
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.That(() => ((string)null).ToPascalCase(), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void WriteItem_NullWriter_ThrowsArgumentNullException()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.That(() => ((BinaryWriter)null).Write(new Item()), Throws.ArgumentNullException);
+        }
+
+        [Test]
+        public void WriteReadItem()
+        {
+            var item = new Item(1, 2, 3);
+
+            using (var writer = new BinaryWriter(new MemoryStream()))
+            {
+                writer.Write(item);
+                writer.BaseStream.Position = 0;
+
+                using (var reader = new BinaryReader(writer.BaseStream, Encoding.Default, true))
+                {
+                    Assert.That(reader.ReadItem(), Is.EqualTo(item));
+                }
+            }
         }
 
         [Test]

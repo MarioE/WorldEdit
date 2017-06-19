@@ -103,6 +103,7 @@
     <Compile Include="Regions\Selectors\PolygonalRegionSelector.cs" />
     <Compile Include="Regions\Selectors\RectangularRegionSelector.cs" />
     <Compile Include="Regions\Selectors\RegionSelector.cs" />
+    <Compile Include="Schematics\DefaultSchematicFormat.cs" />
     <Compile Include="Schematics\SchematicFormat.cs" />
     <Compile Include="Schematics\TeditSchematicFormat.cs" />
     <Compile Include="Sessions\EditSession.cs" />

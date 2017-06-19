@@ -50,6 +50,22 @@ namespace WorldEdit
         }
 
         /// <summary>
+        ///     Reads an <see cref="Item" /> instance.
+        /// </summary>
+        /// <param name="reader">The reader, which must not be <c>null</c>.</param>
+        /// <returns>The resulting item.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="reader" /> is <c>null</c>.</exception>
+        public static Item ReadItem([NotNull] this BinaryReader reader)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            return new Item(reader.ReadInt32(), reader.ReadInt32(), reader.ReadByte());
+        }
+
+        /// <summary>
         ///     Reads a <see cref="Tile" /> instance.
         /// </summary>
         /// <param name="reader">The reader, which must not be <c>null</c>.</param>
@@ -140,6 +156,24 @@ namespace WorldEdit
 
             var result = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(s.ToLowerInvariant());
             return string.Join("", result.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        /// <summary>
+        ///     Writes the specified item.
+        /// </summary>
+        /// <param name="writer">The writer, which must not be <c>null</c>.</param>
+        /// <param name="item">The item to write.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="writer" /> is <c>null</c>.</exception>
+        public static void Write([NotNull] this BinaryWriter writer, Item item)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            writer.Write(item.Type);
+            writer.Write(item.StackSize);
+            writer.Write(item.Prefix);
         }
 
         /// <summary>

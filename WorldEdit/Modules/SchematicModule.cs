@@ -21,6 +21,7 @@ namespace WorldEdit.Modules
         private static readonly Dictionary<string, SchematicFormat> SchematicFormats =
             new Dictionary<string, SchematicFormat>(StringComparer.OrdinalIgnoreCase)
             {
+                ["default"] = new DefaultSchematicFormat(),
                 ["tedit"] = new TeditSchematicFormat()
             };
 
@@ -58,7 +59,9 @@ namespace WorldEdit.Modules
                                "Syntax: //schematic list [page]\n" +
                                "Syntax: //schematic load <name>\n" +
                                "Syntax: //schematic save <name> <format> [description]\n" +
-                               "Manages schematics. Currently, the only valid format is tedit.";
+                               "Manages schematics. Valid formats are:\n" +
+                               "- default: The default schematic format. Fast and compatible with all features.\n" +
+                               "- tedit: The TEdit schematic format. Slower, but must be used for compatibility with TEdit.";
             command.Names.Add("/schem");
         }
 
